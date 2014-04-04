@@ -15,7 +15,6 @@
 		<tycho.scmUrl>scm:git:https://github.com/jbosstools/jbosstools-vpe.git</tycho.scmUrl>
 	</properties>
 	<modules>
-		<module>win32_win32_x86</module>
 		<module>plugins</module>
 		<module>tests</module>
 		<module>features</module>
@@ -23,19 +22,9 @@
 	</modules>
 	<repositories>
                 <repository>
-                        <id>jbosstools-aerogear</id>
-                        <layout>p2</layout>
-                        <url>${jbosstools-aerogear-site}</url>
-                </repository>
-                <repository>
                         <id>jbosstools-base</id>
                         <layout>p2</layout>
                         <url>${jbosstools-base-site}</url>
-                </repository>
-                <repository>
-                        <id>jbosstools-javaee</id>
-                        <layout>p2</layout>
-                        <url>${jbosstools-javaee-site}</url>
                 </repository>
                 <repository>
                         <id>jbosstools-jst</id>
