@@ -20,7 +20,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class VpvDomBuilder {
-	public static final String ATTR_VPV_ID = "data-vpvid";
+	public static final String ATTR_VPV_ID = "data-vpvid"; //$NON-NLS-1$
 	private static long markerId = 0;
 	private VpvTemplateProvider templateProvider;
 

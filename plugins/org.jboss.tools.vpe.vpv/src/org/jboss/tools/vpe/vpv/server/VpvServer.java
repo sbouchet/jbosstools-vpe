@@ -24,7 +24,7 @@ public class VpvServer implements Runnable {
 	@Override
 	public void run() {
 		try {
-			serverSocket = new ServerSocket(0, 0, InetAddress.getByName("localhost"));
+			serverSocket = new ServerSocket(0, 0, InetAddress.getByName(HttpConstants.LOCALHOST)); 
 			while (true) {
 				Socket clientSocket = serverSocket.accept();
 				VpvSocketProcessor serverProcessor = new VpvSocketProcessor(clientSocket, vpvController);

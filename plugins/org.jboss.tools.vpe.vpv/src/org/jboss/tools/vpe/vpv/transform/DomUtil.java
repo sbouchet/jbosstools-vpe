@@ -23,22 +23,24 @@ public class DomUtil {
 			return node.getParentNode();
 		}
 	}
-	
+
 	public static String nodeToString(Node node) throws TransformerException {
 		Transformer transformer = getTransformer();
 		StringWriter buffer = new StringWriter();
-		transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+		transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes"); //$NON-NLS-1$
 		transformer.transform(new DOMSource(node), new StreamResult(buffer));
 		return buffer.toString();
 	}
-	
+
 	private static Transformer transformer;
+
 	public static Transformer getTransformer() throws TransformerConfigurationException {
 		if (transformer == null) {
 			TransformerFactory transFactory = TransformerFactory.newInstance();
 			transformer = transFactory.newTransformer();
 		}
-		
+
 		return transformer;
 	}
+
 }

@@ -1,10 +1,10 @@
 package org.jboss.tools.vpe.vpv.views;
 
 public enum SuitableFileExtensions {
-	HTML("html"), 
-	HTM("htm"), 
-	XHTML("xhtml"), 
-	JSP("jsp");
+	HTML("html"), //$NON-NLS-1$
+	HTM("htm"), //$NON-NLS-1$
+	XHTML("xhtml"), //$NON-NLS-1$
+	JSP("jsp"); //$NON-NLS-1$
 
 	private final String value;
 
@@ -17,13 +17,12 @@ public enum SuitableFileExtensions {
 	}
 
 	public static boolean contains(String fileExtension) {
-
 		for (SuitableFileExtensions extension : SuitableFileExtensions.values()) {
 			if (extension.value.equals(fileExtension)) {
 				return true;
 			}
 		}
-
 		return false;
 	}
+
 }
