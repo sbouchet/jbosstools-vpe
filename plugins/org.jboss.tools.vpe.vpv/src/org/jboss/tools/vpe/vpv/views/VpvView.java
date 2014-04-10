@@ -38,6 +38,8 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.browser.LocationAdapter;
+import org.eclipse.swt.browser.LocationEvent;
 import org.eclipse.swt.browser.ProgressAdapter;
 import org.eclipse.swt.browser.ProgressEvent;
 import org.eclipse.swt.events.MouseEvent;
@@ -119,6 +121,20 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 		parent.setLayout(new FillLayout());	
 		browser = new Browser(parent, SWT.NONE);
 		browser.setUrl(ABOUT_BLANK);
+		
+		// Disabling all links 
+		browser.addLocationListener(new LocationAdapter() {
+			@Override
+			public void changed(LocationEvent event) {
+				browser.execute("(function() { " //$NON-NLS-1$
+							  + 	"var anchors = document.getElementsByTagName('a');"   //$NON-NLS-1$
+							  + 	"for (var i = 0; i < anchors.length; i++) {"  //$NON-NLS-1$
+							  + 		"anchors[i].onclick = function() {return(false);};" //$NON-NLS-1$
+							  + 	"};" //$NON-NLS-1$
+							  +	"})();"); //$NON-NLS-1$
+			}
+		});
+		
 		browser.addProgressListener(new ProgressAdapter() {
 			@Override
 			public void completed(ProgressEvent event) {
@@ -126,6 +142,7 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 				updateSelectionAndScrollToIt(currentSelection);
 			}
 		});
+		
 		browser.addMouseListener(new MouseListener() {
 			
 			@Override
