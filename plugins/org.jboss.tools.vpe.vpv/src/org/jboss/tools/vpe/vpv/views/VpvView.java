@@ -1,8 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2013 Red Hat, Inc.
+ * Distributed under license by Red Hat, Inc. All rights reserved.
+ * This program is made available under the terms of the
+ * Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributor:
+ *     Red Hat, Inc. - initial API and implementation
+ ******************************************************************************/
 package org.jboss.tools.vpe.vpv.views;
 
-/**
- * @author Yahor Radtsevich (yradtsevich)
- */
 
 import static org.jboss.tools.vpe.vpv.server.HttpConstants.ABOUT_BLANK;
 import static org.jboss.tools.vpe.vpv.server.HttpConstants.HTTP;
@@ -69,6 +76,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+/**
+ * @author Yahor Radtsevich (yradtsevich)
+ * @author Ilya Buziuk (ibuziuk)
+ */
 public class VpvView extends ViewPart implements VpvVisualModelHolder {
 
 	public static final String ID = "org.jboss.tools.vpe.vpv.views.VpvView"; //$NON-NLS-1$
@@ -607,7 +618,7 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 		if (currentSelectionId == null) {
 			selectionStyle = ""; //$NON-NLS-1$
 		} else {
-			selectionStyle = "'[" + VpvDomBuilder.ATTR_VPV_ID + "=\"" + currentSelectionId + "\"] {outline: 2px solid blue;}'"; //$NON-NLS-1$
+			selectionStyle = "'[" + VpvDomBuilder.ATTR_VPV_ID + "=\"" + currentSelectionId + "\"] {outline: 2px solid blue;}'"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}
 		
 		browser.execute(
@@ -628,7 +639,7 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 				"document.body.appendChild(style);" + //$NON-NLS-1$
 //			"}" +
 			"style.id = 'VPV-STYLESHEET';" +  //$NON-NLS-1$
-			"})(" + selectionStyle + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			"})(" + selectionStyle + ")"); //$NON-NLS-1$ //$NON-NLS-2$ 
 	}
 	
 	private void scrollToId(Long currentSelectionId) {
