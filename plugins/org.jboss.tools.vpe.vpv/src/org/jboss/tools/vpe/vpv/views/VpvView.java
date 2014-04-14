@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.jboss.tools.vpe.vpv.views;
 
-
 import static org.jboss.tools.vpe.vpv.server.HttpConstants.ABOUT_BLANK;
 import static org.jboss.tools.vpe.vpv.server.HttpConstants.HTTP;
 import static org.jboss.tools.vpe.vpv.server.HttpConstants.LOCALHOST;
@@ -241,7 +240,7 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 
 	private void inizializeSelectionListener() {
 		selectionListener = new SelectionListener();
-		getSite().getPage().addSelectionListener(selectionListener);	
+		getSite().getPage().addPostSelectionListener(selectionListener);	
 	}
 
 	public void setFocus() {
@@ -620,42 +619,34 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 
 	
 	private void updateBrowserSelection(Long currentSelectionId) {
-		String selectionStyle;
+		String styleAttributeSelector;
 		if (currentSelectionId == null) {
-			selectionStyle = ""; //$NON-NLS-1$
+			styleAttributeSelector = ""; //$NON-NLS-1$
 		} else {
-			selectionStyle = "'[" + VpvDomBuilder.ATTR_VPV_ID + "=\"" + currentSelectionId + "\"] {outline: 2px solid blue;}'"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			styleAttributeSelector = "'[" + VpvDomBuilder.ATTR_VPV_ID + "=\"" + currentSelectionId + "\"] {outline: 2px solid blue; border: 2px solid blue;  z-index: 1000;}'"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}
 		
 		browser.execute(
 		"(function(css) {" + //$NON-NLS-1$
 			"var style=document.getElementById('VPV-STYLESHEET');" + //$NON-NLS-1$
-//			"if ('\\v' == 'v') /* ie only */ {alert('ie');" +
-//				"if (style == null) {" +
-//					"style = document.createStyleSheet();" +
-//				"}" +
-//				"style.cssText = css;" +
-//			"}" +
-//			"else {" +
 				"if (style == null) {" + //$NON-NLS-1$
 					"style = document.createElement('STYLE');" + //$NON-NLS-1$
 					"style.type = 'text/css';" + //$NON-NLS-1$
 				"}" + //$NON-NLS-1$
 				"style.innerHTML = css;" + //$NON-NLS-1$
 				"document.body.appendChild(style);" + //$NON-NLS-1$
-//			"}" +
 			"style.id = 'VPV-STYLESHEET';" +  //$NON-NLS-1$
-			"})(" + selectionStyle + ")"); //$NON-NLS-1$ //$NON-NLS-2$ 
+			"})(" + styleAttributeSelector + ")"); //$NON-NLS-1$ //$NON-NLS-2$ 
 	}
 	
 	private void scrollToId(Long currentSelectionId) {
 		if (currentSelectionId != null) {
-			System.out.println(browser.execute(
+			browser.execute(
 					"(function(){" + //$NON-NLS-1$
 							"var selectedElement = document.querySelector('[" + VpvDomBuilder.ATTR_VPV_ID + "=\"" + currentSelectionId + "\"]');" + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 							"selectedElement.scrollIntoView(true);" + //$NON-NLS-1$
 					"})()"   //$NON-NLS-1$
-			));
+			);
 		}
 	}
 
