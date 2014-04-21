@@ -148,6 +148,7 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 		browser.addLocationListener(new LocationAdapter() {
 			@Override
 			public void changed(LocationEvent event) {
+				JsNavigationUtil.disableAlert(browser);
 				JsNavigationUtil.disableLinks(browser);
 				
 				ISelection currentSelection = getCurrentSelection();

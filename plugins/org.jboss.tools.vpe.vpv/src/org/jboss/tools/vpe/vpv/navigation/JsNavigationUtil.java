@@ -35,12 +35,12 @@ public final class JsNavigationUtil {
 	
 	public static void disableLinks(Browser browser) {
 		if (browser != null && !browser.isDisposed()) {
-			browser.execute("(function() { " +  //$NON-NLS-1$
+			browser.execute("(setTimeout(function() { " +  //$NON-NLS-1$
 								"var anchors = document.getElementsByTagName('a');" + //$NON-NLS-1$
 								"for (var i = 0; i < anchors.length; i++) {" + //$NON-NLS-1$
 									"anchors[i].href = 'javascript: void(0);'" + //$NON-NLS-1$
 								"};" + //$NON-NLS-1$
-					  		"})();"); //$NON-NLS-1$
+					  		"}, 10))();"); //$NON-NLS-1$
 		}
 	}
 	
@@ -51,19 +51,23 @@ public final class JsNavigationUtil {
 			if (currentSelectionId == null) {
 				styleAttributeSelector = ""; //$NON-NLS-1$
 			} else {
-				styleAttributeSelector = "'[" + VpvDomBuilder.ATTR_VPV_ID + "=\"" + currentSelectionId + "\"] {outline: 1px solid blue; border: 1px solid blue;  z-index: 1000;}'"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				styleAttributeSelector = "'[" + VpvDomBuilder.ATTR_VPV_ID + "=\"" + currentSelectionId + "\"] {outline: 1px solid blue; border: 1px solid blue;  z-index: 2147483638;}'"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			}
-			browser.execute("(function(css) {" + //$NON-NLS-1$
+			browser.execute("(setTimeout(function() {" + //$NON-NLS-1$
 								"var style=document.getElementById('" + VPV_SELECTION_STYLE_ID + "');" + //$NON-NLS-1$ //$NON-NLS-2$
-									"if (style == null) {" + //$NON-NLS-1$
+									"if (!style) {" + //$NON-NLS-1$
 										"style = document.createElement('STYLE');" + //$NON-NLS-1$
 										"style.type = 'text/css';" + //$NON-NLS-1$
 									"}" + //$NON-NLS-1$
-									"style.innerHTML = css;" + //$NON-NLS-1$
-									"document.body.appendChild(style);" + //$NON-NLS-1$
-								"style.id = '" + VPV_SELECTION_STYLE_ID + "';" +  //$NON-NLS-1$ //$NON-NLS-2$
-								"})(" + styleAttributeSelector + ")"); //$NON-NLS-1$ //$NON-NLS-2$ 
+									"style.innerHTML = " + styleAttributeSelector + ";" + //$NON-NLS-1$ //$NON-NLS-2$
+									"document.head.appendChild(style);" + //$NON-NLS-1$
+									"style.id = '" + VPV_SELECTION_STYLE_ID + "';" +  //$NON-NLS-1$ //$NON-NLS-2$
+								"}, 10))();"); //$NON-NLS-1$ //$NON-NLS-2$ 
 		}
 	}
-		
+	
+	public static void disableAlert(Browser browser) {
+		browser.execute("window.alert = function() {};"); //$NON-NLS-1
+	}
+	
 }
