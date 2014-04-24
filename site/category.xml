@@ -12,7 +12,7 @@
 	<feature url="features/org.jboss.tools.vpe.test.feature_0.0.0.jar" id="org.jboss.tools.vpe.test.feature" version="0.0.0">
 		<category name="JBoss Tools VPE Test Nightly Build Update Site"/>
 	</feature>
-	<feature url="features/org.jboss.tools.vpe.vpv.feature_0.0.0.jar" id="org.jboss.tools.vpe.vpv.feature" version="0.0.0">
+	<feature url="features/org.jboss.tools.vpe.preview.feature_0.0.0.jar" id="org.jboss.tools.vpe.preview.feature" version="0.0.0">
 		<category name="JBoss Tools vpe Nightly Build Update Site"/>
 	</feature>
 
@@ -23,7 +23,7 @@
 	<feature url="features/org.jboss.tools.vpe.test.feature.source_0.0.0.jar" id="org.jboss.tools.vpe.test.feature.source" version="0.0.0">
 		<category name="JBoss Tools VPE Test Nightly Build Update Site"/>
 	</feature>
-	<feature url="features/org.jboss.tools.vpe.vpv.feature.source_0.0.0.jar" id="org.jboss.tools.vpe.vpv.feature.source" version="0.0.0">
+	<feature url="features/org.jboss.tools.vpe.preview.feature.source_0.0.0.jar" id="org.jboss.tools.vpe.preview.feature.source" version="0.0.0">
 		<category name="JBoss Tools VPE Test Nightly Build Update Site"/>
 	</feature>
 
