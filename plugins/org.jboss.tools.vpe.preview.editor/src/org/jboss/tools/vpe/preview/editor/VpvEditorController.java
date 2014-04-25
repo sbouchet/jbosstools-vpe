@@ -1,4 +1,14 @@
-package org.jboss.tools.vpe.editor;
+/*******************************************************************************
+ * Copyright (c) 2014 Red Hat, Inc.
+ * Distributed under license by Red Hat, Inc. All rights reserved.
+ * This program is made available under the terms of the
+ * Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributor:
+ *     Red Hat, Inc. - initial API and implementation
+ ******************************************************************************/
+package org.jboss.tools.vpe.preview.editor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,18 +49,25 @@ import org.jboss.tools.jst.web.ui.internal.editor.editor.IVisualController;
 import org.jboss.tools.jst.web.ui.internal.editor.selection.SelectionHelper;
 import org.jboss.tools.vpe.VpeDebug;
 import org.jboss.tools.vpe.VpePlugin;
-import org.jboss.tools.vpe.editor.context.VpvPageContext;
+import org.jboss.tools.vpe.editor.VisualController;
+import org.jboss.tools.vpe.editor.VpeEditorPart;
 import org.jboss.tools.vpe.editor.toolbar.format.FormatControllerManager;
 import org.jboss.tools.vpe.handlers.VisualPartAbstractHandler;
+import org.jboss.tools.vpe.preview.editor.context.VpvPageContext;
 import org.w3c.dom.Node;
 
-public class VPVController extends VisualController implements INodeAdapter, IModelLifecycleListener,
+/**
+ * @author Konstantin Marmalyukov (kmarmaliykov)
+ */
+
+@SuppressWarnings({ "deprecation" })
+public class VpvEditorController extends VisualController implements INodeAdapter, IModelLifecycleListener,
 		INodeSelectionListener, ITextSelectionListener, SelectionListener, ResourceReferenceListListener,
 		ISelectionChangedListener, IVisualController {
 	
 	
 	private StructuredTextEditor sourceEditor;
-	private VpvEditor2 editPart;
+	private VpvEditorPart editPart;
 	private VpvEditor visualEditor;
 	private VpvPageContext pageContext;
 	private FormatControllerManager toolbarFormatControllerManager = null;
@@ -58,7 +75,7 @@ public class VPVController extends VisualController implements INodeAdapter, IMo
 	
 	private static List<String> vpeCategoryCommands = null;
 	
-	public VPVController(VpvEditor2 editPart) {
+	public VpvEditorController(VpvEditorPart editPart) {
 		this.editPart = editPart;
 	}
 	

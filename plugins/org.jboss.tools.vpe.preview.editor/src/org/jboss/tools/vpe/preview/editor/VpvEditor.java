@@ -1,4 +1,14 @@
-package org.jboss.tools.vpe.editor;
+/*******************************************************************************
+ * Copyright (c) 2014 Red Hat, Inc.
+ * Distributed under license by Red Hat, Inc. All rights reserved.
+ * This program is made available under the terms of the
+ * Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributor:
+ *     Red Hat, Inc. - initial API and implementation
+ ******************************************************************************/
+package org.jboss.tools.vpe.preview.editor;
 
 import static org.jboss.tools.vpe.preview.core.server.HttpConstants.ABOUT_BLANK;
 import static org.jboss.tools.vpe.preview.core.server.HttpConstants.HTTP;
@@ -47,8 +57,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.editors.text.ILocationProvider;
 import org.eclipse.ui.part.EditorPart;
-import org.eclipse.wst.xml.core.internal.provisional.document.IDOMDocument;
-import org.eclipse.wst.xml.core.internal.provisional.document.IDOMModel;
 import org.jboss.tools.jst.web.ui.WebUiPlugin;
 import org.jboss.tools.jst.web.ui.internal.editor.preferences.IVpePreferencesPage;
 import org.jboss.tools.vpe.VpePlugin;
@@ -62,17 +70,15 @@ import org.jboss.tools.vpe.editor.toolbar.format.FormatControllerManager;
 import org.jboss.tools.vpe.editor.toolbar.format.TextFormattingToolBar;
 import org.jboss.tools.vpe.editor.util.FileUtil;
 import org.jboss.tools.vpe.messages.VpeUIMessages;
-import org.jboss.tools.vpe.preview.core.transform.DomUtil;
-import org.jboss.tools.vpe.preview.core.transform.TransformUtil;
-import org.jboss.tools.vpe.preview.core.transform.VpvDomBuilder;
 import org.jboss.tools.vpe.preview.core.transform.VpvVisualModel;
 import org.jboss.tools.vpe.preview.core.transform.VpvVisualModelHolder;
 import org.jboss.tools.vpe.preview.core.util.EditorUtil;
 import org.jboss.tools.vpe.preview.core.util.NavigationUtil;
 import org.jboss.tools.vpe.preview.core.util.SuitableFileExtensions;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
+
+/**
+ * @author Konstantin Marmalyukov (kmarmaliykov)
+ */
 
 public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReusableEditor{
 	/**
@@ -137,7 +143,7 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 	}
 	
 	private FormatControllerManager formatControllerManager = new FormatControllerManager();
-	private VPVController controller;
+	private VpvEditorController controller;
 	private ToolBar verBar = null;
 	private IPropertyChangeListener selectionBarCloseListener;
 	
@@ -186,7 +192,7 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 		return false;
 	}
 
-	public void setController(VPVController controller){
+	public void setController(VpvEditorController controller){
 		this.controller = controller;
 		formatControllerManager.setVpeController(controller);
 		controller.setToolbarFormatControllerManager(formatControllerManager);
@@ -296,7 +302,7 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 				 * Call <code>filContainer()</code> from VpeEditorPart
 				 * to redraw CustomSashForm with new layout.
 				 */
-				((VpvEditor2)getController().getPageContext().getEditPart()).fillContainer(true, newOrientation);
+				((VpvEditorPart)getController().getPageContext().getEditPart()).fillContainer(true, newOrientation);
 				WebUiPlugin.getDefault().getPreferenceStore().
 					setValue(IVpePreferencesPage.VISUAL_SOURCE_EDITORS_SPLITTING, newOrientation);
 			}
@@ -358,7 +364,7 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 				/*
 				 * Update Selection Bar 
 				 */
-				((VpvEditor2)controller.getPageContext().getEditPart()).updateSelectionBar(this.isChecked());
+				((VpvEditorPart)controller.getPageContext().getEditPart()).updateSelectionBar(this.isChecked());
 				WebUiPlugin.getDefault().getPreferenceStore().
 					setValue(IVpePreferencesPage.SHOW_SELECTION_TAG_BAR, this.isChecked());
 			}
@@ -462,7 +468,7 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 			@Override
 			public void completed(ProgressEvent event) {
 				ISelection currentSelection = getCurrentSelection();
-				updateSelectionAndScrollToIt(currentSelection);
+				NavigationUtil.updateSelectionAndScrollToIt(currentSelection, browser, visualModel);
 				if (editorLoadWindowListener != null) {
 					editorLoadWindowListener.load();
 				}
@@ -485,135 +491,6 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 		return selection;
 	}
 	
-	private void updateSelectionAndScrollToIt(ISelection currentSelection) {
-		if (currentSelection instanceof IStructuredSelection) {
-			Node sourceNode = getNodeFromSelection((IStructuredSelection) currentSelection);
-			Long currentSelectionId = getIdForSelection(sourceNode, visualModel);
-			updateBrowserSelection(currentSelectionId);
-			scrollToId(currentSelectionId);
-		}
-	}
-	
-	private Node getNodeFromSelection(IStructuredSelection selection) {
-		Object firstElement = selection.getFirstElement();
-		if (firstElement instanceof Node) {
-			return (Node) firstElement;
-		} else {
-			return null;
-		}
-	}
-	
-	public Long getIdForSelection(Node selectedSourceNode, VpvVisualModel visualModel) {
-		Long id = null;
-		if (selectedSourceNode != null && visualModel != null) {
-			Map<Node, Node> sourceVisuaMapping = visualModel.getSourceVisualMapping();
-			
-			Node visualNode = null;
-			Node sourceNode = selectedSourceNode;
-			do {
-				visualNode = sourceVisuaMapping.get(sourceNode);
-				sourceNode = DomUtil.getParentNode(sourceNode);
-			} while (visualNode == null && sourceNode != null);
-			
-			if (!(visualNode instanceof Element)) { // text node, comment, etc
-				visualNode = DomUtil.getParentNode(visualNode); // should be element now or null
-			}
-			
-			String idString = null;
-			if (visualNode instanceof Element) {
-				Element elementNode = (Element) visualNode;
-				idString = elementNode.getAttribute(VpvDomBuilder.ATTR_VPV_ID);
-			}
-			
-			if (idString != null && !idString.isEmpty()) {
-				try {
-					id = Long.parseLong(idString);
-				} catch (NumberFormatException e) {
-					Activator.logError(e);
-				}
-			}
-		}
-		return id;
-	}
-	
-	private void updateBrowserSelection(Long currentSelectionId) {
-		String selectionStyle;
-		if (currentSelectionId == null) {
-			selectionStyle = ""; //$NON-NLS-1$
-		} else {
-			selectionStyle = "'[" + VpvDomBuilder.ATTR_VPV_ID + "=\"" + currentSelectionId + "\"] {outline: 2px solid blue;}'"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		}
-		
-		browser.execute(
-		"(function(css) {" + //$NON-NLS-1$
-			"var style=document.getElementById('VPV-STYLESHEET');" + //$NON-NLS-1$
-//			"if ('\\v' == 'v') /* ie only */ {alert('ie');" +
-//				"if (style == null) {" +
-//					"style = document.createStyleSheet();" +
-//				"}" +
-//				"style.cssText = css;" +
-//			"}" +
-//			"else {" +
-				"if (style == null) {" + //$NON-NLS-1$
-					"style = document.createElement('STYLE');" + //$NON-NLS-1$
-					"style.type = 'text/css';" + //$NON-NLS-1$
-				"}" + //$NON-NLS-1$
-				"style.innerHTML = css;" + //$NON-NLS-1$
-				"document.body.appendChild(style);" + //$NON-NLS-1$
-//			"}" +
-			"style.id = 'VPV-STYLESHEET';" +  //$NON-NLS-1$
-			"})(" + selectionStyle + ")"); //$NON-NLS-1$ //$NON-NLS-2$
-	}
-	
-	private void scrollToId(Long currentSelectionId) {
-		if (currentSelectionId != null) {
-			browser.execute(
-					"(function(){" + //$NON-NLS-1$
-							"var selectedElement = document.querySelector('[" + VpvDomBuilder.ATTR_VPV_ID + "=\"" + currentSelectionId + "\"]');" + //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-							"selectedElement.scrollIntoView(true);" + //$NON-NLS-1$
-					"})()"   //$NON-NLS-1$
-			);
-		}
-	}
-	
-	private boolean isInCurrentEditor(IStructuredSelection selection) {
-		Node selectedNode = getNodeFromSelection(selection);
-		Document selectionDocument = null;
-		if (selectedNode != null) {
-			selectionDocument = selectedNode.getOwnerDocument();
-		}
-		
-		Document editorDocument = getEditorDomDocument();
-		
-		if (selectionDocument != null && selectionDocument == editorDocument) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	private Document getEditorDomDocument() {
-		IDOMModel editorModel = null;
-		if (sourceEditor != null) {
-			editorModel = (IDOMModel) sourceEditor.getAdapter(IDOMModel.class);
-		}
-
-		IDOMDocument editorIdomDocument = null;
-		if (editorModel != null) {
-			editorIdomDocument = editorModel.getDocument();
-		}
-		
-		Element editorDocumentElement = null;
-		if (editorIdomDocument != null) {
-			editorDocumentElement = editorIdomDocument.getDocumentElement();
-		}
-		
-		Document editorDocument = null;
-		if (editorDocumentElement != null) {
-			editorDocument = editorDocumentElement.getOwnerDocument();
-		}
-		return editorDocument;
-	}
 	@Override
 	public void setFocus() {
 		if (browser != null) {
@@ -631,7 +508,7 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 		
 //		removeDomEventListeners();
 		if(controller != null) {
-			((VPVController)controller).dispose();
+			controller.dispose();
 			controller = null;
 		}
 		if (browser != null) {
@@ -683,7 +560,7 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 	}
 	
 	private void formRequestToServer(IEditorPart editor) {
-		IFile ifile = getFileOpenedInEditor(editor);
+		IFile ifile = EditorUtil.getFileOpenedInEditor(editor);
 		if (ifile != null && SuitableFileExtensions.contains(ifile.getFileExtension().toString())) {
 			String url = formUrl(ifile);
 			browser.setUrl(url, null, new String[] {"Cache-Control: no-cache"}); //$NON-NLS-1$
@@ -701,20 +578,11 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 
 		return url;
 	}
-
-	private IFile getFileOpenedInEditor(IEditorPart editorPart) {
-		IFile file = null;
-		if (editorPart != null && editorPart.getEditorInput() instanceof IFileEditorInput) {
-			IFileEditorInput fileEditorInput = (IFileEditorInput) editorPart.getEditorInput();
-			file = fileEditorInput.getFile();
-		}
-		return file;
-	}
 	
 	/**
 	 * @return the controller
 	 */
-	public VPVController getController() {
+	public VpvEditorController getController() {
 		return controller;
 	}
 	
@@ -739,8 +607,8 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 
 		@Override
 		public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-			if (selection instanceof IStructuredSelection && isInCurrentEditor((IStructuredSelection) selection)) {
-				updateSelectionAndScrollToIt(selection);
+			if (selection instanceof IStructuredSelection && EditorUtil.isInCurrentEditor((IStructuredSelection) selection, sourceEditor)) {
+				NavigationUtil.updateSelectionAndScrollToIt(selection, browser, visualModel);
 			}
 		}
 	}

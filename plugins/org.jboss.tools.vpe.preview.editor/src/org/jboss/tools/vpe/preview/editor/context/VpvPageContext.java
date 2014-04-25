@@ -1,4 +1,14 @@
-package org.jboss.tools.vpe.editor.context;
+/*******************************************************************************
+ * Copyright (c) 2014 Red Hat, Inc.
+ * Distributed under license by Red Hat, Inc. All rights reserved.
+ * This program is made available under the terms of the
+ * Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributor:
+ *     Red Hat, Inc. - initial API and implementation
+ ******************************************************************************/
+package org.jboss.tools.vpe.preview.editor.context;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,15 +22,20 @@ import org.jboss.tools.jst.web.tld.TaglibData;
 import org.jboss.tools.jst.web.ui.internal.editor.bundle.BundleMap;
 import org.jboss.tools.jst.web.ui.internal.editor.editor.IVisualContext;
 import org.jboss.tools.jst.web.ui.internal.editor.preferences.VpePreference;
-import org.jboss.tools.vpe.editor.VpvEditor2;
+import org.jboss.tools.vpe.editor.context.AbstractPageContext;
+import org.jboss.tools.vpe.preview.editor.VpvEditorPart;
 import org.jboss.tools.vpe.resref.core.AbsoluteFolderReferenceList;
 import org.jboss.tools.vpe.resref.core.RelativeFolderReferenceList;
 import org.jboss.tools.vpe.resref.core.TaglibReferenceList;
 
+/**
+ * @author Konstantin Marmalyukov (kmarmaliykov)
+ */
+
 public class VpvPageContext extends AbstractPageContext implements IVisualContext {
-	private VpvEditor2 editPart;
+	private VpvEditorPart editPart;
 	
-	public VpvPageContext(BundleMap bundle, VpvEditor2 editPart) {
+	public VpvPageContext(BundleMap bundle, VpvEditorPart editPart) {
 		this.bundle = bundle;
 		this.editPart = editPart;
 	}
@@ -95,7 +110,7 @@ public class VpvPageContext extends AbstractPageContext implements IVisualContex
 	}
 
 	@Override
-	public VpvEditor2 getEditPart() {
+	public VpvEditorPart getEditPart() {
 		return editPart;
 	}
 
