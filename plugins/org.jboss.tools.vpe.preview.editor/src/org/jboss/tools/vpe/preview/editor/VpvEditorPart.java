@@ -185,8 +185,8 @@ public class VpvEditorPart extends EditorPart implements IVisualEditor2 {
 			if (sourceContent != null) {
 				sourceContent.setVisible(true);
 				if (sourceEditor != null) {
-                    activeEditor = sourceEditor;
-                }
+					activeEditor = sourceEditor;
+				}
 			}
 			if (visualContent != null)
 				visualContent.setVisible(true);
@@ -212,8 +212,8 @@ public class VpvEditorPart extends EditorPart implements IVisualEditor2 {
 			if (sourceContent != null) {
 				sourceContent.setVisible(true);
 				if (sourceEditor != null) {
-                    activeEditor = sourceEditor;
-                }
+					activeEditor = sourceEditor;
+				}
 				/*
 				 * Fixes https://jira.jboss.org/jira/browse/JBIDE-3140
 				 * author Denis Maliarevich.
@@ -258,9 +258,9 @@ public class VpvEditorPart extends EditorPart implements IVisualEditor2 {
 
 			if (visualContent != null) {
 				visualContent.setVisible(true);
-                if (visualEditor != null) {
-                    activeEditor = visualEditor;
-                }
+				if (visualEditor != null) {
+					activeEditor = visualEditor;
+				}
 				container.setMaximizedControl(visualContent);
 			}
 			break;
@@ -381,17 +381,17 @@ public class VpvEditorPart extends EditorPart implements IVisualEditor2 {
 			.getSplittingDirection(WebUiPlugin.getDefault().getPreferenceStore()
 					.getString(IVpePreferencesPage.VISUAL_SOURCE_EDITORS_SPLITTING)));
 		if (editorSettings != null) {
-		    editorSettings.addSetting(new SashSetting(container));
+			editorSettings.addSetting(new SashSetting(container));
 		}		
 		
 		container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		if (CustomSashForm.isSourceEditorFirst(WebUiPlugin.getDefault().getPreferenceStore()
 				.getString(IVpePreferencesPage.VISUAL_SOURCE_EDITORS_SPLITTING))) {
-		    sourceContent = new Composite(container, SWT.NONE);
-		    visualContent = new Composite(container, SWT.NONE);
+			sourceContent = new Composite(container, SWT.NONE);
+			visualContent = new Composite(container, SWT.NONE);
 		} else {
 			visualContent = new Composite(container, SWT.NONE);
-		    sourceContent = new Composite(container, SWT.NONE);
+			sourceContent = new Composite(container, SWT.NONE);
 		}
 		sourceContent.setLayout(new FillLayout());
 		visualContent.setLayout(new FillLayout());
@@ -489,7 +489,7 @@ public class VpvEditorPart extends EditorPart implements IVisualEditor2 {
 				}
 			});
 			
-			//TODO: что это за хуйня
+			//TODO: пїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 //			IWorkbenchWindow window = getSite().getWorkbenchWindow();
 //			window.getPartService().addPartListener(activationListener);
 //			window.getShell().addShellListener(activationListener);
@@ -895,7 +895,7 @@ public class VpvEditorPart extends EditorPart implements IVisualEditor2 {
 
 	@Override
 	public IVisualController getController() {
-		return visualEditor.getController();
+		return visualEditor !=null ? visualEditor.getController() : null;
 	}
 
 	@Override

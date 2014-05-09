@@ -566,6 +566,9 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 			browser.setUrl(url, null, new String[] {"Cache-Control: no-cache"}); //$NON-NLS-1$
 		} else {
 			browser.setUrl(ABOUT_BLANK);
+			browser.getWebBrowser();
+			
+			
 		}
 	}
 	
