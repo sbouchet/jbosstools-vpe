@@ -112,7 +112,8 @@ public class VpvSocketProcessor implements Runnable {
 					outputToClient.writeBytes(header);
 					sendFile(file, outputToClient);
 				} catch (IOException e) {
-					Activator.logError(e);
+					// See https://issues.jboss.org/browse/JBIDE-17262 for details
+					// Activator.logError(e);
 				} finally {
 					try {
 						outputToClient.close();
@@ -127,6 +128,7 @@ public class VpvSocketProcessor implements Runnable {
 					outputToClient.writeBytes(header);
 					outputToClient.writeBytes(text);
 				} catch (IOException e) {
+					// See https://issues.jboss.org/browse/JBIDE-17262 for details
 					//Activator.logError(e);
 				} finally {
 					try {
