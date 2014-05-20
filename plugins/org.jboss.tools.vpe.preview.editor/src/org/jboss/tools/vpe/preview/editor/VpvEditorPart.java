@@ -754,7 +754,7 @@ public class VpvEditorPart extends EditorPart implements IVisualEditor2 {
 
 	@Override
 	public void createPreviewBrowser() {
-		
+		createVisualEditor();
 	}
 	
 	@Override
@@ -900,7 +900,7 @@ public class VpvEditorPart extends EditorPart implements IVisualEditor2 {
 
 	@Override
 	public Object getPreviewWebBrowser() {
-		return visualEditor.getBrowser();
+		return visualEditor != null ? visualEditor.getBrowser() : null;
 	}
 
 	@Override
