@@ -77,6 +77,11 @@ public class VpeTest extends TestCase implements ILogListener {
 			false);
 	}
 
+	static {
+		//set this property to make VPE always opened as visual part
+		System.setProperty(VpePlatformUtil.LOAD_XULRUNNER_ENGINE, String.valueOf(true));
+	}
+	
 	/**
 	 * The Constructor.
 	 * 
