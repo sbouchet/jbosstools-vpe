@@ -16,8 +16,6 @@ import static org.jboss.tools.vpe.preview.core.server.HttpConstants.LOCALHOST;
 import static org.jboss.tools.vpe.preview.core.server.HttpConstants.PROJECT_NAME;
 import static org.jboss.tools.vpe.preview.core.server.HttpConstants.VIEW_ID;
 
-import javax.xml.xpath.XPathExpressionException;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -51,23 +49,18 @@ import org.eclipse.ui.internal.EditorReference;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.progress.UIJob;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
-import org.eclipse.wst.sse.ui.StructuredTextEditor;
-import org.eclipse.wst.xml.core.internal.provisional.document.IDOMNode;
 import org.jboss.tools.vpe.preview.Activator;
-import org.jboss.tools.vpe.preview.core.transform.TransformUtil;
 import org.jboss.tools.vpe.preview.core.transform.VpvVisualModel;
 import org.jboss.tools.vpe.preview.core.transform.VpvVisualModelHolder;
 import org.jboss.tools.vpe.preview.core.util.ActionBarUtil;
 import org.jboss.tools.vpe.preview.core.util.EditorUtil;
 import org.jboss.tools.vpe.preview.core.util.NavigationUtil;
 import org.jboss.tools.vpe.preview.core.util.SuitableFileExtensions;
-import org.w3c.dom.Node;
 
 /**
  * @author Yahor Radtsevich (yradtsevich)
  * @author Ilya Buziuk (ibuziuk)
  */
-@SuppressWarnings("restriction")
 public class VpvView extends ViewPart implements VpvVisualModelHolder {
 	public static final String ID = "org.jboss.tools.vpe.vpv.view.VpvView"; //$NON-NLS-1$
 
@@ -113,32 +106,7 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 		browser.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent event) {
-				String stringToEvaluate = "return document.elementFromPoint(" + event.x + ", " + event.y + ").outerHTML;"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				String result = (String) browser.evaluate(stringToEvaluate);
-				String selectedElementId = TransformUtil.getSelectedElementId(result, "(?<=data-vpvid=\").*?(?=\")"); //$NON-NLS-1$
-
-				NavigationUtil.outlineSelectedElement(browser, Long.parseLong(selectedElementId));
-
-				String fileExtension = EditorUtil.getFileExtensionFromEditor(currentEditor);
-
-				if (SuitableFileExtensions.isHTML(fileExtension)) {
-					try {
-						Node visualNode = TransformUtil.getVisualNodeByVpvId(visualModel, selectedElementId);
-						Node sourseNode = TransformUtil.getSourseNodeByVisualNode(visualModel, visualNode);
-
-						if (sourseNode != null && sourseNode instanceof IDOMNode) {
-							int startOffset = ((IDOMNode) sourseNode).getStartOffset();
-							int endOffset = ((IDOMNode) sourseNode).getEndOffset();
-
-							StructuredTextEditor editor = (StructuredTextEditor) currentEditor.getAdapter(StructuredTextEditor.class);
-							editor.selectAndReveal(startOffset, endOffset - startOffset);
-
-						}
-
-					} catch (XPathExpressionException e) {
-						Activator.logError(e);
-					}
-				}
+				NavigationUtil.navigateToVisual(currentEditor, browser, visualModel, event.x, event.y);
 			}
 
 		});

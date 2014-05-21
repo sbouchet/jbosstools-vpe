@@ -12,11 +12,17 @@ package org.jboss.tools.vpe.preview.core.util;
 
 import java.util.Map;
 
+import javax.xml.xpath.XPathExpressionException;
+
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.browser.Browser;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.wst.sse.ui.StructuredTextEditor;
+import org.eclipse.wst.xml.core.internal.provisional.document.IDOMNode;
 import org.jboss.tools.vpe.preview.core.Activator;
 import org.jboss.tools.vpe.preview.core.transform.DomUtil;
+import org.jboss.tools.vpe.preview.core.transform.TransformUtil;
 import org.jboss.tools.vpe.preview.core.transform.VpvDomBuilder;
 import org.jboss.tools.vpe.preview.core.transform.VpvVisualModel;
 import org.w3c.dom.Element;
@@ -36,7 +42,8 @@ public final class NavigationUtil {
 			browser.execute("(setTimeout(function() { " +  //$NON-NLS-1$
 								"var anchors = document.getElementsByTagName('a');" + //$NON-NLS-1$
 								"for (var i = 0; i < anchors.length; i++) {" + //$NON-NLS-1$
-									"anchors[i].href = 'javascript: void(0);'" + //$NON-NLS-1$
+									"anchors[i].href = 'javascript: void(0);';" + //$NON-NLS-1$
+									"anchors[i].target = '';" +
 								"};" + //$NON-NLS-1$
 					  		"}, 10))();"); //$NON-NLS-1$
 		}
@@ -74,6 +81,35 @@ public final class NavigationUtil {
 
 	public static void disableAlert(Browser browser) {
 		browser.execute("window.alert = function() {};"); //$NON-NLS-1$
+	}
+	
+	public static void navigateToVisual(IEditorPart currentEditor, Browser browser, VpvVisualModel visualModel, int x, int y) {
+		String stringToEvaluate = "return document.elementFromPoint(" + x + ", " + y + ").outerHTML;"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		String result = (String) browser.evaluate(stringToEvaluate);
+		String selectedElementId = TransformUtil.getSelectedElementId(result, "(?<=data-vpvid=\").*?(?=\")"); //$NON-NLS-1$
+
+		NavigationUtil.outlineSelectedElement(browser,Long.parseLong(selectedElementId));
+
+		String fileExtension = EditorUtil.getFileExtensionFromEditor(currentEditor);
+
+		if (SuitableFileExtensions.isHTML(fileExtension)) {
+			try {
+				Node visualNode = TransformUtil.getVisualNodeByVpvId(visualModel, selectedElementId);
+				Node sourseNode = TransformUtil.getSourseNodeByVisualNode(visualModel, visualNode);
+
+				if (sourseNode != null && sourseNode instanceof IDOMNode) {
+					int startOffset = ((IDOMNode) sourseNode).getStartOffset();
+					int endOffset = ((IDOMNode) sourseNode).getEndOffset();
+
+					StructuredTextEditor editor = (StructuredTextEditor) currentEditor.getAdapter(StructuredTextEditor.class);
+					editor.selectAndReveal(startOffset, endOffset - startOffset);
+
+				}
+
+			} catch (XPathExpressionException e) {
+				Activator.logError(e);
+			}
+		}
 	}
 	
 	public static void updateSelectionAndScrollToIt(ISelection currentSelection, Browser browser, VpvVisualModel visualModel) {
