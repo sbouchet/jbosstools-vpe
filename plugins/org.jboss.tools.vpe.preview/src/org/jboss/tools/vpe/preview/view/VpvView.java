@@ -292,9 +292,7 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 
 		@Override
 		public void partActivated(IWorkbenchPartReference partRef) {
-			Activator.logInfo(partRef + " is Activated"); //$NON-NLS-1$
 			if (partRef instanceof EditorReference) {
-				Activator.logInfo("instance of Editor reference"); //$NON-NLS-1$
 				IEditorPart editor = ((EditorReference) partRef).getEditor(false);
 				editorChanged(editor);
 			}
@@ -302,12 +300,10 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 
 		@Override
 		public void partOpened(IWorkbenchPartReference partRef) {
-			Activator.logInfo(partRef + " is Opened"); //$NON-NLS-1$
 		}
 
 		@Override
 		public void partClosed(IWorkbenchPartReference partRef) {
-			Activator.logInfo(partRef + " is Closed"); //$NON-NLS-1$
 			if (partRef instanceof EditorReference) {
 				IEditorPart editorPart = ((EditorReference) partRef).getEditor(false);
 				if (isCurrentEditor(editorPart)) {
