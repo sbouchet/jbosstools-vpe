@@ -11,6 +11,7 @@
 package org.jboss.tools.vpe.preview.editor;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.wst.sse.ui.StructuredTextEditor;
@@ -32,9 +33,16 @@ public class VpeEditorPartFactory implements IVisualEditorFactory {
 			return getVpeEditor(multiPageEditor, textEditor, visualMode, bundleMap);
 		}
 		
-		String fileExtension = ((IFileEditorInput)multiPageEditor.getEditorInput()).getFile().getFileExtension();
-		boolean isHtmlFile = "html".equals(fileExtension) //$NON-NLS-1$
-						  || "htm".equals(fileExtension); //$NON-NLS-1$
+		IEditorInput editorInput = multiPageEditor.getEditorInput();
+		boolean isHtmlFile = false;
+		if (editorInput instanceof IFileEditorInput) {
+			String fileExtension = ((IFileEditorInput) editorInput).getFile().getFileExtension();
+			isHtmlFile = "html".equals(fileExtension) //$NON-NLS-1$
+					|| "htm".equals(fileExtension); //$NON-NLS-1$
+		} else { //not a file, maybe some html text, should use simple preview for it
+			isHtmlFile = true;
+		}
+		
 		if (isHtmlFile) {
 			return getPreviewEditor(multiPageEditor, textEditor, visualMode, bundleMap);
 		} else {
