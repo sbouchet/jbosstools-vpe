@@ -31,6 +31,7 @@ import org.w3c.dom.Node;
 /**
  * @author Ilya Buziuk (ibuziuk)
  */
+@SuppressWarnings("restriction")
 public final class NavigationUtil {
 	private static final String VPV_SELECTION_STYLE_ID = "VPV_STYLESHEET_ID";  //$NON-NLS-1$
 	
@@ -43,7 +44,7 @@ public final class NavigationUtil {
 								"var anchors = document.getElementsByTagName('a');" + //$NON-NLS-1$
 								"for (var i = 0; i < anchors.length; i++) {" + //$NON-NLS-1$
 									"anchors[i].href = 'javascript: void(0);';" + //$NON-NLS-1$
-									"anchors[i].target = '';" +
+									"anchors[i].target = '';" + //$NON-NLS-1$
 								"};" + //$NON-NLS-1$
 					  		"}, 10))();"); //$NON-NLS-1$
 		}
