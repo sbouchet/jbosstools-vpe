@@ -16,14 +16,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.jboss.tools.vpe.preview.core.Activator;
 import org.jboss.tools.vpe.preview.core.transform.ResourceAcceptor;
 import org.jboss.tools.vpe.preview.core.transform.VpvController;
@@ -38,6 +37,7 @@ public class VpvSocketProcessor implements Runnable {
     public static final String REFERER = "Referer"; //$NON-NLS-1$
     public static final String IF_NONE_MATCH = "If-None-Match"; //$NON-NLS-1$
     public static final String HOST = "Host"; //$NON-NLS-1$
+    private static final String UTF_8 = "UTF-8";  //$NON-NLS-1$
 
 	private Socket clientSocket;
 	private VpvController vpvController;
@@ -51,12 +51,10 @@ public class VpvSocketProcessor implements Runnable {
 	@Override
 	public void run() {
 		try {	
- 			InputStream inputStream = clientSocket.getInputStream();
-			OutputStream outputStream = clientSocket.getOutputStream();
-
-			BufferedReader inputFromClient = new BufferedReader(new InputStreamReader(inputStream));
-			DataOutputStream outputToClient = new DataOutputStream(outputStream);
-			String initialContextLine = getItialRequestLine(inputFromClient);
+			BufferedReader inputFromClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream(), UTF_8));
+			DataOutputStream outputToClient = new DataOutputStream(clientSocket.getOutputStream());
+			
+			String initialContextLine = getInitialRequestLine(inputFromClient);
 			if (initialContextLine != null) {
 				Map<String, String> requestHeader = getRequestHeader(inputFromClient);				
 			
@@ -109,7 +107,7 @@ public class VpvSocketProcessor implements Runnable {
 
 			private void sendOkResponse(String header, DataOutputStream outputToclient, File file) {
 				try {
-					outputToClient.writeBytes(header);
+					outputToClient.write(header.getBytes(UTF_8));
 					sendFile(file, outputToClient);
 				} catch (IOException e) {
 					// See https://issues.jboss.org/browse/JBIDE-17262 for details
@@ -125,8 +123,8 @@ public class VpvSocketProcessor implements Runnable {
 			
 			private void sendOkResponse(String header, DataOutputStream outputToclient, String text) {
 				try {
-					outputToClient.writeBytes(header);
-					outputToClient.writeBytes(text);
+					outputToClient.write(header.getBytes(UTF_8));
+					outputToClient.write(text.getBytes(UTF_8));
 				} catch (IOException e) {
 					// See https://issues.jboss.org/browse/JBIDE-17262 for details
 					//Activator.logError(e);
@@ -144,7 +142,7 @@ public class VpvSocketProcessor implements Runnable {
 	private void processNotFound(DataOutputStream outputToClient) {
 		String notFoundHeader = getNotFoundHeader();
 		try {
-			outputToClient.writeBytes(notFoundHeader);
+			outputToClient.write(notFoundHeader.getBytes(UTF_8));
 		} catch (IOException e) {
 			Activator.logError(e);
 		} finally {
@@ -214,7 +212,7 @@ public class VpvSocketProcessor implements Runnable {
 		return null;
 	}
 
-	private String getItialRequestLine(BufferedReader inputFromClient) {
+	private String getInitialRequestLine(BufferedReader inputFromClient) {
 		String line = null;
 		try {
 			line = inputFromClient.readLine();
@@ -251,7 +249,7 @@ public class VpvSocketProcessor implements Runnable {
 		return requestHeaders;
 	}
 
-    private void sendFile(File file, OutputStream outputToClient) {
+    private void sendFile(File file, DataOutputStream outputToClient) {
         FileInputStream fileInputStream = null;
         try {
             fileInputStream = new FileInputStream(file);
@@ -285,7 +283,7 @@ public class VpvSocketProcessor implements Runnable {
 	private String getOkResponceHeader(String mimeType, String eTag) {
 		String responceHeader = "HTTP/1.1 200 OK\r\n" + //$NON-NLS-1$
 				"Server: VPV server" +"\r\n"+ //$NON-NLS-1$ //$NON-NLS-2$
-				"Content-Type: " + mimeType + "\r\n" + //$NON-NLS-1$ //$NON-NLS-2$
+				"Content-Type: " + mimeType + "; charset=UTF-8\r\n" + //$NON-NLS-1$ //$NON-NLS-2$
 				"Cache-Control: max-age=0\r\n" +  //$NON-NLS-1$
 				"Etag: " + eTag + "\r\n" +  //$NON-NLS-1$//$NON-NLS-2$
 				"Connection: close\r\n\r\n"; //$NON-NLS-1$
