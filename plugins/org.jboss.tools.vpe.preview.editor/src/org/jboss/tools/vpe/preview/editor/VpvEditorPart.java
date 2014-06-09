@@ -30,9 +30,12 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.IStorageEditorInput;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartConstants;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
@@ -77,6 +80,7 @@ public class VpvEditorPart extends EditorPart implements IVisualEditor2 {
 	private Composite cmpEd;
 	private Composite cmpEdTl;
 	private ControlListener controlListener;
+	private ActivationListener activationListener = new ActivationListener();
 	/*
 	 * VPE visual components.
 	 */
@@ -492,10 +496,8 @@ public class VpvEditorPart extends EditorPart implements IVisualEditor2 {
 				}
 			});
 			
-			//TODO: ��� ��� �� �����
-//			IWorkbenchWindow window = getSite().getWorkbenchWindow();
-//			window.getPartService().addPartListener(activationListener);
-//			window.getShell().addShellListener(activationListener);
+			IWorkbenchWindow window = getSite().getWorkbenchWindow();
+			window.getPartService().addPartListener(activationListener);
 			
 		} catch (CoreException e) {
 			VpePlugin.reportProblem(e);
@@ -940,4 +942,42 @@ public class VpvEditorPart extends EditorPart implements IVisualEditor2 {
 		return container;
 	}
 	
+	private class ActivationListener implements IPartListener {
+		private IWorkbenchPart fActivePart;
+
+		public void partActivated(IWorkbenchPart part) {
+			fActivePart = part;
+			handleActivation();
+		}
+
+		public void partBroughtToTop(IWorkbenchPart part) {
+		}
+
+		public void partClosed(IWorkbenchPart part) {
+		}
+
+		public void partDeactivated(IWorkbenchPart part) {
+		}
+
+		public void partOpened(IWorkbenchPart part) {
+		}
+
+		private void handleActivation() {
+			if (visualEditor != null && visualEditor.getController() != null) {
+				visualEditor.getController().refreshCommands();
+			}
+			if (fActivePart == multiPageEditor) {
+				if (sourceEditor != null && visualEditor != null) {
+					if (isVisualEditorVisible()) {
+						visualEditor.getController().visualRefresh();
+					}
+					sourceEditor.safelySanityCheckState(getEditorInput());
+				}
+			}
+		}
+		
+		private boolean isVisualEditorVisible() {
+			return visualEditor.getController() != null	&& visualEditor.getController().isVisualEditorVisible();
+		}
+	}
 }

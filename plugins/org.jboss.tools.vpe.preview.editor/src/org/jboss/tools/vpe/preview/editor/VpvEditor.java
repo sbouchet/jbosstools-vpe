@@ -502,6 +502,10 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 
 				ISelection currentSelection = getCurrentSelection();
 				NavigationUtil.updateSelectionAndScrollToIt(currentSelection, browser, visualModel);
+				
+				if (editorLoadWindowListener != null) {
+					editorLoadWindowListener.load();
+				}
 			}
 		});
 
