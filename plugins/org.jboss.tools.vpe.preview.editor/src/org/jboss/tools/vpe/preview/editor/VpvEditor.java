@@ -115,12 +115,8 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 	private static List<String> layoutValues;
 	private int currentOrientationIndex = 1;
 	private Action openVPEPreferencesAction;
-	private Action visualRefreshAction;
-	private Action showResouceDialogAction;
 	private Action rotateEditorsAction;
 	private Action showSelectionBarAction;
-	private Action showTextFormattingAction;
-	private Action scrollLockAction;
 	static {
 		/*
 		 * Values from <code>layoutValues</code> should correspond to the order
@@ -177,7 +173,7 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 
 				@Override
 				public void documentChanged(DocumentEvent event) {
-					if (actionBarUtil.isAutomaticRefreshEnabled()) {
+					if (actionBarUtil.isAutomaticRefreshEnabled() && controller.isVisualEditorVisible()) {
 						updatePreview();
 					}
 				}
@@ -241,58 +237,6 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 		toolBarManager.add(openVPEPreferencesAction);
 		
 		/*
-		 * Create VPE VISUAL REFRESH tool bar item
-		 */
-//		visualRefreshAction = new Action(VpeUIMessages.REFRESH,
-//				IAction.AS_PUSH_BUTTON) {
-//			@Override
-//			public void run() {
-//				if (controller != null) {
-//					controller.visualRefresh();
-//				}
-//			}
-//		};
-//		visualRefreshAction.setImageDescriptor(ImageDescriptor.createFromFile(MozillaEditor.class,
-//				ICON_REFRESH));
-//		visualRefreshAction.setToolTipText(VpeUIMessages.REFRESH);
-//		toolBarManager.add(visualRefreshAction);
-		
-		/*
-		 * Create SHOW RESOURCE DIALOG tool bar item
-		 * 
-		 * https://jira.jboss.org/jira/browse/JBIDE-3966
-		 * Disabling Page Design Options for external files. 
-		 */
-		/*	TODO: implement this feature for preview
-		 * IEditorInput input = getEditorInput();
-		IFile file = null;
-		if (input instanceof IFileEditorInput) {
-			file = ((IFileEditorInput) input).getFile();
-		} else if (input instanceof ILocationProvider) {
-			ILocationProvider provider = (ILocationProvider) input;
-			IPath path = provider.getPath(input);
-			if (path != null) {
-			    file = FileUtil.getFile(input, path.lastSegment());
-			}
-		}
-		boolean fileExistsInWorkspace = ((file != null) && (file.exists()));
-		showResouceDialogAction = new Action(VpeUIMessages.PAGE_DESIGN_OPTIONS,
-				IAction.AS_PUSH_BUTTON) {
-			@Override
-			public void run() {
-				VpeResourcesDialogFactory.openVpeResourcesDialog(getEditorInput());
-			}
-		};
-		showResouceDialogAction.setImageDescriptor(ImageDescriptor.createFromFile(MozillaEditor.class,
-				fileExistsInWorkspace ? ICON_PAGE_DESIGN_OPTIONS : ICON_PAGE_DESIGN_OPTIONS_DISABLED));
-		if (!fileExistsInWorkspace) {
-			showResouceDialogAction.setEnabled(false);
-		}
-		showResouceDialogAction.setToolTipText(VpeUIMessages.PAGE_DESIGN_OPTIONS);
-		toolBarManager.add(showResouceDialogAction);*/
-		
-		
-		/*
 		 * Create ROTATE EDITORS tool bar item
 		 * 
 		 * https://jira.jboss.org/jira/browse/JBIDE-4152
@@ -335,52 +279,7 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 				layoutIcons.get(newOrientation)));
 		rotateEditorsAction.setToolTipText(layoutNames.get(newOrientation));
 		toolBarManager.add(rotateEditorsAction);
-	
-		/*
-		 * Create SHOW TEXT FORMATTING tool bar item
-		 */
-		//TODO: implement this feature for preview. All visual stuff is done, need to implement only text formatting 
-//		showTextFormattingAction = new Action(
-//				VpeUIMessages.SHOW_TEXT_FORMATTING, IAction.AS_CHECK_BOX) {
-//			@Override
-//			public void run() {
-//				/*
-//				 * Update Text Formatting Bar 
-//				 */
-//				vpeToolBarManager.setToolbarVisibility(this.isChecked());
-//				WebUiPlugin.getDefault().getPreferenceStore().
-//				setValue(IVpePreferencesPage.SHOW_TEXT_FORMATTING, this.isChecked());
-//			}
-//		};
-//		showTextFormattingAction.setImageDescriptor(ImageDescriptor.createFromFile(MozillaEditor.class,
-//				ICON_TEXT_FORMATTING));
-//		showTextFormattingAction.setToolTipText(VpeUIMessages.SHOW_TEXT_FORMATTING);
-//		toolBarManager.add(showTextFormattingAction);
 		
-		
-		/*
-		 * https://issues.jboss.org/browse/JBIDE-11302
-		 * Create SYNCHRONIZE_SCROLLING_BETWEEN_SOURCE_VISUAL_PANES tool bar item
-		 */
-		// TODO: implement this for preview
-//		scrollLockAction = new Action(
-//				VpeUIMessages.SYNCHRONIZE_SCROLLING_BETWEEN_SOURCE_VISUAL_PANES,
-//				IAction.AS_CHECK_BOX) {
-//			@Override
-//			public void run() {
-//				/*
-//				 * Change the enabled state, listeners in VpeController will do the rest
-//				 */
-//				WebUiPlugin.getDefault().getPreferenceStore().setValue(
-//						IVpePreferencesPage.SYNCHRONIZE_SCROLLING_BETWEEN_SOURCE_VISUAL_PANES,
-//						this.isChecked());
-//			}
-//		};
-//		scrollLockAction.setImageDescriptor(ImageDescriptor.createFromFile(
-//				MozillaEditor.class, ICON_SCROLL_LOCK));
-//		scrollLockAction.setToolTipText(VpeUIMessages.SYNCHRONIZE_SCROLLING_BETWEEN_SOURCE_VISUAL_PANES);
-//		toolBarManager.add(scrollLockAction);
-
 		/*
 		 * Create SHOW SELECTION BAR tool bar item
 		 */
@@ -430,11 +329,8 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 				toolBarManager.dispose();
 				toolBarManager.removeAll();
 				openVPEPreferencesAction = null;
-				visualRefreshAction = null;
-				showResouceDialogAction = null;
 				rotateEditorsAction = null;;
 				showSelectionBarAction = null;
-				showTextFormattingAction = null;
 			}
 		});
 		return verBar;
@@ -551,7 +447,6 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 			vpeToolBarManager = null;
 		}
 		
-//		removeDomEventListeners();
 		if(controller != null) {
 			controller.dispose();
 			controller = null;
@@ -572,25 +467,11 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 				IVpePreferencesPage.VISUAL_SOURCE_EDITORS_SPLITTING);
 		int prefsOrientationIndex = layoutValues.indexOf(prefsOrientation);
 		
-		boolean prefsShowTextFormatting = WebUiPlugin.getDefault().getPreferenceStore()
-				.getBoolean(IVpePreferencesPage.SHOW_TEXT_FORMATTING);
 		boolean prefsShowSelectionBar = WebUiPlugin.getDefault().getPreferenceStore()
 				.getBoolean(IVpePreferencesPage.SHOW_SELECTION_TAG_BAR);
-		boolean scrollLockEditors = WebUiPlugin.getDefault().getPreferenceStore()
-				.getBoolean(IVpePreferencesPage.SYNCHRONIZE_SCROLLING_BETWEEN_SOURCE_VISUAL_PANES);
 		
 		if (showSelectionBarAction != null) {
 			showSelectionBarAction.setChecked(prefsShowSelectionBar);
-		}
-		if (showTextFormattingAction != null) {
-			showTextFormattingAction.setChecked(prefsShowTextFormatting);
-			if (vpeToolBarManager != null) {
-				// JBIDE-14756 Selection/reset of 'Show Text Formatting Bar' in VPE preferences does not Show/Hide 'Show Text Formatting Bar' in editor
-				vpeToolBarManager.setToolbarVisibility(prefsShowTextFormatting);
-			}
-		}
-		if (scrollLockAction != null) {
-			scrollLockAction.setChecked(scrollLockEditors);
 		}
 		if (rotateEditorsAction != null) {
 			currentOrientationIndex = prefsOrientationIndex;

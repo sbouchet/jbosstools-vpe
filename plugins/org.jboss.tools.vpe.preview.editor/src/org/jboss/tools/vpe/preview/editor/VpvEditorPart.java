@@ -45,7 +45,6 @@ import org.eclipse.wst.sse.ui.StructuredTextEditor;
 import org.jboss.tools.common.model.ui.editor.IModelObjectEditorInput;
 import org.jboss.tools.jst.web.ui.WebUiPlugin;
 import org.jboss.tools.jst.web.ui.internal.editor.bundle.BundleMap;
-import org.jboss.tools.jst.web.ui.internal.editor.editor.IVisualController;
 import org.jboss.tools.jst.web.ui.internal.editor.jspeditor.JSPMultiPageEditor;
 import org.jboss.tools.jst.web.ui.internal.editor.jspeditor.StorageRevisionEditorInputAdapter;
 import org.jboss.tools.jst.web.ui.internal.editor.preferences.IVpePreferencesPage;
@@ -68,15 +67,12 @@ public class VpvEditorPart extends EditorPart implements IVisualEditor2 {
 
 	public static final String ID = "org.jboss.tools.vpe.vpv.views.VpvView"; //$NON-NLS-1$
 	protected EditorSettings editorSettings;
-//	private EditorListener editorListener;
-//	private SelectionListener selectionListener;
 	private SelectionBar selectionBar; // should be get from o.j.t.jst.jsp plugin
 	private StructuredTextEditor sourceEditor;
 	private int visualMode;
 	private CustomSashForm container;
 	private EditorPart multiPageEditor;
 	private BundleMap bundleMap;
-	//private IHandler sourceMaxmin,visualMaxmin, jumping;	
 	private Composite cmpEd;
 	private Composite cmpEdTl;
 	private ControlListener controlListener;
@@ -86,7 +82,6 @@ public class VpvEditorPart extends EditorPart implements IVisualEditor2 {
 	 */
 	private Composite sourceContent = null;
 	private Composite visualContent = null;
-	private Composite previewContent = null;
 	private Splitter verticalToolbarSplitter = null;
 	private Composite verticalToolbarEmpty = null;
 	private ToolBar toolBar = null;
@@ -174,12 +169,6 @@ public class VpvEditorPart extends EditorPart implements IVisualEditor2 {
 		switch (type) {
 		case VISUALSOURCE_MODE:
 			VpePlugin.getDefault().countVpvTabEvent();
-			/*
-			 * https://jira.jboss.org/browse/JBIDE-6832
-			 * Restore the state after switching from Preview, for example.
-			 */
-//			selectionBar.setVisible(selectionBar.getAlwaysVisibleOption());
-//			setVerticalToolbarVisible(true);
 			setVerticalToolbarVisible(WebUiPlugin.getDefault().getPreferenceStore()
 					.getBoolean(IVpePreferencesPage.SHOW_VISUAL_TOOLBAR));
 			/*
@@ -195,74 +184,23 @@ public class VpvEditorPart extends EditorPart implements IVisualEditor2 {
 			}
 			if (visualContent != null)
 				visualContent.setVisible(true);
-			if (previewContent != null) {
-				previewContent.setVisible(false);
-			}
 			break;
-
-//		case VISUAL_MODE:
-//			selectionBar.showBar(showSelectionBar);
-//			if (sourceContent != null)
-//				sourceContent.setVisible(false);
-//			if (visualContent != null)
-//				visualContent.setVisible(true);
-//			if (previewContent != null) {
-//				previewContent.setVisible(false);
-//			}
-//			break;
 
 		case SOURCE_MODE:
 			VpePlugin.getDefault().countSourceTabEvent();
-//			selectionBar.setVisible(selectionBar.getAlwaysVisibleOption());
 			setVerticalToolbarVisible(false);
 			if (sourceContent != null) {
 				sourceContent.setVisible(true);
 				if (sourceEditor != null) {
 					activeEditor = sourceEditor;
 				}
-				/*
-				 * Fixes https://jira.jboss.org/jira/browse/JBIDE-3140
-				 * author Denis Maliarevich.
-				 */
 				container.setMaximizedControl(sourceContent);
-				
-				//Added by Max Areshkau
-				//was fixed bug(border which drawed by iflasher doesn't hide on MACOS when we swith
-				// to souce view)
-//				if(Platform.getOS().equals(Platform.OS_MACOSX)&&controller!=null) {
-//					
-//				visualEditor.getController().visualRefresh();
-//				}
 			}
-			/*
-			 * Fixes https://jira.jboss.org/jira/browse/JBIDE-3140
-			 * author Denis Maliarevich.
-			 */
-//			if (visualContent != null)
-//				visualContent.setVisible(false);
-//			if (previewContent != null) {
-//				previewContent.setVisible(false);
-//			}
 			break;
 
 		case PREVIEW_MODE:
 			VpePlugin.getDefault().countVpvTabEvent();
-//			if (selectionBar != null) {
-//				selectionBar.setVisible(false);
-//			}
 			setVerticalToolbarVisible(false);
-			/*
-			 * Fixes https://jira.jboss.org/jira/browse/JBIDE-3140
-			 * author Denis Maliarevich.
-			 */
-//			if (sourceContent != null) {
-//				sourceContent.setVisible(false);
-//			}
-//
-//			if (visualContent != null) {
-//				visualContent.setVisible(false);
-//			}
-
 			if (visualContent != null) {
 				visualContent.setVisible(true);
 				if (visualEditor != null) {
@@ -402,12 +340,7 @@ public class VpvEditorPart extends EditorPart implements IVisualEditor2 {
 		}
 		sourceContent.setLayout(new FillLayout());
 		visualContent.setLayout(new FillLayout());
-				
-//		// Create a preview content
-//		previewContent = new Composite(container, SWT.NONE);
-//		//previewContent.setLayout(new FillLayout());
-//		previewContent.setLayout(new GridLayout());
-		
+
 		if (sourceEditor == null)
 			sourceEditor = new StructuredTextEditor() {
 				public void safelySanityCheckState(IEditorInput input) {
@@ -448,10 +381,6 @@ public class VpvEditorPart extends EditorPart implements IVisualEditor2 {
 				visualContent.removeDisposeListener(this);
 			}
 		});
-
-		// createVisualEditor();
-
-		// createPreviewBrowser();
 
 		try {
 			sourceEditor.addPropertyListener(new IPropertyListener() {
@@ -502,82 +431,11 @@ public class VpvEditorPart extends EditorPart implements IVisualEditor2 {
 		} catch (CoreException e) {
 			VpePlugin.reportProblem(e);
 		}
-		// setVisualMode(visualMode);
-		// ///////////////////////////////////////
-		// ///// Add preference listener
 
-		// ///////////////////////////////////////
-		
-		
-		//editorChanged(activeEditor);
-
-//		inizializeEditorListener(browser, modelHolderId);
-//		
-//		setCurrentEditor(activeEditor);
 		if (editorSettings != null)
 			editorSettings.apply();
 		
 		cmpEd.layout();
-		
-//		sourceMaxmin = new AbstractHandler() {
-//			public Object execute(ExecutionEvent event)
-//					throws ExecutionException {
-//				if (getVisualMode() == IVisualEditor.VISUALSOURCE_MODE) {
-//					Point p = visualContent.getSize();
-//					if (p.x == 0 || p.y == 0) {
-//						container.upClicked();
-//					} else {
-//						container.maxDown();
-//					}
-//				}
-//				return null;
-//			}
-//		};
-//		visualMaxmin = new AbstractHandler() {
-//			public Object execute(ExecutionEvent event)
-//					throws ExecutionException {
-//				if (getVisualMode() == IVisualEditor.VISUALSOURCE_MODE) {
-//					Point p = sourceContent.getSize();
-//					if (p.x == 0 || p.y == 0) {
-//						container.downClicked();
-//					} else {
-//						container.maxUp();
-//					}
-//				}
-//				return null;
-//			}
-//		};
-//		jumping = new AbstractHandler() {
-//			public Object execute(ExecutionEvent event)
-//					throws ExecutionException {
-//				if (getVisualMode() == IVisualEditor.VISUALSOURCE_MODE) {
-//					StructuredTextEditor editor = getSourceEditor();
-//					if (editor == null)
-//						return null;
-//					StructuredTextViewer viewer = editor.getTextViewer();
-//					if (viewer == null)
-//						return null;
-//					StyledText widget = viewer.getTextWidget();
-//					if (widget == null || widget.isDisposed())
-//						return null;
-//					if (widget.isFocusControl()) {
-//						if (visualEditor != null
-//								&& activeEditor != visualEditor) {
-//							activeEditor = visualEditor;
-//							setFocus();
-//							//visualContent.setFocus();
-//						}
-//					} else {
-//						if (activeEditor != sourceEditor) {
-//							activeEditor = sourceEditor;
-//							setFocus();
-//						}
-//					}
-//
-//				}
-//				return null;
-//			}
-//		};
 		
 		container.addCustomSashFormListener(new ICustomSashFormListener() {
 			public void dividerMoved(int firstControlWeight, int secondControlWeight) {
@@ -634,7 +492,6 @@ public class VpvEditorPart extends EditorPart implements IVisualEditor2 {
 			visualContent.setParent(newContainer);
 			sourceContent.setParent(newContainer);
 		}
-		// previewContent.setParent(newContainer);
 
 		/*
 		 * https://jira.jboss.org/jira/browse/JBIDE-4513 New container should
@@ -771,36 +628,16 @@ public class VpvEditorPart extends EditorPart implements IVisualEditor2 {
 	
 	@Override
 	public void dispose() {
-//		deactivateServices();
-//		sourceActivation = null;
-//		sourceMaxmin = null;
-//		visualActivation = null;
-//		visualMaxmin = null;
-//		jumpingActivation = null;
-//		jumping = null;
 		if (verticalToolbarEmpty != null) {
 			if (!verticalToolbarEmpty.isDisposed()) {
 				verticalToolbarEmpty.dispose();
 			}
 			verticalToolbarEmpty = null;
 		}
-//		if (optionsObject != null) {
-//			optionsObject.getModel().removeModelTreeListener(listener);
-//			listener=null;
-//			optionsObject = null;
-//		}
 		if (editorSettings != null) {
 			editorSettings.dispose();
 			editorSettings = null;
 		}
-//		if (activationListener != null) {
-//			IWorkbenchWindow window = getSite().getWorkbenchWindow();
-//			window.getPartService().removePartListener(activationListener);
-//			Shell shell = window.getShell();
-//			if (shell != null && !shell.isDisposed())
-//				shell.removeShellListener(activationListener);
-//			activationListener = null;
-//		}
 		// editor will disposed as part of multipart editor
 		if (sourceEditor != null) {
 			sourceEditor.dispose();
@@ -810,15 +647,6 @@ public class VpvEditorPart extends EditorPart implements IVisualEditor2 {
 		if (visualEditor != null) {
 			visualEditor.dispose();
 			visualEditor = null;
-		}
-
-//		if (previewWebBrowser != null) {
-//			previewWebBrowser.dispose();
-//			previewWebBrowser=null;
-//		}
-		if (previewContent != null) {
-			previewContent.dispose();
-			previewContent = null;
 		}
 		
 		if (selectionBar != null) {
@@ -870,20 +698,14 @@ public class VpvEditorPart extends EditorPart implements IVisualEditor2 {
 	protected void updateVisualEditorVisibility() {
 		Point point = visualContent.getSize();
 		if (point.x == 0 || point.y == 0) {
-//			VpeController controller = getController();
-//			if (controller != null)
-//				controller.setVisualEditorVisible(false);
+			VpvEditorController controller = getController();
+			if (controller != null)
+				controller.setVisualEditorVisible(false);
 		} else {
-//			VpeController controller = getController();
-//			if (controller != null && !controller.isVisualEditorVisible()) {
-//				controller.setVisualEditorVisible(true);
-//				if (controller.getSelectionManager() != null) {
-//					controller.getSelectionManager().refreshVisualSelection();
-//				}
-//				if (!controller.isSynced()) {
-//					controller.visualRefresh();
-//				}
-//			}
+			VpvEditorController controller = getController();
+			if (controller != null && !controller.isVisualEditorVisible()) {
+				controller.setVisualEditorVisible(true);
+			}
 			visualEditor.reload();
 		}
 	}
@@ -899,7 +721,7 @@ public class VpvEditorPart extends EditorPart implements IVisualEditor2 {
 	}
 
 	@Override
-	public IVisualController getController() {
+	public VpvEditorController getController() {
 		return visualEditor !=null ? visualEditor.getController() : null;
 	}
 
