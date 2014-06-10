@@ -522,7 +522,7 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 
 	private void inizializeSelectionListener() {
 		selectionListener = new SelectionListener();
-		getSite().getPage().addSelectionListener(selectionListener);	
+		getSite().getPage().addPostSelectionListener(selectionListener);	
 	}
 	
 	private ISelection getCurrentSelection() {
