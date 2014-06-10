@@ -17,7 +17,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.Socket;
+import java.net.URLDecoder;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -182,7 +184,13 @@ public class VpvSocketProcessor implements Runnable {
 
 	private String getHttpRequestString(String initialRequestLine) {
 		String[] data = initialRequestLine.split(" "); //$NON-NLS-1$
-		return data[1];
+		String request = null;
+		try {
+			request = URLDecoder.decode(data[1], UTF_8); // properly decoded request string without method (GET) signature an protocol info
+		} catch (UnsupportedEncodingException e) {
+			Activator.logError(e);
+		}
+		return request;
 	}
 
 	private String getPath(String httpRequestString) {
