@@ -50,7 +50,23 @@ public final class NavigationUtil {
 		}
 	}
 	
-	
+	public static void disableInputs(Browser browser) {
+		if (browser != null && !browser.isDisposed()) {
+			String disableInputs = "function() {" + //$NON-NLS-1$
+					                  "var inputs = document.getElementsByTagName('INPUT');" + //$NON-NLS-1$
+					        	      "for (var i = 0; i < inputs.length; i++) {" + //$NON-NLS-1$
+		                                 "inputs[i].blur();" + //$NON-NLS-1$ Disabling autofocus
+		                                 "inputs[i].disabled = true;" + //$NON-NLS-1$
+		                              "}" + //$NON-NLS-1$
+		                           "}"; //$NON-NLS-1$
+			if (OS.WINDOWS.equals(PlatformUtil.getOs())) {
+				browser.execute("(" + disableInputs + ")();"); //$NON-NLS-1$ //$NON-NLS-2$
+			} else {
+				browser.execute("(setTimeout(" + disableInputs + ", 30))();"); //$NON-NLS-1$//$NON-NLS-2$
+			}
+		}
+	}
+
 	public static void outlineSelectedElement(Browser browser, Long currentSelectionId) {
 		if (browser != null && !browser.isDisposed()) {
 			String styleAttributeSelector;

@@ -395,6 +395,7 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 			public void changed(LocationEvent event) {
 				NavigationUtil.disableAlert(browser);
 				NavigationUtil.disableLinks(browser);
+				NavigationUtil.disableInputs(browser);
 
 				ISelection currentSelection = getCurrentSelection();
 				NavigationUtil.updateSelectionAndScrollToIt(currentSelection, browser, visualModel);

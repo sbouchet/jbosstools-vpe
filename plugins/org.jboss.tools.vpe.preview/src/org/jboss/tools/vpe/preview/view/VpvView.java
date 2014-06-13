@@ -101,6 +101,7 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 			public void changed(LocationEvent event) {
 				NavigationUtil.disableAlert(browser);
 				NavigationUtil.disableLinks(browser);
+				NavigationUtil.disableInputs(browser);
 
 				ISelection currentSelection = getCurrentSelection();
 				NavigationUtil.updateSelectionAndScrollToIt(currentSelection, browser, visualModel);
