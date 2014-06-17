@@ -103,28 +103,34 @@ public final class NavigationUtil {
 	public static void navigateToVisual(IEditorPart currentEditor, Browser browser, VpvVisualModel visualModel, int x, int y) {
 		String stringToEvaluate = "return document.elementFromPoint(" + x + ", " + y + ").outerHTML;"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		String result = (String) browser.evaluate(stringToEvaluate);
-		String selectedElementId = TransformUtil.getSelectedElementId(result, "(?<=data-vpvid=\").*?(?=\")"); //$NON-NLS-1$
-
-		NavigationUtil.outlineSelectedElement(browser,Long.parseLong(selectedElementId));
-
-		String fileExtension = EditorUtil.getFileExtensionFromEditor(currentEditor);
-
-		if (SuitableFileExtensions.isHTML(fileExtension)) {
-			try {
-				Node visualNode = TransformUtil.getVisualNodeByVpvId(visualModel, selectedElementId);
-				Node sourseNode = TransformUtil.getSourseNodeByVisualNode(visualModel, visualNode);
-
-				if (sourseNode != null && sourseNode instanceof IDOMNode) {
-					int startOffset = ((IDOMNode) sourseNode).getStartOffset();
-					int endOffset = ((IDOMNode) sourseNode).getEndOffset();
-
-					StructuredTextEditor editor = (StructuredTextEditor) currentEditor.getAdapter(StructuredTextEditor.class);
-					editor.selectAndReveal(startOffset, endOffset - startOffset);
-
+		/* getElementFromPoint is not available with XulRunner we shipping, so <code>result</code> variable will be null
+		 * because we make it default browser on Linux navigation from source to visual will not work
+		 * @see JBIDE-17454
+		 */
+		if (result != null) {
+			String selectedElementId = TransformUtil.getSelectedElementId(result, "(?<=data-vpvid=\").*?(?=\")"); //$NON-NLS-1$
+	
+			NavigationUtil.outlineSelectedElement(browser,Long.parseLong(selectedElementId));
+	
+			String fileExtension = EditorUtil.getFileExtensionFromEditor(currentEditor);
+	
+			if (SuitableFileExtensions.isHTML(fileExtension)) {
+				try {
+					Node visualNode = TransformUtil.getVisualNodeByVpvId(visualModel, selectedElementId);
+					Node sourseNode = TransformUtil.getSourseNodeByVisualNode(visualModel, visualNode);
+	
+					if (sourseNode != null && sourseNode instanceof IDOMNode) {
+						int startOffset = ((IDOMNode) sourseNode).getStartOffset();
+						int endOffset = ((IDOMNode) sourseNode).getEndOffset();
+	
+						StructuredTextEditor editor = (StructuredTextEditor) currentEditor.getAdapter(StructuredTextEditor.class);
+						editor.selectAndReveal(startOffset, endOffset - startOffset);
+	
+					}
+	
+				} catch (XPathExpressionException e) {
+					Activator.logError(e);
 				}
-
-			} catch (XPathExpressionException e) {
-				Activator.logError(e);
 			}
 		}
 	}
