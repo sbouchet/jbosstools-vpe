@@ -65,14 +65,14 @@ public class VpvSocketProcessor implements Runnable {
 				    return;
 				}
 				
-				processRequest(initialContextLine, requestHeader, outputToClient);
+				processRequest(initialContextLine, requestHeader, outputToClient, inputFromClient);
 			}
 		} catch (IOException e) {
 			Activator.logError(e);
 		}
 	}
 
-	private void processRequest(String initialRequestLine, final Map<String, String> requestHeaders, final DataOutputStream outputToClient) {
+	private void processRequest(String initialRequestLine, final Map<String, String> requestHeaders, final DataOutputStream outputToClient, final BufferedReader inputFromClient) {
 		String httpRequestString = getHttpRequestString(initialRequestLine);
 		Map<String, String> queryParametersMap = parseUrlParameters(httpRequestString);
 		
@@ -112,11 +112,12 @@ public class VpvSocketProcessor implements Runnable {
 					outputToClient.write(header.getBytes(UTF_8));
 					sendFile(file, outputToClient);
 				} catch (IOException e) {
-					// See https://issues.jboss.org/browse/JBIDE-17262 for details
-					// Activator.logError(e);
+					 Activator.logError(e);
 				} finally {
 					try {
 						outputToClient.close();
+						inputFromClient.close();
+						clientSocket.close();
 					} catch (IOException e) {
 						Activator.logError(e);
 					}
@@ -128,11 +129,12 @@ public class VpvSocketProcessor implements Runnable {
 					outputToClient.write(header.getBytes(UTF_8));
 					outputToClient.write(text.getBytes(UTF_8));
 				} catch (IOException e) {
-					// See https://issues.jboss.org/browse/JBIDE-17262 for details
-					//Activator.logError(e);
+					Activator.logError(e);
 				} finally {
 					try {
 						outputToClient.close();
+						inputFromClient.close();
+						clientSocket.close();
 					} catch (IOException e) {
 						Activator.logError(e);
 					}
