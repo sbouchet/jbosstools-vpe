@@ -11,10 +11,6 @@
 package org.jboss.tools.vpe.preview.view;
 
 import static org.jboss.tools.vpe.preview.core.server.HttpConstants.ABOUT_BLANK;
-import static org.jboss.tools.vpe.preview.core.server.HttpConstants.HTTP;
-import static org.jboss.tools.vpe.preview.core.server.HttpConstants.LOCALHOST;
-import static org.jboss.tools.vpe.preview.core.server.HttpConstants.PROJECT_NAME;
-import static org.jboss.tools.vpe.preview.core.server.HttpConstants.VIEW_ID;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -263,16 +259,6 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 		return false;
 	}
 
-	private String formUrl(IFile ifile) {
-		String projectName = ifile.getProject().getName();
-		String projectRelativePath = ifile.getProjectRelativePath().toString();
-		int port = Activator.getDefault().getServer().getPort();
-		String url = HTTP + LOCALHOST + ":" + port + "/" + projectRelativePath + "?" + PROJECT_NAME + "=" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-				+ projectName + "&" + VIEW_ID + "=" + modelHolderId; //$NON-NLS-1$ //$NON-NLS-2$
-
-		return url;
-	}
-
 	private void formRequestToServer(IEditorPart editor) {
 		IFile file = EditorUtil.getFileOpenedInEditor(editor);
 		String fileExtension = null;
@@ -282,7 +268,7 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 
 		if (SuitableFileExtensions.contains(fileExtension)) {
 			if (SuitableFileExtensions.isHTML(fileExtension)) {
-				String url = formUrl(file);
+				String url = EditorUtil.formUrl(file, modelHolderId, "" + Activator.getDefault().getServer().getPort());
 				browser.setUrl(url);
 			}
 		} else {

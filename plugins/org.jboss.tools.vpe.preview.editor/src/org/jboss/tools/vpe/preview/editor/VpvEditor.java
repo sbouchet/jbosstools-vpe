@@ -11,10 +11,6 @@
 package org.jboss.tools.vpe.preview.editor;
 
 import static org.jboss.tools.vpe.preview.core.server.HttpConstants.ABOUT_BLANK;
-import static org.jboss.tools.vpe.preview.core.server.HttpConstants.HTTP;
-import static org.jboss.tools.vpe.preview.core.server.HttpConstants.LOCALHOST;
-import static org.jboss.tools.vpe.preview.core.server.HttpConstants.PROJECT_NAME;
-import static org.jboss.tools.vpe.preview.core.server.HttpConstants.VIEW_ID;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -490,21 +486,11 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 	private void formRequestToServer() {
 		IFile ifile = EditorUtil.getFileOpenedInEditor(sourceEditor);
 		if (ifile != null && SuitableFileExtensions.contains(ifile.getFileExtension().toString())) {
-			String url = formUrl(ifile);
+			String url = EditorUtil.formUrl(ifile, modelHolderId, "" + Activator.getDefault().getServer().getPort());
 			browser.setUrl(url, null, new String[] {"Cache-Control: no-cache"}); //$NON-NLS-1$
 		} else {
 			browser.setUrl(ABOUT_BLANK);
 		}
-	}
-	
-	private String formUrl(IFile ifile) {
-		String projectName = ifile.getProject().getName();
-		String projectRelativePath = ifile.getProjectRelativePath().toString();
-		int port = Activator.getDefault().getServer().getPort();
-		String url = HTTP + LOCALHOST + ":" + port + "/" + projectRelativePath + "?" + PROJECT_NAME + "=" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-				+ projectName + "&" + VIEW_ID + "=" + modelHolderId; //$NON-NLS-1$ //$NON-NLS-2$
-
-		return url;
 	}
 	
 	private void updatePreview() {

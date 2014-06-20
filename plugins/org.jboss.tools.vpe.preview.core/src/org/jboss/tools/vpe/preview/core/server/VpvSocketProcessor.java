@@ -75,10 +75,10 @@ public class VpvSocketProcessor implements Runnable {
 	private void processRequest(String initialRequestLine, final Map<String, String> requestHeaders, final DataOutputStream outputToClient, final BufferedReader inputFromClient) {
 		String httpRequestString = getHttpRequestString(initialRequestLine);
 		Map<String, String> queryParametersMap = parseUrlParameters(httpRequestString);
-		
+
 		String path = getPath(httpRequestString);
-		String projectName = getProjectName(queryParametersMap, requestHeaders);
-		String fullPath = projectName + path;
+		String webrootPath = getWebrootPath(queryParametersMap, requestHeaders);
+		String fullPath = webrootPath + path;
 		Integer viewId = getViewId(queryParametersMap);
 		vpvController.getResource(fullPath, viewId, new ResourceAcceptor() {
 
@@ -174,6 +174,13 @@ public class VpvSocketProcessor implements Runnable {
 				String[] nameValue = param.split("="); //$NON-NLS-1$
 				String name = nameValue[0];
 				String value = nameValue.length > 1 ? nameValue[1] : null;
+				if(value!=null) {
+					try {
+						value = URLDecoder.decode(value, UTF_8);
+					} catch (UnsupportedEncodingException e) {
+						Activator.logError(e);
+					}
+				}
 				parameterMap.put(name, value);
 			}
 		}
@@ -186,13 +193,7 @@ public class VpvSocketProcessor implements Runnable {
 
 	private String getHttpRequestString(String initialRequestLine) {
 		String[] data = initialRequestLine.split(" "); //$NON-NLS-1$
-		String request = null;
-		try {
-			request = URLDecoder.decode(data[1], UTF_8); // properly decoded request string without method (GET) signature an protocol info
-		} catch (UnsupportedEncodingException e) {
-			Activator.logError(e);
-		}
-		return request;
+		return data[1];
 	}
 
 	private String getPath(String httpRequestString) {
@@ -202,15 +203,15 @@ public class VpvSocketProcessor implements Runnable {
 		return path.substring(0, pathEnd);
 	}
 
-	private String getProjectName(Map<String, String> queryParametersMap, Map<String, String> requestHeaders) {
-		String projectName = queryParametersMap.get(HttpConstants.PROJECT_NAME);
-		if (projectName == null) {
+	private String getWebrootPath(Map<String, String> queryParametersMap, Map<String, String> requestHeaders) {
+		String path = queryParametersMap.get(HttpConstants.WEBROOT_PATH);
+		if (path == null) {
 			String referer = requestHeaders.get(REFERER);
 			if (referer != null) {
-				projectName = parseUrlParameters(referer).get(HttpConstants.PROJECT_NAME);
+				path = parseUrlParameters(referer).get(HttpConstants.WEBROOT_PATH);
 			}
 		}
-		return projectName;
+		return path;
 	}
 
 	private Integer getViewId(Map<String, String> queryParametersMap) {

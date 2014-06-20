@@ -19,7 +19,7 @@ public final class HttpConstants {
 	private HttpConstants() {
 	}
 
-	public static final String PROJECT_NAME = "projectName"; //$NON-NLS-1$
+	public static final String WEBROOT_PATH = "webroot"; //$NON-NLS-1$
 	public static final String VIEW_ID = "viewId"; //$NON-NLS-1$
 	public static final String HTTP = "http://"; //$NON-NLS-1$
 	public static final String LOCALHOST = "localhost"; //$NON-NLS-1$
