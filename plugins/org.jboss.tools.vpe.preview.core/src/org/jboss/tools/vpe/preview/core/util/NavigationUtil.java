@@ -59,10 +59,15 @@ public final class NavigationUtil {
 		                                 "inputs[i].disabled = true;" + //$NON-NLS-1$
 		                              "}" + //$NON-NLS-1$
 		                           "}"; //$NON-NLS-1$
-			if (OS.WINDOWS.equals(PlatformUtil.getOs())) {
+			OS platform = PlatformUtil.getOs();
+			if (OS.WINDOWS.equals(platform)) {
 				browser.execute("(" + disableInputs + ")();"); //$NON-NLS-1$ //$NON-NLS-2$
 			} else {
-				browser.execute("(setTimeout(" + disableInputs + ", 30))();"); //$NON-NLS-1$//$NON-NLS-2$
+				int timeout = 30;
+				if(OS.LINUX.equals(platform)) {
+					timeout = 150;// timeout increased for old xulrunner 
+				}
+				browser.execute("(setTimeout(" + disableInputs + ", "+ timeout +"))();"); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 			}
 		}
 	}
@@ -82,9 +87,10 @@ public final class NavigationUtil {
 					                            "style = document.createElement('STYLE');" + //$NON-NLS-1$
 					                            "style.type = 'text/css';" + //$NON-NLS-1$
 					                       "}" + //$NON-NLS-1$
-					                       "style.innerHTML = " + styleAttributeSelector + ";" + //$NON-NLS-1$ //$NON-NLS-2$
-					                       "document.head.appendChild(style);" + //$NON-NLS-1$
 					                       "style.id = '" + VPV_SELECTION_STYLE_ID + "';" + //$NON-NLS-1$ //$NON-NLS-2$
+					                       "style.innerHTML = " + styleAttributeSelector + ";" + //$NON-NLS-1$ //$NON-NLS-2$
+					                       "var head = document.head || document.getElementsByTagName('head')[0] ;"+ //$NON-NLS-1$
+					                       "head.appendChild(style);" + //$NON-NLS-1$
 					                   "}"; //$NON-NLS-1$
 			
 			if (OS.WINDOWS.equals(PlatformUtil.getOs())) {
@@ -101,12 +107,20 @@ public final class NavigationUtil {
 	}
 	
 	public static void navigateToVisual(IEditorPart currentEditor, Browser browser, VpvVisualModel visualModel, int x, int y) {
-		String stringToEvaluate = "return document.elementFromPoint(" + x + ", " + y + ").outerHTML;"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		String stringToEvaluate = ""; //$NON-NLS-1$
+		if (OS.LINUX.equals(PlatformUtil.getOs())) {
+			/* outerHTML is not available with XulRunner we shipping, so <code>result</code> variable will be null
+			 * because we make it default browser on Linux this workaround is used
+			 * @see JBIDE-17454
+			 */
+			stringToEvaluate = "var selected = document.elementFromPoint(" + x + ", " + y + ");"+ //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			"var temp = document.createElement('div');"+ //$NON-NLS-1$
+			"temp.appendChild(selected.cloneNode(true));"+ //$NON-NLS-1$
+			"return temp.innerHTML;"; //$NON-NLS-1$
+		} else {
+			stringToEvaluate = "return document.elementFromPoint(" + x + ", " + y + ").outerHTML;"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		}
 		String result = (String) browser.evaluate(stringToEvaluate);
-		/* getElementFromPoint is not available with XulRunner we shipping, so <code>result</code> variable will be null
-		 * because we make it default browser on Linux navigation from source to visual will not work
-		 * @see JBIDE-17454
-		 */
 		if (result != null) {
 			String selectedElementId = TransformUtil.getSelectedElementId(result, "(?<=data-vpvid=\").*?(?=\")"); //$NON-NLS-1$
 	
