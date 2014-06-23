@@ -104,11 +104,11 @@ public final class EditorUtil {
 			webrootRelativePathString = webrootRelativePath.toString();
 			webrootString = webroot.getFullPath().toString();
 		} else {
-			webrootString = "/" + projectName;
+			webrootString = "/" + projectName; //$NON-NLS-1$
 		}
-		String parameters = "";
+		String parameters = ""; //$NON-NLS-1$
 		try {
-			parameters = WEBROOT_PATH + "=" + URLEncoder.encode(webrootString, "UTF-8") + "&" + VIEW_ID + "=" + modelHolderId; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			parameters = WEBROOT_PATH + "=" + URLEncoder.encode(webrootString, "UTF-8") + "&" + VIEW_ID + "=" + modelHolderId; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		} catch (UnsupportedEncodingException e) {
 			Activator.logError(e);
 		}
