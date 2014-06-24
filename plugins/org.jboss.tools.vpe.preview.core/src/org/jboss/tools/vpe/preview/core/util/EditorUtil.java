@@ -14,6 +14,7 @@ import static org.jboss.tools.vpe.preview.core.server.HttpConstants.HTTP;
 import static org.jboss.tools.vpe.preview.core.server.HttpConstants.LOCALHOST;
 import static org.jboss.tools.vpe.preview.core.server.HttpConstants.VIEW_ID;
 import static org.jboss.tools.vpe.preview.core.server.HttpConstants.WEBROOT_PATH;
+import static org.jboss.tools.vpe.preview.core.server.VpvSocketProcessor.UTF_8;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -28,7 +29,6 @@ import org.eclipse.wst.sse.ui.StructuredTextEditor;
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMDocument;
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMModel;
 import org.jboss.tools.common.web.WebUtils;
-import org.jboss.tools.vpe.preview.core.Activator;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -93,7 +93,7 @@ public final class EditorUtil {
 		return fileExtension;
 	}
 
-	public static String formUrl(IFile file, int modelHolderId, String serverPort) {
+	public static String formUrl(IFile file, int modelHolderId, String serverPort) throws UnsupportedEncodingException {
 		String projectName = file.getProject().getName();
 		String projectRelativePath = file.getProjectRelativePath().toString();
 		IContainer webroot = WebUtils.getWebRootFolder(file);
@@ -106,14 +106,8 @@ public final class EditorUtil {
 		} else {
 			webrootString = "/" + projectName; //$NON-NLS-1$
 		}
-		String parameters = ""; //$NON-NLS-1$
-		try {
-			parameters = WEBROOT_PATH + "=" + URLEncoder.encode(webrootString, "UTF-8") + "&" + VIEW_ID + "=" + modelHolderId; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		} catch (UnsupportedEncodingException e) {
-			Activator.logError(e);
-		}
-		String url = HTTP + LOCALHOST + ":" + serverPort + "/" + webrootRelativePathString + "?" + parameters; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		return url;
+		String parameters = WEBROOT_PATH + "=" + URLEncoder.encode(webrootString, UTF_8) + "&" + VIEW_ID + "=" + modelHolderId; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		return HTTP + LOCALHOST + ":" + serverPort + "/" + webrootRelativePathString + "?" + parameters; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
 	private static Document getEditorDomDocument(IEditorPart editor) {

@@ -12,6 +12,8 @@ package org.jboss.tools.vpe.preview.view;
 
 import static org.jboss.tools.vpe.preview.core.server.HttpConstants.ABOUT_BLANK;
 
+import java.io.UnsupportedEncodingException;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -268,8 +270,13 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 
 		if (SuitableFileExtensions.contains(fileExtension)) {
 			if (SuitableFileExtensions.isHTML(fileExtension)) {
-				String url = EditorUtil.formUrl(file, modelHolderId, "" + Activator.getDefault().getServer().getPort());
-				browser.setUrl(url);
+				String url;
+				try {
+					url = EditorUtil.formUrl(file, modelHolderId, "" + Activator.getDefault().getServer().getPort());
+					browser.setUrl(url);
+				} catch (UnsupportedEncodingException e) {
+					Activator.logError(e);
+				}
 			}
 		} else {
 			browser.setUrl(ABOUT_BLANK);

@@ -13,6 +13,7 @@ package org.jboss.tools.vpe.preview.editor;
 import static org.jboss.tools.vpe.preview.core.server.HttpConstants.ABOUT_BLANK;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -486,8 +487,13 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 	private void formRequestToServer() {
 		IFile ifile = EditorUtil.getFileOpenedInEditor(sourceEditor);
 		if (ifile != null && SuitableFileExtensions.contains(ifile.getFileExtension().toString())) {
-			String url = EditorUtil.formUrl(ifile, modelHolderId, "" + Activator.getDefault().getServer().getPort());
-			browser.setUrl(url, null, new String[] {"Cache-Control: no-cache"}); //$NON-NLS-1$
+			String url;
+			try {
+				url = EditorUtil.formUrl(ifile, modelHolderId, "" + Activator.getDefault().getServer().getPort());
+				browser.setUrl(url);
+			} catch (UnsupportedEncodingException e) {
+				Activator.logError(e);
+			}
 		} else {
 			browser.setUrl(ABOUT_BLANK);
 		}

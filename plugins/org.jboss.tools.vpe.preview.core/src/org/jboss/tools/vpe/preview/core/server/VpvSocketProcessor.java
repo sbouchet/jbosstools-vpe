@@ -39,7 +39,7 @@ public class VpvSocketProcessor implements Runnable {
     public static final String REFERER = "Referer"; //$NON-NLS-1$
     public static final String IF_NONE_MATCH = "If-None-Match"; //$NON-NLS-1$
     public static final String HOST = "Host"; //$NON-NLS-1$
-    private static final String UTF_8 = "UTF-8";  //$NON-NLS-1$
+    public static final String UTF_8 = "UTF-8";  //$NON-NLS-1$
 
 	private Socket clientSocket;
 	private VpvController vpvController;
@@ -200,7 +200,13 @@ public class VpvSocketProcessor implements Runnable {
 		String path = httpRequestString;
 		int delimiter = getDilimiterPosition(httpRequestString);
 		int pathEnd = delimiter != -1 ? delimiter : path.length();
-		return path.substring(0, pathEnd);
+		path = path.substring(0, pathEnd); 
+		try {
+			path = URLDecoder.decode(path, UTF_8);
+		} catch (UnsupportedEncodingException e) {
+			Activator.logError(e);
+		}
+		return path;
 	}
 
 	private String getWebrootPath(Map<String, String> queryParametersMap, Map<String, String> requestHeaders) {
