@@ -359,14 +359,14 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 		 *  'verBar' should be created in createVisualToolbar(..) in VpeEditorPart
 		 *  and only after that MozillaEditor should be created itself. 
 		 */
-		if (null != verBar) {
-			// Use vpeToolBarManager to create a horizontal toolbar.
-			vpeToolBarManager = new VpeToolBarManager();
-			if (vpeToolBarManager != null) {
-				vpeToolBarManager.createToolBarComposite(cmpEdTl);
-				vpeToolBarManager.addToolBar(new TextFormattingToolBar(formatControllerManager));
-			}
-		}
+//		if (null != verBar) {
+//			// Use vpeToolBarManager to create a horizontal toolbar.
+//			vpeToolBarManager = new VpeToolBarManager();
+//			if (vpeToolBarManager != null) {
+//				vpeToolBarManager.createToolBarComposite(cmpEdTl);
+//				vpeToolBarManager.addToolBar(new TextFormattingToolBar(formatControllerManager));
+//			}
+//		}
 
 		//Create a composite to the Editor
 		final Composite cmpEd = new Composite (cmpEdTl, SWT.NATIVE);
