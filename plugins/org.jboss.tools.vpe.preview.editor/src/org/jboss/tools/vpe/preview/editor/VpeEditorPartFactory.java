@@ -20,7 +20,6 @@ import org.jboss.tools.jst.web.ui.internal.editor.editor.IVisualEditor;
 import org.jboss.tools.jst.web.ui.internal.editor.editor.IVisualEditorFactory;
 import org.jboss.tools.vpe.editor.VpeEditorPart;
 import org.jboss.tools.vpe.editor.util.VpePlatformUtil;
-import org.jboss.tools.vpe.xulrunner.browser.XulRunnerBrowser;
 
 /**
  * @author Konstantin Marmalyukov (kmarmaliykov)
@@ -46,11 +45,7 @@ public class VpeEditorPartFactory implements IVisualEditorFactory {
 		if (isHtmlFile) {
 			return getPreviewEditor(multiPageEditor, textEditor, visualMode, bundleMap);
 		} else {
-			if (XulRunnerBrowser.isCurrentPlatformOfficiallySupported() && !VpePlatformUtil.isGTK3()) {
-				return getVpeEditor(multiPageEditor, textEditor, visualMode, bundleMap);
-			} else {
-				return getPreviewEditor(multiPageEditor, textEditor, visualMode, bundleMap);				
-			}
+			return getVpeEditor(multiPageEditor, textEditor, visualMode, bundleMap);
 		}
 	}
 	

@@ -127,6 +127,7 @@ public final class VpeUIMessages extends NLS {
 	public static String SHOW_VPE_TOOLBAR;
 	
 	public static String GENERAL_TAB_TITLE;
+	public static String GTK3_IS_NOT_SUPPORTED;
 	public static String VPE_PREFERENCES_PAGE_DESCRIPTION;
 	public static String SHOW_BORDER_FOR_UNKNOWN_TAGS;
 	public static String SHOW_SELECTION_TAG_BAR;

@@ -134,6 +134,8 @@ public class XulRunnerErrorWrapper {
 				} else {
 					throwable = new XulRunnerException(originalThrowable);
 				}
+			} else if (message.contains("not supported with GTK 3 as XULRunner is not ported for GTK 3 yet")) { //$NON-NLS-1$
+				throwable = new XulRunnerException(VpeUIMessages.GTK3_IS_NOT_SUPPORTED, originalThrowable);
 			}
 		}
 		return throwable;

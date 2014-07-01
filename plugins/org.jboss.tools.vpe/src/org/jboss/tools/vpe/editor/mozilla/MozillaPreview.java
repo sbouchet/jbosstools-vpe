@@ -11,6 +11,7 @@
 package org.jboss.tools.vpe.editor.mozilla;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTError;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.wst.sse.ui.StructuredTextEditor;
@@ -66,11 +67,15 @@ public class MozillaPreview extends MozillaEditor {
 			// TODO add page with explanation what to do
 			errorWrapper.showError(parent, e);
 		} catch (PlatformIsNotSupportedException e) {
-			// TODO add page with explanation what platforms supported and what tod o
+			// TODO add page with explanation what platforms supported and what to do
 			errorWrapper.showError(parent, e);
 		} catch (XulRunnerException e) {
 			errorWrapper.showError(parent, e);
-		} catch(XPCOMException e) {
+		} catch (XPCOMException e) {
+			errorWrapper.showError(parent, e);
+		} catch (SWTError e) {
+			// May be when trying to open Visual Editor when Eclipse running with GTK3
+			// TODO handle this exception more concrete
 			errorWrapper.showError(parent, e);
 		}
 	}
