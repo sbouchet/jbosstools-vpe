@@ -643,7 +643,7 @@ public class VpvEditorPart extends EditorPart implements IVisualEditor2 {
 
 	@Override
 	public void createPreviewBrowser() {
-		vpvPreview = new VpvPreview();
+		vpvPreview = new VpvPreview(sourceEditor);
 		try {
 			vpvPreview.init(getEditorSite(), getEditorInput());
 			vpvPreview.setEditorLoadWindowListener(new EditorLoadWindowListener() {

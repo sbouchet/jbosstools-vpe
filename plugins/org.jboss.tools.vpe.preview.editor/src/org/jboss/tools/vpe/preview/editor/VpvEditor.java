@@ -447,7 +447,9 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 	}
 	
 	public void dispose() {
-		WebUiPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(selectionBarCloseListener);
+		if (selectionBarCloseListener != null) {
+			WebUiPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(selectionBarCloseListener);
+		}
 		if (selectionListener != null) {
 			getSite().getPage().removeSelectionListener(selectionListener);
 		}
@@ -563,6 +565,13 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 	
 	public void setEditorLoadWindowListener(EditorLoadWindowListener listener) {
 		editorLoadWindowListener = listener;
+	}
+	
+	/**
+	 * @param sourceEditor the sourceEditor to set
+	 */
+	protected void setSourceEditor(IEditorPart sourceEditor) {
+		this.sourceEditor = sourceEditor;
 	}
 
 	private class SelectionListener implements ISelectionListener {
