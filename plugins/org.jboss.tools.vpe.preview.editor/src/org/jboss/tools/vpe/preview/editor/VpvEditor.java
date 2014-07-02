@@ -12,7 +12,6 @@ package org.jboss.tools.vpe.preview.editor;
 
 import static org.jboss.tools.vpe.preview.core.server.HttpConstants.ABOUT_BLANK;
 
-import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,15 +61,13 @@ import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.progress.UIJob;
 import org.jboss.tools.jst.web.ui.WebUiPlugin;
 import org.jboss.tools.jst.web.ui.internal.editor.preferences.IVpePreferencesPage;
-import org.jboss.tools.vpe.VpePlugin;
 import org.jboss.tools.vpe.editor.mozilla.MozillaEditor;
 import org.jboss.tools.vpe.editor.mozilla.listener.EditorLoadWindowListener;
 import org.jboss.tools.vpe.editor.preferences.VpeEditorPreferencesPage;
 import org.jboss.tools.vpe.editor.toolbar.IVpeToolBarManager;
-import org.jboss.tools.vpe.editor.toolbar.VpeToolBarManager;
 import org.jboss.tools.vpe.editor.toolbar.format.FormatControllerManager;
-import org.jboss.tools.vpe.editor.toolbar.format.TextFormattingToolBar;
 import org.jboss.tools.vpe.messages.VpeUIMessages;
+import org.jboss.tools.vpe.preview.core.exceptions.BrowserErrorWrapper;
 import org.jboss.tools.vpe.preview.core.transform.VpvVisualModel;
 import org.jboss.tools.vpe.preview.core.transform.VpvVisualModelHolder;
 import org.jboss.tools.vpe.preview.core.util.ActionBarUtil;

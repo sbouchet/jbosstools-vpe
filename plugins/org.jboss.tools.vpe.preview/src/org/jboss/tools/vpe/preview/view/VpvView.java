@@ -50,6 +50,7 @@ import org.eclipse.ui.texteditor.AbstractDecoratedTextEditor;
 import org.jboss.tools.usage.event.UsageEventType;
 import org.jboss.tools.usage.event.UsageReporter;
 import org.jboss.tools.vpe.preview.Activator;
+import org.jboss.tools.vpe.preview.core.exceptions.BrowserErrorWrapper;
 import org.jboss.tools.vpe.preview.core.transform.VpvVisualModel;
 import org.jboss.tools.vpe.preview.core.transform.VpvVisualModelHolder;
 import org.jboss.tools.vpe.preview.core.util.ActionBarUtil;
@@ -74,6 +75,8 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 	private SelectionListener selectionListener;
 	private IEditorPart currentEditor;
 	private IDocumentListener documentListener;
+	
+	protected BrowserErrorWrapper errorWrapper = new BrowserErrorWrapper();
 
 	public VpvView() {
 		setModelHolderId(Activator.getDefault().getVisualModelHolderRegistry().registerHolder(this));
@@ -83,43 +86,51 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 
 	@Override
 	public void dispose() {
-		getSite().getPage().removePartListener(editorListener);
-		getSite().getPage().removeSelectionListener(selectionListener);
+		if (editorListener != null) {
+			getSite().getPage().removePartListener(editorListener);
+		}
+		if (selectionListener != null) {
+			getSite().getPage().removeSelectionListener(selectionListener);			
+		}
 		Activator.getDefault().getVisualModelHolderRegistry().unregisterHolder(this);
 		super.dispose();
 	}
 
 	public void createPartControl(Composite parent) {
 		parent.setLayout(new FillLayout());
-		browser = new Browser(parent, SWT.NONE);
-		browser.setUrl(ABOUT_BLANK);
-
-		browser.addLocationListener(new LocationAdapter() {
-			@Override
-			public void changed(LocationEvent event) {
-				NavigationUtil.disableAlert(browser);
-				NavigationUtil.disableLinks(browser);
-				NavigationUtil.disableInputs(browser);
-
-				ISelection currentSelection = getCurrentSelection();
-				NavigationUtil.updateSelectionAndScrollToIt(currentSelection, browser, visualModel);
-			}
-		});
-
-		browser.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseUp(MouseEvent event) {
-				NavigationUtil.navigateToVisual(currentEditor, browser, visualModel, event.x, event.y);
-			}
-
-		});
-
-		inizializeSelectionListener();
-		inizializeEditorListener(browser, modelHolderId);
-
-		IActionBars bars = getViewSite().getActionBars();
-		actionBarUtil = new ActionBarUtil(browser);
-		actionBarUtil.fillLocalToolBar(bars.getToolBarManager());
+		try {
+			browser = new Browser(parent, SWT.NONE);
+			browser.setUrl(ABOUT_BLANK);
+	
+			browser.addLocationListener(new LocationAdapter() {
+				@Override
+				public void changed(LocationEvent event) {
+					NavigationUtil.disableAlert(browser);
+					NavigationUtil.disableLinks(browser);
+					NavigationUtil.disableInputs(browser);
+	
+					ISelection currentSelection = getCurrentSelection();
+					NavigationUtil.updateSelectionAndScrollToIt(currentSelection, browser, visualModel);
+				}
+			});
+	
+			browser.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseUp(MouseEvent event) {
+					NavigationUtil.navigateToVisual(currentEditor, browser, visualModel, event.x, event.y);
+				}
+	
+			});
+	
+			inizializeSelectionListener();
+			inizializeEditorListener(browser, modelHolderId);
+	
+			IActionBars bars = getViewSite().getActionBars();
+			actionBarUtil = new ActionBarUtil(browser);
+			actionBarUtil.fillLocalToolBar(bars.getToolBarManager());
+		} catch (Throwable t) {
+			errorWrapper.showError(parent, t);
+		}
 	}
 
 	private void inizializeEditorListener(Browser browser, int modelHolderId) {
@@ -134,7 +145,9 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 	}
 
 	public void setFocus() {
-		browser.setFocus();
+		if (browser != null) {
+			browser.setFocus();
+		}
 	}
 
 	@Override
@@ -272,7 +285,7 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 			if (SuitableFileExtensions.isHTML(fileExtension)) {
 				String url;
 				try {
-					url = EditorUtil.formUrl(file, modelHolderId, "" + Activator.getDefault().getServer().getPort());
+					url = EditorUtil.formUrl(file, modelHolderId, "" + Activator.getDefault().getServer().getPort()); //$NON-NLS-1$
 					browser.setUrl(url);
 				} catch (UnsupportedEncodingException e) {
 					Activator.logError(e);

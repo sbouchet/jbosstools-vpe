@@ -1,4 +1,4 @@
-package org.jboss.tools.vpe.editor.mozilla;
+package org.jboss.tools.vpe.preview.core.exceptions;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -20,8 +20,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 import org.eclipse.ui.internal.part.StatusPart;
-import org.jboss.tools.vpe.VpePlugin;
-import org.jboss.tools.vpe.messages.VpeUIMessages;
+import org.jboss.tools.vpe.preview.core.Activator;
 import org.jboss.tools.vpe.xulrunner.XulRunnerBundleNotFoundException;
 import org.jboss.tools.vpe.xulrunner.XulRunnerException;
 import org.jboss.tools.vpe.xulrunner.browser.XulRunnerBrowser;
@@ -39,12 +38,12 @@ public class XulRunnerErrorWrapper {
 		// TODO: remove this check when XULRunner becomes not experimental
 		if (throwable instanceof XulRunnerBundleNotFoundException
 				&& "org.mozilla.xulrunner.win32.win32.x86_64".equals(((XulRunnerBundleNotFoundException) throwable).getBundleId())) { //$NON-NLS-1$
-			errorMessage = VpeUIMessages.MOZILLA_EXPERIMENTAL_SUPPORT;
+			errorMessage = Messages.MOZILLA_EXPERIMENTAL_SUPPORT;
 		} else {
 			errorMessage = MessageFormat.format(
-					VpeUIMessages.MOZILLA_LOADING_ERROR, throwable.getMessage());
+					Messages.MOZILLA_LOADING_ERROR, throwable.getMessage());
 		}
-		VpePlugin.getPluginLog().logError(errorMessage, throwable);
+		Activator.logError(throwable, errorMessage);
 
 		parent.setLayout(new GridLayout());
 		Composite statusComposite = new Composite(parent, SWT.NONE);
@@ -58,14 +57,14 @@ public class XulRunnerErrorWrapper {
 		statusComposite.setLayoutData(gridData);
 
 		IStatus displayStatus = new Status(IStatus.ERROR,
-				VpePlugin.PLUGIN_ID, errorMessage, throwable);
+				Activator.PLUGIN_ID, errorMessage, throwable);
 		new StatusPart(statusComposite, displayStatus);
 
 		final Link link = new Link(parent, SWT.WRAP);
 		link.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_END));
 		link.setBackground(bgColor);
-		link.setText(VpeUIMessages.MOZILLA_LOADING_ERROR_LINK_TEXT);
-		link.setToolTipText(VpeUIMessages.MOZILLA_LOADING_ERROR_LINK);
+		link.setText(Messages.MOZILLA_LOADING_ERROR_LINK_TEXT);
+		link.setToolTipText(Messages.MOZILLA_LOADING_ERROR_LINK);
 		link.setForeground(link.getDisplay().getSystemColor(SWT.COLOR_BLUE));
 
 		link.addMouseListener(new MouseListener() {
@@ -75,15 +74,15 @@ public class XulRunnerErrorWrapper {
 						URL theURL = null;
 						;
 						try {
-							theURL = new URL(VpeUIMessages.MOZILLA_LOADING_ERROR_LINK);
+							theURL = new URL(Messages.MOZILLA_LOADING_ERROR_LINK);
 						} catch (MalformedURLException e) {
-							VpePlugin.reportProblem(e);
+							Activator.logError(e);
 						}
 						IWorkbenchBrowserSupport support = PlatformUI.getWorkbench().getBrowserSupport();
 						try {
 							support.getExternalBrowser().openURL(theURL);
 						} catch (PartInitException e) {
-							VpePlugin.reportProblem(e);
+							Activator.logError(e);
 						}
 					}
 				});
@@ -128,14 +127,14 @@ public class XulRunnerErrorWrapper {
 						&& !XulRunnerBrowser.isCurrentPlatformOfficiallySupported()) {
 					throwable = new XulRunnerException(
 							MessageFormat.format(
-									VpeUIMessages.CURRENT_PLATFORM_IS_NOT_SUPPORTED,
+									Messages.CURRENT_PLATFORM_IS_NOT_SUPPORTED,
 									XulRunnerBrowser.CURRENT_PLATFORM_ID),
 							originalThrowable);
 				} else {
 					throwable = new XulRunnerException(originalThrowable);
 				}
 			} else if (message.contains("not supported with GTK 3 as XULRunner is not ported for GTK 3 yet")) { //$NON-NLS-1$
-				throwable = new XulRunnerException(VpeUIMessages.GTK3_IS_NOT_SUPPORTED, originalThrowable);
+				throwable = new XulRunnerException(Messages.GTK3_IS_NOT_SUPPORTED, originalThrowable);
 			}
 		}
 		return throwable;

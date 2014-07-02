@@ -19,6 +19,7 @@ public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.jboss.tools.vpe.preview.Messages"; //$NON-NLS-1$
 
 	public static String UsageEventTypePreviewLabelDescription;
+	public static String BrowserErrorWrapper_NO_ENGINE_ERROR;
 
 	static {
 		NLS.initializeMessages(BUNDLE_NAME,

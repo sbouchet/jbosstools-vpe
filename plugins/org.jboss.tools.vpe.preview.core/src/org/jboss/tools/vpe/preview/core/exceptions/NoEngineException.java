@@ -1,4 +1,4 @@
-package org.jboss.tools.vpe.preview.editor;
+package org.jboss.tools.vpe.preview.core.exceptions;
 
 public class NoEngineException extends Exception {
 	private static final long serialVersionUID = -4623661575759833820L;

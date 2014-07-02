@@ -30,10 +30,6 @@ public final class VpeUIMessages extends NLS {
 	public static String REFRESH;
 	public static String PAGE_DESIGN_OPTIONS;
 	public static String SHOW_SELECTION_BAR;
-	public static String MOZILLA_LOADING_ERROR;
-	public static String MOZILLA_EXPERIMENTAL_SUPPORT;
-	public static String MOZILLA_LOADING_ERROR_LINK_TEXT;
-	public static String MOZILLA_LOADING_ERROR_LINK;
 	public static String GENERAL;
 	public static String TEMPLATES;
 	public static String TEMPLATE;
@@ -127,7 +123,6 @@ public final class VpeUIMessages extends NLS {
 	public static String SHOW_VPE_TOOLBAR;
 	
 	public static String GENERAL_TAB_TITLE;
-	public static String GTK3_IS_NOT_SUPPORTED;
 	public static String VPE_PREFERENCES_PAGE_DESCRIPTION;
 	public static String SHOW_BORDER_FOR_UNKNOWN_TAGS;
 	public static String SHOW_SELECTION_TAG_BAR;
@@ -174,6 +169,5 @@ public final class VpeUIMessages extends NLS {
 	public static String LIST_IS_EMPTY;
 	
 	public static String COULD_NOT_OPEN_VPE_RESOURCES_DIALOG;
-	public static String CURRENT_PLATFORM_IS_NOT_SUPPORTED;
 	public static String VPE_PREFERENCES_MENU_LABEL;
 }
