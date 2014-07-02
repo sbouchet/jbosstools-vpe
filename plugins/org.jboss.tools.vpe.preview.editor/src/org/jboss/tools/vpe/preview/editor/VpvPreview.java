@@ -4,15 +4,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.IEditorPart;
 import org.jboss.tools.vpe.editor.mozilla.listener.EditorLoadWindowListener;
 
 public class VpvPreview extends VpvEditor {
 	private EditorLoadWindowListener editorLoadWindowListener;
-	
-	public VpvPreview(IEditorPart sourceEditor) {
-		super(sourceEditor);
-	}
 
 	@Override
 	public void createPartControl(Composite parent) {

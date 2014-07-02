@@ -150,6 +150,10 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 	
 	private ActionBarUtil actionBarUtil;
 	protected BrowserErrorWrapper errorWrapper = new BrowserErrorWrapper();
+	
+	public VpvEditor() {
+	}
+	
 	public VpvEditor(IEditorPart sourceEditor) {
 		setModelHolderId(Activator.getDefault().getVisualModelHolderRegistry().registerHolder(this));
 		this.sourceEditor = sourceEditor;
