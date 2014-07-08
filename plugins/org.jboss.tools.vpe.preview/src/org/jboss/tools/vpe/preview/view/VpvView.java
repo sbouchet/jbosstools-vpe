@@ -11,8 +11,10 @@
 package org.jboss.tools.vpe.preview.view;
 
 import static org.jboss.tools.vpe.preview.core.server.HttpConstants.ABOUT_BLANK;
+import static org.jboss.tools.vpe.preview.Messages.VISUAL_PREVIEW;
 
 import java.io.UnsupportedEncodingException;
+import java.text.MessageFormat;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -31,7 +33,9 @@ import org.eclipse.swt.browser.LocationEvent;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPartListener2;
@@ -51,6 +55,8 @@ import org.jboss.tools.usage.event.UsageEventType;
 import org.jboss.tools.usage.event.UsageReporter;
 import org.jboss.tools.vpe.preview.Activator;
 import org.jboss.tools.vpe.preview.core.exceptions.BrowserErrorWrapper;
+import org.jboss.tools.vpe.preview.core.exceptions.CannotOpenExternalFileException;
+import org.jboss.tools.vpe.preview.core.exceptions.Messages;
 import org.jboss.tools.vpe.preview.core.transform.VpvVisualModel;
 import org.jboss.tools.vpe.preview.core.transform.VpvVisualModelHolder;
 import org.jboss.tools.vpe.preview.core.util.ActionBarUtil;
@@ -101,25 +107,25 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 		try {
 			browser = new Browser(parent, SWT.NONE);
 			browser.setUrl(ABOUT_BLANK);
-	
+
 			browser.addLocationListener(new LocationAdapter() {
 				@Override
 				public void changed(LocationEvent event) {
 					NavigationUtil.disableAlert(browser);
 					NavigationUtil.disableLinks(browser);
 					NavigationUtil.disableInputs(browser);
-	
+
 					ISelection currentSelection = getCurrentSelection();
 					NavigationUtil.updateSelectionAndScrollToIt(currentSelection, browser, visualModel);
 				}
 			});
-	
+
 			browser.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseUp(MouseEvent event) {
 					NavigationUtil.navigateToVisual(currentEditor, browser, visualModel, event.x, event.y);
 				}
-	
+
 			});
 	
 			inizializeSelectionListener();
@@ -277,10 +283,18 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 	private void formRequestToServer(IEditorPart editor) {
 		IFile file = EditorUtil.getFileOpenedInEditor(editor);
 		String fileExtension = null;
+		removeErrorMessage();
 		if (file != null && file.exists()) {
 			fileExtension = file.getFileExtension();
+			changeControlVisibility(browser, true);
+			browser.getParent().setLayout(new FillLayout());
+		} else {
+			changeControlVisibility(browser, false);
+			errorWrapper.showError(browser.getParent(), 
+					new CannotOpenExternalFileException(MessageFormat.format(Messages.CANNOT_SHOW_EXTERNAL_FILE, VISUAL_PREVIEW)));
 		}
-
+		browser.getParent().layout();
+		
 		if (SuitableFileExtensions.contains(fileExtension)) {
 			if (SuitableFileExtensions.isHTML(fileExtension)) {
 				String url;
@@ -296,6 +310,22 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 		}
 	}
 
+	private void changeControlVisibility(Control c, boolean visible) {
+		GridData data = new GridData();
+		data.exclude = !visible;
+		c.setLayoutData(data);
+		c.setVisible(visible);
+	}
+	
+	private void removeErrorMessage() {
+		Control[] children = browser.getParent().getChildren();
+		for(Control c : children) {
+			if(!c.equals(browser)) {
+				c.dispose();
+			}
+		}
+	}
+	
 	private class EditorListener implements IPartListener2 {
 
 		@Override
