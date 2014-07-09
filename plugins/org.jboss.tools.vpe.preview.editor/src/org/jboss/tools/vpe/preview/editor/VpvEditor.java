@@ -10,9 +10,8 @@
  ******************************************************************************/
 package org.jboss.tools.vpe.preview.editor;
 
-import static org.jboss.tools.vpe.preview.core.server.HttpConstants.ABOUT_BLANK;
-
 import java.io.UnsupportedEncodingException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -68,6 +67,8 @@ import org.jboss.tools.vpe.editor.toolbar.IVpeToolBarManager;
 import org.jboss.tools.vpe.editor.toolbar.format.FormatControllerManager;
 import org.jboss.tools.vpe.messages.VpeUIMessages;
 import org.jboss.tools.vpe.preview.core.exceptions.BrowserErrorWrapper;
+import org.jboss.tools.vpe.preview.core.exceptions.CannotOpenExternalFileException;
+import org.jboss.tools.vpe.preview.core.exceptions.Messages;
 import org.jboss.tools.vpe.preview.core.transform.VpvVisualModel;
 import org.jboss.tools.vpe.preview.core.transform.VpvVisualModelHolder;
 import org.jboss.tools.vpe.preview.core.util.ActionBarUtil;
@@ -511,7 +512,11 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 				Activator.logError(e);
 			}
 		} else {
-			browser.setUrl(ABOUT_BLANK);
+			Composite parent = browser.getParent();
+			browser.dispose();
+			browser = null;
+			errorWrapper.showError(parent, 
+					new CannotOpenExternalFileException(MessageFormat.format(Messages.CANNOT_SHOW_EXTERNAL_FILE, VpeUIMessages.VISUAL_EDITOR)));
 		}
 	}
 	
@@ -530,7 +535,7 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 		Job job = new UIJob("Preview Update") { //$NON-NLS-1$
 			@Override
 			public IStatus runInUIThread(IProgressMonitor monitor) {
-				if (!browser.isDisposed()) {
+				if (browser != null && !browser.isDisposed()) {
 					browser.setUrl(browser.getUrl());
 				}
 				return Status.OK_STATUS;
