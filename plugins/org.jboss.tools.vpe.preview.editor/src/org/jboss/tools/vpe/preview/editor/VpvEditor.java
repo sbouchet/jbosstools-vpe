@@ -452,7 +452,7 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 			WebUiPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(selectionBarCloseListener);
 		}
 		if (selectionListener != null) {
-			getSite().getPage().removeSelectionListener(selectionListener);
+			getSite().getPage().removePostSelectionListener(selectionListener);
 		}
 		Activator.getDefault().getVisualModelHolderRegistry().unregisterHolder(this);
 		

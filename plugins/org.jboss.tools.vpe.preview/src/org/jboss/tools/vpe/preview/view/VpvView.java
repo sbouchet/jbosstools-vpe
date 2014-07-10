@@ -96,7 +96,7 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 			getSite().getPage().removePartListener(editorListener);
 		}
 		if (selectionListener != null) {
-			getSite().getPage().removeSelectionListener(selectionListener);			
+			getSite().getPage().removePostSelectionListener(selectionListener);			
 		}
 		Activator.getDefault().getVisualModelHolderRegistry().unregisterHolder(this);
 		super.dispose();
