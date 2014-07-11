@@ -17,6 +17,7 @@ import java.io.UnsupportedEncodingException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.text.DocumentEvent;
@@ -216,7 +217,7 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 					if (actionBarUtil.isAutomaticRefreshEnabled()) {
 						String fileExtension = EditorUtil.getFileExtensionFromEditor(currentEditor);
 						if (SuitableFileExtensions.isCssOrJs(fileExtension)) {
-							getActivePage().saveEditor(currentEditor, false); // saving all js and css stuff							
+							currentEditor.doSave(new NullProgressMonitor()); // saving all js and css stuff							
 						}
 						updatePreview();
 					}
