@@ -369,6 +369,14 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 
 		@Override
 		public void partInputChanged(IWorkbenchPartReference partRef) {
+			IWorkbenchPage page = partRef.getPage();
+			if (page != null) {
+				IEditorPart editor = page.getActiveEditor();
+				if (editor != null) {
+					formRequestToServer(editor);
+					setCurrentEditor(editor);
+				}
+			}
 		}
 
 		public void showBootstrapPart() {
