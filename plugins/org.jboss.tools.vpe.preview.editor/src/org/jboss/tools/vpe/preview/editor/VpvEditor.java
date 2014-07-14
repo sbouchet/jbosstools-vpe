@@ -566,7 +566,7 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 		editorLoadWindowListener = listener;
 	}
 	
-	private void inizializeEditorListener() {
+	protected void inizializeEditorListener() {
 		editorListener = new EditorListener();
 		getSite().getPage().addPartListener(editorListener);
 	}
