@@ -49,11 +49,14 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IReusableEditor;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
@@ -141,6 +144,8 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 	private IVpeToolBarManager vpeToolBarManager;
 	
 	private EditorLoadWindowListener editorLoadWindowListener;
+	private EditorListener editorListener;
+	private IDocumentListener documentListener;
 	
 	private Browser browser;
 	private VpvVisualModel visualModel;
@@ -157,22 +162,7 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 	
 	public VpvEditor(IEditorPart sourceEditor) {
 		setModelHolderId(Activator.getDefault().getVisualModelHolderRegistry().registerHolder(this));
-		this.sourceEditor = sourceEditor;
-		IDocument document = (IDocument) this.sourceEditor.getAdapter(IDocument.class);
-		document.addDocumentListener(new IDocumentListener() {
-
-				@Override
-				public void documentAboutToBeChanged(DocumentEvent event) {
-				}
-
-				@Override
-				public void documentChanged(DocumentEvent event) {
-					if (actionBarUtil.isAutomaticRefreshEnabled() && controller.isVisualEditorVisible()) {
-						updatePreview();
-					}
-				}
-
-			});
+		setSourceEditor(sourceEditor);
 	}
 	
 	@Override
@@ -412,6 +402,7 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 			}
 			
 			inizializeSelectionListener();
+			inizializeEditorListener();
 		} catch (Throwable t) {
 			//cannot create browser. show error message then
 			
@@ -453,6 +444,9 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 		}
 		if (selectionListener != null) {
 			getSite().getPage().removePostSelectionListener(selectionListener);
+		}
+		if (editorListener != null) {
+			getSite().getPage().removePartListener(editorListener);
 		}
 		Activator.getDefault().getVisualModelHolderRegistry().unregisterHolder(this);
 		
@@ -572,12 +566,106 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 		editorLoadWindowListener = listener;
 	}
 	
+	private void inizializeEditorListener() {
+		editorListener = new EditorListener();
+		getSite().getPage().addPartListener(editorListener);
+	}
+	
+	private class EditorListener implements IPartListener2 {
+
+		@Override
+		public void partActivated(IWorkbenchPartReference partRef) {
+		}
+
+		@Override
+		public void partBroughtToTop(IWorkbenchPartReference partRef) {
+		}
+
+		@Override
+		public void partClosed(IWorkbenchPartReference partRef) {
+		}
+
+		@Override
+		public void partDeactivated(IWorkbenchPartReference partRef) {
+		}
+
+		@Override
+		public void partOpened(IWorkbenchPartReference partRef) {
+		}
+
+		@Override
+		public void partHidden(IWorkbenchPartReference partRef) {
+		}
+
+		@Override
+		public void partVisible(IWorkbenchPartReference partRef) {
+		}
+
+		@Override
+		public void partInputChanged(IWorkbenchPartReference partRef) {
+			IWorkbenchPage page = partRef.getPage();
+			if (page != null) {
+				IEditorPart editor = page.getActiveEditor();
+				if (editor != null) {
+					setSourceEditor(editor);
+					formRequestToServer();
+				}
+			}
+		}
+	}
+
+		
 	/**
 	 * @param sourceEditor the sourceEditor to set
 	 */
 	protected void setSourceEditor(IEditorPart sourceEditor) {
+		removeDocumentListener(); // removing old document listener
 		this.sourceEditor = sourceEditor;
+		addDocumentListener(); // adding a new one
 	}
+	
+	private IDocument getDocument() {
+		return (IDocument) this.sourceEditor.getAdapter(IDocument.class);
+	}
+	
+	private void removeDocumentListener() {
+		if (this.sourceEditor != null) {
+			IDocument document = getDocument();
+			if (document != null) {
+				document.removeDocumentListener(getDocumentListener());
+			}
+		}
+	}
+	
+	private void addDocumentListener() {
+		if (this.sourceEditor != null) {
+			IDocument document = getDocument();
+			if (document != null) {
+				document.addDocumentListener(getDocumentListener());
+			}
+		}
+	}
+	
+	
+	private IDocumentListener getDocumentListener() {
+		if (documentListener == null) {
+			documentListener = new IDocumentListener() {
+
+				@Override
+				public void documentAboutToBeChanged(DocumentEvent event) {
+				}
+
+				@Override
+				public void documentChanged(DocumentEvent event) {
+					if (actionBarUtil.isAutomaticRefreshEnabled() && controller.isVisualEditorVisible()) {
+						updatePreview();
+					}
+				}
+
+			};
+		}
+		return documentListener;
+	} 
 
 	private class SelectionListener implements ISelectionListener {
 
