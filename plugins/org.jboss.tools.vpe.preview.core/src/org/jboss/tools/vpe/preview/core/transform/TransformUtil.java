@@ -65,6 +65,9 @@ public final class TransformUtil {
 		return matches;
 	}
 
+	/**
+	 * @return <code>null</code> if id from regexp not found
+	 */
 	public static String getSelectedElementId(String text, String regex) {
 		List<String> allMatches = getAllMatches(text, regex);
 		if (allMatches != null && !allMatches.isEmpty()) {
