@@ -124,7 +124,10 @@ public final class NavigationUtil {
 		if (result != null) {
 			String selectedElementId = TransformUtil.getSelectedElementId(result, "(?<=data-vpvid=\").*?(?=\")"); //$NON-NLS-1$
 	
-			NavigationUtil.outlineSelectedElement(browser,Long.parseLong(selectedElementId));
+			Long id = (selectedElementId != null && !selectedElementId.isEmpty()) //avoiding NumberFormatException
+					  ? Long.parseLong(selectedElementId)
+					  : null;
+			NavigationUtil.outlineSelectedElement(browser, id);
 	
 			String fileExtension = EditorUtil.getFileExtensionFromEditor(currentEditor);
 	
