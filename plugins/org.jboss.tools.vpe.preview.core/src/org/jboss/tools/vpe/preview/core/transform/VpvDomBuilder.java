@@ -45,7 +45,9 @@ public class VpvDomBuilder {
 		Document visualDocument = createDocument();
 		Map<Node, Node> sourceVisualMapping = new HashMap<Node, Node>();
 		Element documentElement = sourceDocument.getDocumentElement();
-		Node visualRoot = convertNode(sourceDocument, documentElement, visualDocument, sourceVisualMapping);
+		Node visualRoot = documentElement != null //fix for empty document. No document - no visual representation
+						  ? convertNode(sourceDocument, documentElement, visualDocument, sourceVisualMapping)
+						  : null;
 
 		if (visualRoot != null) {
 			markSubtree(visualRoot);
