@@ -133,7 +133,7 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 			inizializeEditorListener(browser, modelHolderId);
 	
 			IActionBars bars = getViewSite().getActionBars();
-			actionBarUtil = new ActionBarUtil(browser);
+			actionBarUtil = new ActionBarUtil(browser, Activator.getDefault().getPreferenceStore());
 			actionBarUtil.fillLocalToolBar(bars.getToolBarManager());
 		} catch (Throwable t) {
 			errorWrapper.showError(parent, t);

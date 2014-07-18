@@ -12,6 +12,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.program.Program;
 import org.eclipse.ui.PlatformUI;
@@ -20,6 +21,7 @@ import org.jboss.tools.vpe.preview.core.Activator;
 
 public class ActionBarUtil {
 	private static final String GROUP_REFRESH = "org.jboss.tools.vpv.refresh"; //$NON-NLS-1$
+	private static final String REFRESH_ON_SAVE_ENABLEMENT = "org.jboss.tools.vpe.enableRefreshOnSave"; //$NON-NLS-1$
 
 	private IAction refreshAction;
 	private IAction openInDefaultBrowserAction;
@@ -30,11 +32,14 @@ public class ActionBarUtil {
 	private boolean enableAutomaticRefresh = true; // available by default
 	private Browser browser;
 	
+	private IPreferenceStore preferences;
+	
 	private Command saveCommand;
 	private Command saveAllCommand;
 	
-	public ActionBarUtil(Browser browser1) {
+	public ActionBarUtil(Browser browser1, IPreferenceStore preferences) {
 		this.browser = browser1;
+		this.preferences = preferences;
 		ICommandService commandService = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
 		saveCommand = commandService.getCommand("org.eclipse.ui.file.save"); //$NON-NLS-1$
 		saveAllCommand = commandService.getCommand("org.eclipse.ui.file.saveAll"); //$NON-NLS-1$
@@ -84,6 +89,7 @@ public class ActionBarUtil {
 				if (enableAutomaticRefreshAction.isChecked()) {
 					enableAutomaticRefresh = true;
 
+					preferences.setValue(REFRESH_ON_SAVE_ENABLEMENT, false);
 					enableRefreshOnSaveAction.setChecked(false);
 					saveCommand.removeExecutionListener(saveListener);
 					saveAllCommand.removeExecutionListener(saveListener);
@@ -93,7 +99,7 @@ public class ActionBarUtil {
 			}
 		};
 
-		enableAutomaticRefreshAction.setChecked(true);
+		enableAutomaticRefreshAction.setChecked(!preferences.getBoolean(REFRESH_ON_SAVE_ENABLEMENT));
 		enableAutomaticRefreshAction.setImageDescriptor(Activator.getImageDescriptor("icons/refresh_on_change.png")); //$NON-NLS-1$
 	}
 
@@ -105,6 +111,7 @@ public class ActionBarUtil {
 					saveCommand.addExecutionListener(saveListener);
 					saveAllCommand.addExecutionListener(saveListener);
 					
+					preferences.setValue(REFRESH_ON_SAVE_ENABLEMENT, true);
 					enableAutomaticRefreshAction.setChecked(false);
 					enableAutomaticRefresh = false;
 				} else {
@@ -114,7 +121,7 @@ public class ActionBarUtil {
 			}
 		};
 
-		enableRefreshOnSaveAction.setChecked(false);
+		enableRefreshOnSaveAction.setChecked(preferences.getBoolean(REFRESH_ON_SAVE_ENABLEMENT));
 		enableRefreshOnSaveAction.setImageDescriptor(Activator.getImageDescriptor("icons/refresh_on_save.png")); //$NON-NLS-1$
 	}
 
