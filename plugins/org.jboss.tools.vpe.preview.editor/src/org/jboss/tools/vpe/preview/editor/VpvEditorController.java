@@ -54,13 +54,14 @@ import org.jboss.tools.vpe.editor.VpeEditorPart;
 import org.jboss.tools.vpe.editor.toolbar.format.FormatControllerManager;
 import org.jboss.tools.vpe.handlers.VisualPartAbstractHandler;
 import org.jboss.tools.vpe.preview.editor.context.VpvPageContext;
+import org.jboss.tools.vpe.resref.core.AbsoluteFolderReferenceList;
 import org.w3c.dom.Node;
 
 /**
  * @author Konstantin Marmalyukov (kmarmaliykov)
  */
 
-@SuppressWarnings({ "deprecation", "restriction" })
+@SuppressWarnings({ "deprecation" })
 public class VpvEditorController extends VisualController implements INodeAdapter, IModelLifecycleListener,
 		INodeSelectionListener, ITextSelectionListener, SelectionListener, ResourceReferenceListListener,
 		ISelectionChangedListener, IVisualController {
@@ -74,6 +75,8 @@ public class VpvEditorController extends VisualController implements INodeAdapte
 	private boolean visualEditorVisible = true;
 	
 	private static List<String> vpeCategoryCommands = null;
+
+	private AbsoluteFolderReferenceList absoluteFolderReferenceListListener;
 	
 	public VpvEditorController(VpvEditorPart editPart) {
 		this.editPart = editPart;
@@ -81,7 +84,6 @@ public class VpvEditorController extends VisualController implements INodeAdapte
 	
 	void init(StructuredTextEditor sourceEditor, VpvEditor visualEditor, BundleMap bundleMap) {
 		this.sourceEditor = sourceEditor;
-		//this.bundleMap = bundleMap;
 		this.visualEditor = visualEditor;
 		visualEditor.setController(this);
 		bundleMap.init(sourceEditor.getEditorInput());
@@ -109,93 +111,17 @@ public class VpvEditorController extends VisualController implements INodeAdapte
 			}
 		}
 
-		// Fix for JBIDE-5105, JBIDE-5161
-		//visualEditor.getEditor();
-
-		// glory
 		ISelectionProvider provider = sourceEditor.getSelectionProvider();
-		// Max Areshkau JBIDE-1105 If selection event received after selection
-		// in
-		// visual part we lost focus of selection, so we should process
-		// selection event
-		// in time of selection
-		// if (provider instanceof IPostSelectionProvider)
-		// ((IPostSelectionProvider)
-		// provider).addPostSelectionChangedListener(this);
-		// else
 		provider.addSelectionChangedListener(this);
-
-		// ViewerSelectionManager selectionManager =
-		// sourceEditor.getViewerSelectionManager();
-		// selectionManager.addNodeSelectionListener(this);
-		// selectionManager.addTextSelectionListener(this);
+		
 		final StyledText textWidget = SelectionHelper.getSourceTextWidget(sourceEditor);
 		if (textWidget != null) {
 			textWidget.addSelectionListener(this);
 		}
-		/*
-		 * https://issues.jboss.org/browse/JBIDE-8701
-		 * Add Source ScrollBar Listener
-		 */
-//		scrollCoordinator = new ScrollCoordinator(sourceEditor, visualEditor, domMapping); 
-//		if ((visualEditor != null) && (sourceEditor != null)) {
-//			sourceEditorVerticalScrollBar = textWidget.getVerticalBar();
-//			if (sourceEditorVerticalScrollBar != null) {
-//				if (visualEditor.getXulRunnerEditor() != null) {
-//					nsIWebBrowser webBrowser = visualEditor.getXulRunnerEditor().getWebBrowser();
-//					if (webBrowser != null) {
-//						/*
-//						 * Initialize mozilla browser content window
-//						 */
-//						final nsIDOMWindow domWindow = webBrowser.getContentDOMWindow();
-//						final nsIDOMWindowInternal windowInternal = org.jboss.tools.vpe.xulrunner.util.XPCOM
-//								.queryInterface(domWindow, nsIDOMWindowInternal.class);
-//						/*
-//						 * Adding source listener
-//						 */
-//						sourceScrollSelectionListener = new SelectionListener() {
-//							@Override
-//							public void widgetSelected(SelectionEvent e) {
-//								/*
-//								 * Check that scrolling is reasonable:
-//								 * when scrollMaxYVisual > 0
-//								 */
-//								int scrollMaxYVisual = windowInternal.getScrollMaxY();
-//								if (WebUiPlugin.getDefault().getPreferenceStore().getBoolean(
-//										IVpePreferencesPage.SYNCHRONIZE_SCROLLING_BETWEEN_SOURCE_VISUAL_PANES)
-//										&& !visualScrollEventFlag && !selectionManager.isUpdateSelectionEventPerformed()
-//										&& editPart.getVisualMode() == VpeEditorPart.VISUALSOURCE_MODE
-//										&& scrollMaxYVisual > 0) { // ignore internal visual scroll event
-//									sourceScrollEventFlag = true;
-//									int posY = scrollCoordinator.computeVisualPositionFromSource();
-//									/*
-//									 * Scroll only when there is a new position
-//									 */
-//									if (posY != -1) {
-//										if (posY > scrollMaxYVisual) {
-//											posY = scrollMaxYVisual;
-//										}
-//										domWindow.scrollTo(windowInternal.getPageXOffset(),posY);
-//									}
-//								} else {
-//									visualScrollEventFlag = false;
-//									selectionManager.setUpdateSelectionEventFlag(false);
-//								}
-//							}
-//							@Override
-//							public void widgetDefaultSelected(SelectionEvent e) { }
-//						};
-//						sourceEditorVerticalScrollBar.addSelectionListener(sourceScrollSelectionListener);
-//					}
-//				}
-//			}
-//		} // End of fix JBIDE-8701
 
-
-		// pageContext.fireTaglibsChanged();
-
-		// yradtsevich: we have to refresh VPE selection on init 
-		// (fix of JBIDE-4037)
+		absoluteFolderReferenceListListener = AbsoluteFolderReferenceList.getInstance();
+		absoluteFolderReferenceListListener.addChangeListener(this);
+		
 		sourceSelectionChanged();
 		refreshCommands();
 	}
@@ -279,7 +205,9 @@ public class VpvEditorController extends VisualController implements INodeAdapte
 
 	@Override
 	public void changed(Object source) {
-		// is used for external references which is not implemented now
+		if (absoluteFolderReferenceListListener == source) {
+			visualRefresh();
+		}
 	}
 
 	@Override
@@ -444,21 +372,10 @@ public class VpvEditorController extends VisualController implements INodeAdapte
 			visualEditor = null;
 		}
 
-//		if (cssReferenceListListener != null) {
-//			cssReferenceListListener.removeChangeListener(this);
-//		}
-//		if (taglibReferenceListListener != null) {
-//			taglibReferenceListListener.removeChangeListener(this);
-//		}
-//		if (absoluteFolderReferenceListListener != null) {
-//			absoluteFolderReferenceListListener.removeChangeListener(this);
-//		}
-//		if (elReferenceListListener != null) {
-//			elReferenceListListener.removeChangeListener(this);
-//		}
-//		if (relativeFolderReferenceListListener != null) {
-//			relativeFolderReferenceListListener.removeChangeListener(this);
-//		}
+		if (absoluteFolderReferenceListListener != null) {
+			absoluteFolderReferenceListListener.removeChangeListener(this);
+		}
+		
 		toolbarFormatControllerManager = null;
 	}
 	
