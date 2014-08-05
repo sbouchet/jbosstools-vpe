@@ -29,7 +29,7 @@ public class ActionBarUtil {
 	private IAction enableRefreshOnSaveAction;
 	
 	private IExecutionListener saveListener;
-	private boolean enableAutomaticRefresh = true; // available by default
+	private boolean enableAutomaticRefresh;
 	private Browser browser;
 	
 	private IPreferenceStore preferences;
@@ -40,6 +40,7 @@ public class ActionBarUtil {
 	public ActionBarUtil(Browser browser1, IPreferenceStore preferences) {
 		this.browser = browser1;
 		this.preferences = preferences;
+		enableAutomaticRefresh = !preferences.getBoolean(REFRESH_ON_SAVE_ENABLEMENT);
 		ICommandService commandService = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
 		saveCommand = commandService.getCommand("org.eclipse.ui.file.save"); //$NON-NLS-1$
 		saveAllCommand = commandService.getCommand("org.eclipse.ui.file.saveAll"); //$NON-NLS-1$
