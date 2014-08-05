@@ -156,7 +156,8 @@ public class ActionBarUtil {
 	}
 	
 	private void refresh(Browser browser) {
-		browser.setUrl(browser.getUrl());
+		String url = NavigationUtil.removeAnchor(browser.getUrl());
+		browser.setUrl(url);
 	}
 	
 	public boolean isAutomaticRefreshEnabled() {
