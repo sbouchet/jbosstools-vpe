@@ -63,6 +63,7 @@ import org.jboss.tools.vpe.preview.core.transform.VpvVisualModelHolder;
 import org.jboss.tools.vpe.preview.core.util.ActionBarUtil;
 import org.jboss.tools.vpe.preview.core.util.EditorUtil;
 import org.jboss.tools.vpe.preview.core.util.NavigationUtil;
+import org.jboss.tools.vpe.preview.core.util.PlatformUtil;
 import org.jboss.tools.vpe.preview.core.util.SuitableFileExtensions;
 
 /**
@@ -262,11 +263,19 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 	}
 
 	private void refresh(Browser browser) {
-		String url = NavigationUtil.removeAnchor(browser.getUrl());
-		browser.setUrl(url);
+		String url = browser.getUrl();
+		if (PlatformUtil.isWindows()) {
+			String ext = EditorUtil.getFileExtensionFromEditor(currentEditor);
+			if (SuitableFileExtensions.isCssOrJs(ext)) {
+				browser.refresh(); // Files are saved - need to perform refresh
+			} else {
+				browser.setUrl(NavigationUtil.removeAnchor(url)); // JBIDE-18043 Need to get changes via VPVSocketProcessor 
+			}	
+		} else {
+			browser.setUrl(url);
+		}
 	}
-	
-
+		
 	private ISelection getCurrentSelection() {
 		Activator activator = Activator.getDefault();
 		IWorkbench workbench = activator.getWorkbench();

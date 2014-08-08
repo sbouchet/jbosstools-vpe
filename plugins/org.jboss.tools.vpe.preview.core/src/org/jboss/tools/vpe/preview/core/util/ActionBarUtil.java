@@ -156,7 +156,10 @@ public class ActionBarUtil {
 	}
 	
 	private void refresh(Browser browser) {
-		String url = NavigationUtil.removeAnchor(browser.getUrl());
+		String url = browser.getUrl();
+		if (PlatformUtil.isWindows()) {
+			url = NavigationUtil.removeAnchor(url);
+		}
 		browser.setUrl(url);
 	}
 	

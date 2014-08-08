@@ -77,6 +77,7 @@ import org.jboss.tools.vpe.preview.core.transform.VpvVisualModelHolder;
 import org.jboss.tools.vpe.preview.core.util.ActionBarUtil;
 import org.jboss.tools.vpe.preview.core.util.EditorUtil;
 import org.jboss.tools.vpe.preview.core.util.NavigationUtil;
+import org.jboss.tools.vpe.preview.core.util.PlatformUtil;
 import org.jboss.tools.vpe.preview.core.util.SuitableFileExtensions;
 
 /**
@@ -495,6 +496,14 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 //		browser.setUrl(browser.getUrl());
 	}
 	
+	public void refresh(Browser browser) {
+		String url = browser.getUrl();
+		if (PlatformUtil.isWindows()) {
+			url = NavigationUtil.removeAnchor(url);
+		}
+		browser.setUrl(url);
+	}
+	
 	private void formRequestToServer() {
 		IFile ifile = EditorUtil.getFileOpenedInEditor(sourceEditor);
 		if (ifile != null && SuitableFileExtensions.contains(ifile.getFileExtension().toString())) {
@@ -530,8 +539,7 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 			@Override
 			public IStatus runInUIThread(IProgressMonitor monitor) {
 				if (browser != null && !browser.isDisposed()) {
-					String url = NavigationUtil.removeAnchor(browser.getUrl());
-					browser.setUrl(url);
+					refresh(browser);
 				}
 				return Status.OK_STATUS;
 			}
