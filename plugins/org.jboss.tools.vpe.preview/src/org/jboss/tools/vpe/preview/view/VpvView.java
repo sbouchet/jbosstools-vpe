@@ -60,11 +60,12 @@ import org.jboss.tools.vpe.preview.core.exceptions.CannotOpenExternalFileExcepti
 import org.jboss.tools.vpe.preview.core.exceptions.Messages;
 import org.jboss.tools.vpe.preview.core.transform.VpvVisualModel;
 import org.jboss.tools.vpe.preview.core.transform.VpvVisualModelHolder;
-import org.jboss.tools.vpe.preview.core.util.ActionBarUtil;
+import org.jboss.tools.vpe.preview.core.util.ActionBar;
 import org.jboss.tools.vpe.preview.core.util.EditorUtil;
 import org.jboss.tools.vpe.preview.core.util.NavigationUtil;
 import org.jboss.tools.vpe.preview.core.util.PlatformUtil;
 import org.jboss.tools.vpe.preview.core.util.SuitableFileExtensions;
+import org.jboss.tools.vpe.preview.util.ViewActionBar;
 
 /**
  * @author Yahor Radtsevich (yradtsevich)
@@ -75,7 +76,7 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 	public static final String ID = "org.jboss.tools.vpe.vpv.view.VpvView"; //$NON-NLS-1$
 
 	private Browser browser;
-	private ActionBarUtil actionBarUtil;
+	private ActionBar actionBar;
 	private Job currentJob;
 	private VpvVisualModel visualModel;
 	private int modelHolderId;
@@ -134,8 +135,8 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 			inizializeEditorListener(browser, modelHolderId);
 	
 			IActionBars bars = getViewSite().getActionBars();
-			actionBarUtil = new ActionBarUtil(browser, Activator.getDefault().getPreferenceStore());
-			actionBarUtil.fillLocalToolBar(bars.getToolBarManager());
+			actionBar = new ViewActionBar(browser, Activator.getDefault().getPreferenceStore(), this);
+			actionBar.fillLocalToolBar(bars.getToolBarManager());
 		} catch (Throwable t) {
 			errorWrapper.showError(parent, t);
 		}
@@ -221,7 +222,7 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 
 				@Override
 				public void documentChanged(DocumentEvent event) {
-					if (actionBarUtil.isAutomaticRefreshEnabled()) {
+					if (actionBar.isAutomaticRefreshEnabled()) {
 						String fileExtension = EditorUtil.getFileExtensionFromEditor(currentEditor);
 						if (SuitableFileExtensions.isCssOrJs(fileExtension)) {
 							currentEditor.doSave(new NullProgressMonitor()); // saving all js and css stuff
