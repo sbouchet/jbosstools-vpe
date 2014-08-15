@@ -71,7 +71,6 @@ import org.jboss.tools.vpe.preview.util.ViewActionBar;
  * @author Yahor Radtsevich (yradtsevich)
  * @author Ilya Buziuk (ibuziuk)
  */
-@SuppressWarnings("restriction")
 public class VpvView extends ViewPart implements VpvVisualModelHolder {
 	public static final String ID = "org.jboss.tools.vpe.vpv.view.VpvView"; //$NON-NLS-1$
 
@@ -173,6 +172,8 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 	}
 
 	public void editorChanged(IEditorPart editor) {
+		changeControlVisibility(browser, true);
+		browser.getParent().setLayout(new FillLayout());
 		if (currentEditor == editor) {
 			// do nothing
 		} else if (editor == null) {
@@ -299,12 +300,12 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 		removeErrorMessage();
 		if (file != null && file.exists()) {
 			fileExtension = file.getFileExtension();
-			changeControlVisibility(browser, true);
-			browser.getParent().setLayout(new FillLayout());
 		} else {
-			changeControlVisibility(browser, false);
-			errorWrapper.showError(browser.getParent(), 
+			if (editor != null) { //nothing opened - no error message
+				changeControlVisibility(browser, false);
+				errorWrapper.showError(browser.getParent(), 
 					new CannotOpenExternalFileException(MessageFormat.format(Messages.CANNOT_SHOW_EXTERNAL_FILE, VISUAL_PREVIEW)));
+			}
 		}
 		browser.getParent().layout();
 		
