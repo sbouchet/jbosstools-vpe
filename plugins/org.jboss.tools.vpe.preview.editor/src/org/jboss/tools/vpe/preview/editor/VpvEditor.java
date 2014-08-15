@@ -460,6 +460,11 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 			controller.dispose();
 			controller = null;
 		}
+		
+		if (actionBar != null) {
+			actionBar.dispose();
+		}
+		
 		if (browser != null) {
 			browser.dispose();
 			browser = null;

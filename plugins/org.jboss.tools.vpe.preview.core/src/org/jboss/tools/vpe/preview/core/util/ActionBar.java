@@ -81,6 +81,10 @@ public class ActionBar {
 		makeOpenInDefaultBrowserAction();
 		makeEnableAutomaticRefreshAction();
 		makeEnableRefreshOnSaveAction();
+		
+		//initialize save listeners to make refresh options work properly 
+		enableAutomaticRefreshAction.run();
+		enableRefreshOnSaveAction.run();
 	}
 	
 	protected void refresh(Browser browser) {
@@ -166,5 +170,10 @@ public class ActionBar {
 	
 	public boolean isAutomaticRefreshEnabled() {
 		return enableAutomaticRefresh;
+	}
+	
+	public void dispose() {
+		saveCommand.removeExecutionListener(saveListener);
+		saveAllCommand.removeExecutionListener(saveListener);
 	}
 }
