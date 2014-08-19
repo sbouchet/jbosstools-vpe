@@ -318,7 +318,7 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 	}
 	
 	public void addPreviewToolbarItems() {
-		actionBar = new ActionBar(browser, WebUiPlugin.getDefault().getPreferenceStore());
+		actionBar = new VisualEditorActionBar(browser, WebUiPlugin.getDefault().getPreferenceStore(), controller);
 		actionBar.fillLocalToolBar(toolBarManager);
 		toolBarManager.update(true);
 	}
