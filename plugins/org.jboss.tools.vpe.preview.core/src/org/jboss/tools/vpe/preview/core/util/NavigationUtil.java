@@ -31,7 +31,6 @@ import org.w3c.dom.Node;
 /**
  * @author Ilya Buziuk (ibuziuk)
  */
-@SuppressWarnings("restriction")
 public final class NavigationUtil {
 	private static final String VPV_SELECTION_STYLE_ID = "VPV_STYLESHEET_ID";  //$NON-NLS-1$
 	
@@ -52,12 +51,14 @@ public final class NavigationUtil {
 	
 	public static void disableInputs(Browser browser) {
 		if (browser != null && !browser.isDisposed()) {
+			String disablerScript = "var inputs = document.getElementsByTagName('INPUT');" + //$NON-NLS-1$
+	        	      				"for (var i = 0; i < inputs.length; i++) {" + //$NON-NLS-1$
+	        	      					"inputs[i].blur();" + //$NON-NLS-1$ Disabling autofocus
+	        	      					"inputs[i].disabled = true;" + //$NON-NLS-1$
+	        	      				"}"; //$NON-NLS-1$
+			
 			String disableInputs = "function() {" + //$NON-NLS-1$
-					                  "var inputs = document.getElementsByTagName('INPUT');" + //$NON-NLS-1$
-					        	      "for (var i = 0; i < inputs.length; i++) {" + //$NON-NLS-1$
-		                                 "inputs[i].blur();" + //$NON-NLS-1$ Disabling autofocus
-		                                 "inputs[i].disabled = true;" + //$NON-NLS-1$
-		                              "}" + //$NON-NLS-1$
+					                  disablerScript +
 		                           "}"; //$NON-NLS-1$
 			OS platform = PlatformUtil.getOs();
 			if (OS.WINDOWS.equals(platform)) {
@@ -69,6 +70,8 @@ public final class NavigationUtil {
 				}
 				browser.execute("(setTimeout(" + disableInputs + ", "+ timeout +"))();"); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 			}
+			
+			disableDynamic(browser, disablerScript);
 		}
 	}
 
@@ -112,7 +115,7 @@ public final class NavigationUtil {
 	public static String removeAnchor(String url) {
 		int index = url.lastIndexOf('#');
 		if (index != -1) {
-		    url = url.substring(0, index);
+		    return url.substring(0, index);
 		} 
 		return url;
 	}
@@ -216,4 +219,33 @@ public final class NavigationUtil {
 		return id;
 	}
 
+	private static void disableDynamic(Browser browser, String disablerScript) {
+		String script = 
+				"var observeDOM = (function(){" + //$NON-NLS-1$
+			        "var MutationObserver = window.MutationObserver || window.WebKitMutationObserver," + //$NON-NLS-1$
+			            "eventListenerSupported = window.addEventListener;" +  //$NON-NLS-1$
+
+			        "return function(obj, callback){" + //$NON-NLS-1$
+			            "if( MutationObserver ){" + //$NON-NLS-1$
+			                // define a new observer
+			                "var obs = new MutationObserver(function(mutations, observer){" + //$NON-NLS-1$
+			                    "if( mutations[0].addedNodes.length || mutations[0].removedNodes.length )" + //$NON-NLS-1$
+			                        "callback();" + //$NON-NLS-1$
+			                "});" + //$NON-NLS-1$
+			                // have the observer observe for changes in children
+			                "obs.observe( obj, { childList:true, subtree:true });" + //$NON-NLS-1$
+			            "}" + //$NON-NLS-1$
+			            "else if( eventListenerSupported ){" + //$NON-NLS-1$
+			                "obj.addEventListener('DOMNodeInserted', callback, false);" + //$NON-NLS-1$
+			                "obj.addEventListener('DOMNodeRemoved', callback, false);" + //$NON-NLS-1$
+			            "}" + //$NON-NLS-1$
+			        "}" + //$NON-NLS-1$
+			    "})();" + //$NON-NLS-1$
+
+			    // Observe a specific DOM element:
+			    "observeDOM( document.body ,function(){" +  //$NON-NLS-1$
+			    	disablerScript + 
+			    "});"; //$NON-NLS-1$
+		browser.execute(script);
+	}
 }
