@@ -39,10 +39,12 @@ public final class NavigationUtil {
 		
 	public static void disableLinks(Browser browser) {
 		if (browser != null && !browser.isDisposed()) {
+			// IE can't handle 'javascript: void(0);' - JBIDE-18091 StackOverflow error
+			String disableHrefScript = (PlatformUtil.isWindows()) ? "'#'" : "'javascript: void(0);'";  //$NON-NLS-1$ //$NON-NLS-2$ 			
 			browser.execute("(setTimeout(function() { " +  //$NON-NLS-1$
 								"var anchors = document.getElementsByTagName('a');" + //$NON-NLS-1$
 								"for (var i = 0; i < anchors.length; i++) {" + //$NON-NLS-1$
-									"anchors[i].href = 'javascript: void(0);';" + //$NON-NLS-1$
+									"anchors[i].href = " + disableHrefScript + ";" + //$NON-NLS-1$ //$NON-NLS-2$
 									"anchors[i].target = '';" + //$NON-NLS-1$
 								"};" + //$NON-NLS-1$
 					  		"}, 10))();"); //$NON-NLS-1$
