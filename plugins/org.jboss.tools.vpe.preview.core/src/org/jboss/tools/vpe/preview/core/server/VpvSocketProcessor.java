@@ -119,7 +119,7 @@ public class VpvSocketProcessor implements Runnable {
 						inputFromClient.close();
 						clientSocket.close();
 					} catch (IOException e) {
-						Activator.logError(e);
+						//Reporting errors disabled. See JBIDE-17705
 					}
 				}
 			}
@@ -136,7 +136,7 @@ public class VpvSocketProcessor implements Runnable {
 						inputFromClient.close();
 						clientSocket.close();
 					} catch (IOException e) {
-						Activator.logError(e);
+						//Reporting errors disabled. See JBIDE-17705
 					}
 				}
 			}
