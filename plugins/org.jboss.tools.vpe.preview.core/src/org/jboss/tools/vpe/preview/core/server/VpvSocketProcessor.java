@@ -112,14 +112,14 @@ public class VpvSocketProcessor implements Runnable {
 					outputToClient.write(header.getBytes(UTF_8));
 					sendFile(file, outputToClient);
 				} catch (IOException e) {
-					 Activator.logError(e);
+					//Reporting errors disabled. See JBIDE-17705 
 				} finally {
 					try {
 						outputToClient.close();
 						inputFromClient.close();
 						clientSocket.close();
 					} catch (IOException e) {
-						//Reporting errors disabled. See JBIDE-17705
+						Activator.logError(e);
 					}
 				}
 			}
@@ -129,14 +129,14 @@ public class VpvSocketProcessor implements Runnable {
 					outputToClient.write(header.getBytes(UTF_8));
 					outputToClient.write(text.getBytes(UTF_8));
 				} catch (IOException e) {
-					Activator.logError(e);
+					//Reporting errors disabled. See JBIDE-17705
 				} finally {
 					try {
 						outputToClient.close();
 						inputFromClient.close();
 						clientSocket.close();
 					} catch (IOException e) {
-						//Reporting errors disabled. See JBIDE-17705
+						Activator.logError(e);
 					}
 				}
 			}
@@ -148,7 +148,7 @@ public class VpvSocketProcessor implements Runnable {
 		try {
 			outputToClient.write(notFoundHeader.getBytes(UTF_8));
 		} catch (IOException e) {
-			Activator.logError(e);
+			//Reporting errors disabled. See JBIDE-17705
 		} finally {
 			try {
 				outputToClient.close();
@@ -278,7 +278,7 @@ public class VpvSocketProcessor implements Runnable {
         } catch (FileNotFoundException e) {
             Activator.logError(e);
         } catch (IOException e) {
-            Activator.logError(e);
+        	//Reporting errors disabled. See JBIDE-17705
         } finally {
             try {
             	if (fileInputStream != null) {
