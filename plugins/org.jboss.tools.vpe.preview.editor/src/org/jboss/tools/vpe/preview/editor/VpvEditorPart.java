@@ -718,6 +718,14 @@ public class VpvEditorPart extends EditorPart implements IVisualEditor2 {
 		super.dispose();
 	}
 	
+	@Override
+	public Object getAdapter(Class adapter) {
+		if (sourceEditor != null) {
+			return sourceEditor.getAdapter(adapter);
+		} else {
+			return null;
+		}
+	}
 
 	@Override
 	public void maximizeSource() {

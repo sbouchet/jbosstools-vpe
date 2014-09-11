@@ -932,6 +932,7 @@ public class VpeEditorPart extends EditorPart implements
 		super.dispose();
 	}
 
+	@Override
 	public Object getAdapter(Class adapter) {
 		if (sourceEditor != null) {
 			return sourceEditor.getAdapter(adapter);
