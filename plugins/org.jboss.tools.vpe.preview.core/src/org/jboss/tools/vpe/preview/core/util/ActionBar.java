@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.jboss.tools.vpe.preview.core.util;
 
+import static org.jboss.tools.vpe.preview.core.preferences.VpvPreferencesInitializer.REFRESH_ON_CHANGE_PREFERENCES;
+import static org.jboss.tools.vpe.preview.core.preferences.VpvPreferencesInitializer.REFRESH_ON_SAVE_PREFERENCES;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -35,8 +37,6 @@ import org.jboss.tools.vpe.preview.core.Activator;
 
 public abstract class ActionBar {
 	private static final String GROUP_REFRESH = "org.jboss.tools.vpv.refresh"; //$NON-NLS-1$
-	private static final String REFRESH_ON_SAVE_ENABLEMENT = "org.jboss.tools.vpe.enableRefreshOnSave"; //$NON-NLS-1$
-	private static final String REFRESH_ON_CHANGE_ENABLEMENT = "org.jboss.tools.vpe.enableRefreshOnChange"; //$NON-NLS-1$
 
 	private IAction refreshAction;
 	private IAction openInDefaultBrowserAction;
@@ -114,7 +114,7 @@ public abstract class ActionBar {
 			}
 		};
 
-		enableAutomaticRefreshAction.setChecked(preferences.getBoolean(REFRESH_ON_CHANGE_ENABLEMENT));
+		enableAutomaticRefreshAction.setChecked(preferences.getBoolean(REFRESH_ON_CHANGE_PREFERENCES));
 		enableAutomaticRefreshAction.setImageDescriptor(Activator.getImageDescriptor("icons/refresh_on_change.png")); //$NON-NLS-1$
 	}
 
@@ -134,7 +134,7 @@ public abstract class ActionBar {
 			}
 		};
 
-		enableRefreshOnSaveAction.setChecked(preferences.getBoolean(REFRESH_ON_SAVE_ENABLEMENT));
+		enableRefreshOnSaveAction.setChecked(preferences.getBoolean(REFRESH_ON_SAVE_PREFERENCES));
 		enableRefreshOnSaveAction.setImageDescriptor(Activator.getImageDescriptor("icons/refresh_on_save.png")); //$NON-NLS-1$
 	}
 
@@ -176,7 +176,7 @@ public abstract class ActionBar {
 		saveCommand.removeExecutionListener(saveListener);
 		saveAllCommand.removeExecutionListener(saveListener);
 		
-		preferences.setValue(REFRESH_ON_CHANGE_ENABLEMENT, enableAutomaticRefreshAction.isChecked());
-		preferences.setValue(REFRESH_ON_SAVE_ENABLEMENT, enableRefreshOnSaveAction.isChecked());
+		preferences.setValue(REFRESH_ON_CHANGE_PREFERENCES, enableAutomaticRefreshAction.isChecked());
+		preferences.setValue(REFRESH_ON_SAVE_PREFERENCES, enableRefreshOnSaveAction.isChecked());
 	}
 }
