@@ -20,4 +20,8 @@
             file="contexts.xml">
       </contexts>
    </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+               <initializer class="org.jboss.tools.vpe.preview.VpvViewPreferencesInitializer"/>
+   </extension>
 </plugin>
