@@ -629,15 +629,6 @@ public class VpvEditorPart extends EditorPart implements IVisualEditor2 {
 			 * https://issues.jboss.org/browse/JBIDE-11302
 			 */
 			selectionBar = jspMultiPageEditor.getSelectionBar();
-			/*
-			 * https://issues.jboss.org/browse/JBIDE-10711
-			 */
-			if (!XulRunnerBrowser.isCurrentPlatformOfficiallySupported()) {
-				/*
-				 * Set the flag in JSPMultiPageEditor
-				 */
-				jspMultiPageEditor.setXulRunnerBrowserIsNotSupported(true);
-			}
 		}
 	}
 	
@@ -656,18 +647,6 @@ public class VpvEditorPart extends EditorPart implements IVisualEditor2 {
 			vpvPreview.createPartControl(previewContent);
 		} catch (PartInitException e) {
 			VpePlugin.reportProblem(e);
-		}
-		/*
-		 * https://issues.jboss.org/browse/JBIDE-10711
-		 */
-		if (!XulRunnerBrowser.isCurrentPlatformOfficiallySupported()) {
-			if (multiPageEditor instanceof JSPMultiPageEditor) {
-				JSPMultiPageEditor jspMultiPageEditor = (JSPMultiPageEditor) multiPageEditor;
-				/*
-				 * Set the flag in JSPMultiPageEditor
-				 */
-				jspMultiPageEditor.setXulRunnerBrowserIsNotSupported(true);
-			}
 		}
 	}
 	
