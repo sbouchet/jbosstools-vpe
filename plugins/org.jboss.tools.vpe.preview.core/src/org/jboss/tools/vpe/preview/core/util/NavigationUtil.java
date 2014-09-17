@@ -67,13 +67,12 @@ public final class NavigationUtil {
 			String disableInputs = "function() {" + //$NON-NLS-1$
 					                  disablerScript +
 		                           "}"; //$NON-NLS-1$
-			OS platform = PlatformUtil.getOs();
-			if (OS.WINDOWS.equals(platform)) {
+			if (PlatformUtil.isWindows()) {
 				browser.execute("(" + disableInputs + ")();"); //$NON-NLS-1$ //$NON-NLS-2$
 			} else {
 				int timeout = 30;
-				if(OS.LINUX.equals(platform)) {
-					timeout = 150;// timeout increased for old xulrunner 
+				if (PlatformUtil.isLinux()) {
+					timeout = 150; // timeout increased for old xulrunner 
 				}
 				browser.execute("(setTimeout(" + disableInputs + ", "+ timeout +"))();"); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
 			}
@@ -103,7 +102,7 @@ public final class NavigationUtil {
 					                       "head.appendChild(style);" + //$NON-NLS-1$
 					                   "}"; //$NON-NLS-1$
 			
-			if (OS.WINDOWS.equals(PlatformUtil.getOs())) {
+			if (PlatformUtil.isWindows()) {
 				browser.execute("(" + outlineJsFunction + ")();"); //$NON-NLS-1$ //$NON-NLS-2$
 			} else {
 				// JBIDE-17155 Visual Preview: no selection after element changed on Mac Os and Linux
@@ -147,7 +146,7 @@ public final class NavigationUtil {
 	
 	public static void navigateToVisual(IEditorPart currentEditor, Browser browser, VpvVisualModel visualModel, int x, int y) {
 		String stringToEvaluate = ""; //$NON-NLS-1$
-		if (OS.LINUX.equals(PlatformUtil.getOs())) {
+		if (PlatformUtil.isLinux()) {
 			/* outerHTML is not available with XulRunner we shipping, so <code>result</code> variable will be null
 			 * because we make it default browser on Linux this workaround is used
 			 * @see JBIDE-17454

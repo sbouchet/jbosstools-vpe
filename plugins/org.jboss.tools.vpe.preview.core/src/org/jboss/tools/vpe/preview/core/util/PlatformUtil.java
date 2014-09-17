@@ -23,7 +23,20 @@ public final class PlatformUtil {
 	private PlatformUtil() {
 	}
 
-	public static OS getOs() {
+	
+	public static boolean isWindows() {
+		return OS.WINDOWS.equals(getOs());
+	}
+	
+	public static boolean isMacOS() {
+		return OS.MACOS.equals(getOs());
+	}
+	
+	public static boolean isLinux() {
+		return OS.LINUX.equals(getOs());
+	}
+	
+	private static OS getOs() {
 		if (detectedOs == null) {
 			String currentOs = System.getProperty("os.name", "generic").toLowerCase(); //$NON-NLS-1$ //$NON-NLS-2$
 			if ((currentOs.indexOf(MAC) >= 0) || (currentOs.indexOf(DARWIN) >= 0)) {
@@ -37,13 +50,5 @@ public final class PlatformUtil {
 			}
 		}
 		return detectedOs;
-	}
-	
-	public static boolean isWindows() {
-		return OS.WINDOWS.equals(getOs());
-	}
-	
-	public static boolean isMacOS() {
-		return OS.MACOS.equals(getOs());
 	}
 }
