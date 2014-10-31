@@ -13,6 +13,7 @@ public class Messages extends NLS {
 	public static String CURRENT_PLATFORM_IS_NOT_SUPPORTED;
 	public static String CANNOT_SHOW_EXTERNAL_FILE;
 	public static String EDITOR_DOES_NOT_SUPPORT_DOM_MODEL;
+	public static String WEBKIT_NOT_SUPPORTED_PREFERENCES;
 	
 	static {
 		// initialize resource bundle
