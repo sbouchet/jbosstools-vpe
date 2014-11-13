@@ -19,7 +19,6 @@ import org.jboss.tools.vpe.preview.core.util.NavigationUtil;
 /**
  * @author Konstantin Marmalyukov (kmarmaliykov)
  */
-
 public class VisualEditorActionBar extends ActionBar{
 	private IVisualController controller;
 	

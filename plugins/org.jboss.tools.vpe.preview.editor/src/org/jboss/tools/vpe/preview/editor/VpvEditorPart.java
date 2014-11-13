@@ -57,12 +57,10 @@ import org.jboss.tools.vpe.editor.xpl.CustomSashForm;
 import org.jboss.tools.vpe.editor.xpl.CustomSashForm.ICustomSashFormListener;
 import org.jboss.tools.vpe.editor.xpl.EditorSettings;
 import org.jboss.tools.vpe.editor.xpl.SashSetting;
-import org.jboss.tools.vpe.xulrunner.browser.XulRunnerBrowser;
 
 /**
  * @author Konstantin Marmalyukov (kmarmaliykov)
  */
-
 public class VpvEditorPart extends EditorPart implements IVisualEditor2 {
 
 	public static final String ID = "org.jboss.tools.vpe.vpv.views.VpvView"; //$NON-NLS-1$

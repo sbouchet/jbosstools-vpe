@@ -23,8 +23,7 @@ public class Messages extends NLS {
 	public static String VISUAL_PREVIEW;
 
 	static {
-		NLS.initializeMessages(BUNDLE_NAME,
-				Messages.class);
+		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 	
 	private Messages() {

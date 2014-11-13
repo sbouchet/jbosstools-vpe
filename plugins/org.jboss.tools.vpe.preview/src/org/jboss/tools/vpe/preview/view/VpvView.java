@@ -47,7 +47,6 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.EditorReference;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.progress.UIJob;
@@ -143,18 +142,7 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 			errorWrapper.showError(parent, t);
 		}
 	}
-
-	private void inizializeEditorListener(Browser browser, int modelHolderId) {
-		editorListener = new EditorListener();
-		getSite().getPage().addPartListener(editorListener);
-		editorListener.showBootstrapPart();
-	}
-
-	private void inizializeSelectionListener() {
-		selectionListener = new SelectionListener();
-		getSite().getPage().addPostSelectionListener(selectionListener);
-	}
-
+	
 	public void setFocus() {
 		if (browser != null) {
 			browser.setFocus();
@@ -189,6 +177,17 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 			browser.setUrl(ABOUT_BLANK);
 			setCurrentEditor(null);
 		}
+	}
+
+	private void inizializeEditorListener(Browser browser, int modelHolderId) {
+		editorListener = new EditorListener();
+		getSite().getPage().addPartListener(editorListener);
+		editorListener.showBootstrapPart();
+	}
+
+	private void inizializeSelectionListener() {
+		selectionListener = new SelectionListener();
+		getSite().getPage().addPostSelectionListener(selectionListener);
 	}
 
 	private void setCurrentEditor(IEditorPart currentEditor) {
@@ -240,8 +239,6 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 
 		return documentListener;
 	}
-
-	
 
 	private Job createPreviewUpdateJob() {
 		Job job = new UIJob("Preview Update") { //$NON-NLS-1$
@@ -396,7 +393,7 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 		}
 
 		public void showBootstrapPart() {
-			IEditorPart activeEditor = getActivePage().getActiveEditor();
+			IEditorPart activeEditor = EditorUtil.getActivePage().getActiveEditor();
 			formRequestToServer(activeEditor);
 		}
 
@@ -411,9 +408,5 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 			}
 		}
 	}
-	
-	private IWorkbenchPage getActivePage() {
-		return PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-	}
-		
+			
 }

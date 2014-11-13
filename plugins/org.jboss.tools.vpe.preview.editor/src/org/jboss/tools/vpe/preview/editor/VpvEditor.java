@@ -64,7 +64,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.editors.text.ILocationProvider;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.progress.UIJob;
-import org.jboss.tools.common.resref.core.ResourceReference;
 import org.jboss.tools.jst.web.ui.WebUiPlugin;
 import org.jboss.tools.jst.web.ui.internal.editor.preferences.IVpePreferencesPage;
 import org.jboss.tools.vpe.editor.mozilla.MozillaEditor;
@@ -84,12 +83,10 @@ import org.jboss.tools.vpe.preview.core.util.ActionBar;
 import org.jboss.tools.vpe.preview.core.util.EditorUtil;
 import org.jboss.tools.vpe.preview.core.util.NavigationUtil;
 import org.jboss.tools.vpe.preview.core.util.SuitableFileExtensions;
-import org.jboss.tools.vpe.resref.core.CSSReferenceList;
 
 /**
  * @author Konstantin Marmalyukov (kmarmaliykov)
  */
-
 public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReusableEditor{
 	/*
 	 * Paths for tool bar icons
@@ -459,20 +456,6 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 
 	}
 	
-	private void inizializeSelectionListener() {
-		selectionListener = new SelectionListener();
-		getSite().getPage().addPostSelectionListener(selectionListener);	
-	}
-	
-	private ISelection getCurrentSelection() {
-		Activator activator = Activator.getDefault();
-		IWorkbench workbench = activator.getWorkbench();
-		IWorkbenchWindow workbenchWindow = workbench.getActiveWorkbenchWindow();
-		ISelectionService selectionService = workbenchWindow.getSelectionService();
-		ISelection selection = selectionService.getSelection();
-		return selection;
-	}
-	
 	@Override
 	public void setFocus() {
 		if (browser != null) {
@@ -538,7 +521,7 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 	
 	public void reload() {
 		if (browser != null)
-			formRequestToServer();
+		formRequestToServer();
 //		browser.setUrl(browser.getUrl());
 	}
 	
@@ -546,59 +529,6 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 		if (browser != null && !browser.isDisposed()) {
 			browser.setUrl(NavigationUtil.fixUrl(browser));
 		}
-	}
-	
-	private void formRequestToServer() {
-		IFile ifile = EditorUtil.getFileOpenedInEditor(sourceEditor);
-		if (ifile != null && SuitableFileExtensions.contains(ifile.getFileExtension().toString())) {
-			String url;
-			try {
-				url = EditorUtil.formUrl(ifile, modelHolderId, "" + Activator.getDefault().getServer().getPort()); //$NON-NLS-1$
-				browser.setUrl(url);
-				ResourceReference[] csss = CSSReferenceList.getInstance().getAllResources(ifile);
-				for (ResourceReference css : csss) {
-					String path = "file:///" + css.getLocation();
-					String script = "var fileref = document.createElement('link');" + 
-									"fileref.setAttribute('rel', 'stylesheet');" + 
-									"fileref.setAttribute('type', 'text/css');" + 
-									"fileref.setAttribute('href', '" + path + "');" +  
-									"document.getElementsByTagName('head')[0].appendChild(fileref);";
-					browser.execute(script);
-				}
-			} catch (UnsupportedEncodingException e) {
-				Activator.logError(e);
-			}
-		} else {
-			Composite parent = browser.getParent();
-			browser.dispose();
-			browser = null;
-			errorWrapper.showError(parent, 
-					new CannotOpenExternalFileException(MessageFormat.format(Messages.CANNOT_SHOW_EXTERNAL_FILE, VpeUIMessages.VISUAL_EDITOR)));
-		}
-	}
-	
-	private void updatePreview() {
-		if (currentJob == null || currentJob.getState() != Job.WAITING) {
-			if (currentJob != null && currentJob.getState() == Job.SLEEPING) {
-				currentJob.cancel();
-			}
-			currentJob = createPreviewUpdateJob();
-		}
-
-		currentJob.schedule(500);
-	}
-	
-	private Job createPreviewUpdateJob() {
-		Job job = new UIJob("Preview Update") { //$NON-NLS-1$
-			@Override
-			public IStatus runInUIThread(IProgressMonitor monitor) {
-				if (browser != null && !browser.isDisposed()) {
-					refresh(browser);
-				}
-				return Status.OK_STATUS;
-			}
-		};
-		return job;
 	}
 	
 	/**
@@ -634,6 +564,72 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 		getSite().getPage().addPartListener(editorListener);
 	}
 	
+	/**
+	 * @param sourceEditor the sourceEditor to set
+	 */
+	protected void setSourceEditor(IEditorPart sourceEditor) {
+		removeDocumentListener(); // removing old document listener
+		this.sourceEditor = sourceEditor;
+		addDocumentListener(); // adding a new one
+	}
+	
+	private void inizializeSelectionListener() {
+		selectionListener = new SelectionListener();
+		getSite().getPage().addPostSelectionListener(selectionListener);	
+	}
+	
+	private ISelection getCurrentSelection() {
+		Activator activator = Activator.getDefault();
+		IWorkbench workbench = activator.getWorkbench();
+		IWorkbenchWindow workbenchWindow = workbench.getActiveWorkbenchWindow();
+		ISelectionService selectionService = workbenchWindow.getSelectionService();
+		ISelection selection = selectionService.getSelection();
+		return selection;
+	}
+	
+	private void formRequestToServer() {
+		IFile ifile = EditorUtil.getFileOpenedInEditor(sourceEditor);
+		if (ifile != null && SuitableFileExtensions.contains(ifile.getFileExtension().toString())) {
+			String url;
+			try {
+				url = EditorUtil.formUrl(ifile, modelHolderId, "" + Activator.getDefault().getServer().getPort()); //$NON-NLS-1$
+				browser.setUrl(url);
+			} catch (UnsupportedEncodingException e) {
+				Activator.logError(e);
+			}
+		} else {
+			Composite parent = browser.getParent();
+			browser.dispose();
+			browser = null;
+			errorWrapper.showError(parent, 
+					new CannotOpenExternalFileException(MessageFormat.format(Messages.CANNOT_SHOW_EXTERNAL_FILE, VpeUIMessages.VISUAL_EDITOR)));
+		}
+	}
+	
+	private void updatePreview() {
+		if (currentJob == null || currentJob.getState() != Job.WAITING) {
+			if (currentJob != null && currentJob.getState() == Job.SLEEPING) {
+				currentJob.cancel();
+			}
+			currentJob = createPreviewUpdateJob();
+		}
+
+		currentJob.schedule(500);
+	}
+	
+	private Job createPreviewUpdateJob() {
+		Job job = new UIJob("Preview Update") { //$NON-NLS-1$
+			@Override
+			public IStatus runInUIThread(IProgressMonitor monitor) {
+				if (browser != null && !browser.isDisposed()) {
+					refresh(browser);
+				}
+				return Status.OK_STATUS;
+			}
+		};
+		return job;
+	}
+			
 	private class EditorListener implements IPartListener2 {
 
 		@Override
@@ -677,16 +673,7 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 		}
 	}
 
-		
-	/**
-	 * @param sourceEditor the sourceEditor to set
-	 */
-	protected void setSourceEditor(IEditorPart sourceEditor) {
-		removeDocumentListener(); // removing old document listener
-		this.sourceEditor = sourceEditor;
-		addDocumentListener(); // adding a new one
-	}
-	
+			
 	private IDocument getDocument() {
 		return (IDocument) this.sourceEditor.getAdapter(IDocument.class);
 	}

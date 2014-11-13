@@ -19,7 +19,6 @@ import static org.jboss.tools.vpe.preview.core.server.VpvSocketProcessor.UTF_8;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -28,6 +27,8 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.sse.ui.StructuredTextEditor;
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMDocument;
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMModel;
@@ -61,6 +62,10 @@ public final class EditorUtil {
 		} else {
 			return false;
 		}
+	}
+	
+	public static IWorkbenchPage getActivePage() {
+		return PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 	}
 
 	public static Node getNodeFromSelection(IStructuredSelection selection) {

@@ -31,7 +31,6 @@ import org.jboss.tools.vpe.resref.core.TaglibReferenceList;
 /**
  * @author Konstantin Marmalyukov (kmarmaliykov)
  */
-
 public class VpvPageContext extends AbstractPageContext implements IVisualContext {
 	private VpvEditorPart editPart;
 	
