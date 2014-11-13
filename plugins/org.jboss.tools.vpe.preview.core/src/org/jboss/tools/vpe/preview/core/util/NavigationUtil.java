@@ -140,7 +140,7 @@ public final class NavigationUtil {
 		if (PlatformUtil.isWindows()) {
 			return NavigationUtil.removeAnchor(url);
 		} else if (PlatformUtil.isMacOS()) {
-			return (String) browser.evaluate("return window.location.href");
+			return (String) browser.evaluate("return window.location.href"); //$NON-NLS-1$
 		}
 		return url;
 	}

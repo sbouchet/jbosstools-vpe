@@ -26,7 +26,6 @@ import org.jboss.tools.vpe.editor.util.VpePlatformUtil;
 /**
  * @author Konstantin Marmalyukov (kmarmaliykov)
  */
-
 public class VpeEditorPartFactory implements IVisualEditorFactory {	
 	public IVisualEditor createVisualEditor(final EditorPart multiPageEditor, StructuredTextEditor textEditor, int visualMode, BundleMap bundleMap) {
 	    //Since we do not implement the option of showing Visual toolbar for preview editor into Eclipse toolbar - must always show visual toolbar within the editor
