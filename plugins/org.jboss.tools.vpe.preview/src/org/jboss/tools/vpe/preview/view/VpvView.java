@@ -49,6 +49,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.internal.EditorReference;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.progress.UIJob;
@@ -58,6 +59,7 @@ import org.jboss.tools.usage.event.UsageReporter;
 import org.jboss.tools.vpe.preview.Activator;
 import org.jboss.tools.vpe.preview.core.exceptions.BrowserErrorWrapper;
 import org.jboss.tools.vpe.preview.core.exceptions.CannotOpenExternalFileException;
+import org.jboss.tools.vpe.preview.core.exceptions.DomModelNotSupportedException;
 import org.jboss.tools.vpe.preview.core.exceptions.Messages;
 import org.jboss.tools.vpe.preview.core.transform.VpvVisualModel;
 import org.jboss.tools.vpe.preview.core.transform.VpvVisualModelHolder;
@@ -165,6 +167,7 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 	}
 
 	public void editorChanged(IEditorPart editor) {
+		removeErrorMessage();
 		changeControlVisibility(browser, true);
 		browser.getParent().setLayout(new FillLayout());
 		if (currentEditor == editor) {
@@ -178,6 +181,11 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 		} else {
 			browser.setUrl(ABOUT_BLANK);
 			setCurrentEditor(null);
+			if (SuitableFileExtensions.isHTML(EditorUtil.getFileExtensionFromEditor(editor))) {
+				changeControlVisibility(browser, false);
+				errorWrapper.showError(browser.getParent(),
+						new DomModelNotSupportedException(Messages.EDITOR_DOES_NOT_SUPPORT_DOM_MODEL));				
+			}
 		}
 	}
 
@@ -313,7 +321,7 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 			        }
 			    }
 			}
-		} else {
+		} else if (editor != null){
                 if (editor.getEditorInput() instanceof IPathEditorInput) { // handle external file
                     try {
                         IPath externalFile = ((IPathEditorInput) editor.getEditorInput()).getPath();
@@ -322,7 +330,15 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
                     } catch (UnsupportedEncodingException e) {
                         Activator.logError(e);
                     }
-                } else if (editor != null) {//nothing opened - no error message
+                } else if (editor.getEditorInput() instanceof FileStoreEditorInput) { // handle external file
+                    try {
+                        String externalFile = ((FileStoreEditorInput) editor.getEditorInput()).getURI().getPath();
+                        String url = EditorUtil.formUrl(externalFile, modelHolderId, Integer.toString(Activator.getDefault().getServer().getPort()));
+                        browser.setUrl(url);
+                    } catch (UnsupportedEncodingException e) {
+                        Activator.logError(e);
+                    }
+                } else {
                     changeControlVisibility(browser, false);
                     errorWrapper.showError(browser.getParent(),
                             new CannotOpenExternalFileException(MessageFormat.format(Messages.CANNOT_SHOW_EXTERNAL_FILE, VISUAL_PREVIEW)));                    
@@ -403,7 +419,7 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 
 		public void showBootstrapPart() {
 			IEditorPart activeEditor = EditorUtil.getActivePage().getActiveEditor();
-			formRequestToServer(activeEditor);
+			editorChanged(activeEditor);
 		}
 
 	}

@@ -24,7 +24,6 @@ import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.text.IDocument;
@@ -34,7 +33,6 @@ import org.eclipse.wst.sse.core.internal.provisional.IStructuredModel;
 import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocument;
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMModel;
 import org.jboss.tools.vpe.preview.core.Activator;
-import org.jboss.tools.vpe.preview.core.util.SuitableFileExtensions;
 import org.w3c.dom.Document;
 
 /**
@@ -69,7 +67,7 @@ public class VpvController {
     			IDocument document = buffer.getDocument();
     			if (document instanceof IStructuredDocument) {
         			IModelManager modelManager = StructuredModelManager.getModelManager();
-        			sourceModel = modelManager.getModelForEdit((IStructuredDocument)document);
+        			sourceModel = modelManager.getModelForRead((IStructuredDocument)document);
     			}
 			}
 			Document sourceDocument = null;
