@@ -27,9 +27,10 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IPathEditorInput;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.IPathEditorInput;
+import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.wst.sse.ui.StructuredTextEditor;
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMDocument;
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMModel;
@@ -102,7 +103,13 @@ public final class EditorUtil {
 			fileExtension = file.getFileExtension();
 		} else if (editor.getEditorInput() instanceof IPathEditorInput) {
             fileExtension = ((IPathEditorInput)editor.getEditorInput()).getPath().getFileExtension();
-        }
+        } else if (editor.getEditorInput() instanceof FileStoreEditorInput) { // handle external file
+        	String externalFile = ((FileStoreEditorInput) editor.getEditorInput()).getURI().getPath();
+        	int dotIndex = externalFile.lastIndexOf('.');
+        	if (dotIndex > 0) {
+        		fileExtension = externalFile.substring(dotIndex + 1);
+        	}
+        }        
 		return fileExtension;
 	}
 
@@ -134,6 +141,19 @@ public final class EditorUtil {
 	public static String formUrl(IPath file, int modelHolderId, String serverPort) throws UnsupportedEncodingException {
            return HTTP + LOCALHOST + ":" + serverPort + "/" + file.toOSString() + "?" + VIEW_ID + "=" + modelHolderId; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     }
+	
+	/**
+	 * Forms URL for external file to be opened in visual editor
+	 * 
+	 * @param file path to external file to be opened
+	 * @param modelHolderId
+	 * @param serverPort
+	 * @return
+	 * @throws UnsupportedEncodingException
+	 */
+	public static String formUrl(String file, int modelHolderId, String serverPort) throws UnsupportedEncodingException {
+		return HTTP + LOCALHOST + ":" + serverPort + "/" + file + "?" + VIEW_ID + "=" + modelHolderId; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+	}
 	
 	private static IPath getWebRoot(IFile file) {
 		ResourceReference[] resources = AbsoluteFolderReferenceList.getInstance().getAllResources(file);

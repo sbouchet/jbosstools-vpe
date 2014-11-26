@@ -93,6 +93,7 @@ public class XulRunnerErrorWrapper {
 			public void mouseUp(MouseEvent e) {
 			}
 		});
+		parent.getParent().layout(true, true);
 	}
 	
 	/**
