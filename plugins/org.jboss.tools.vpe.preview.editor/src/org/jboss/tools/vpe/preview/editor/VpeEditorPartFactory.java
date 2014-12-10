@@ -48,6 +48,10 @@ public class VpeEditorPartFactory implements IVisualEditorFactory {
 			return getVpeEditor(multiPageEditor, textEditor, visualMode, bundleMap);
 		}
 
+		if (!VpePlatformUtil.isXulrunnerEnabled()) {
+			return getPreviewEditor(multiPageEditor, textEditor, visualMode, bundleMap);
+		}
+		
 	    IEditorInput editorInput = multiPageEditor.getEditorInput();
 		boolean isHtmlFile = false;
 		if (editorInput instanceof IFileEditorInput) { //file opened from workspace

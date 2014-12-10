@@ -530,7 +530,7 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 	public VpvEditorController getController() {
 		return controller;
 	}
-	
+
 	@Override
 	public void setVisualModel(VpvVisualModel visualModel) {
 		this.visualModel = visualModel;
@@ -675,6 +675,10 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 		return documentListener;
 	} 
 
+	public ActionBar getActionBar() {
+		return actionBar;
+	}
+	
 	private class SelectionListener implements ISelectionListener {
 
 		@Override

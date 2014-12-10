@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.jboss.tools.vpe.ui.test">
+      <tests
+            description="Tests for Html editor"
+            name="ests for Html editor"
+            testSuite="org.jboss.tools.vpe.preview.editor.test.HTMLEditorAllTests"
+            importantTestSuite="org.jboss.tools.vpe.preview.editor.test.HTMLEditorAllImportantTests"/>
+      <testProject
+            name="html5-test"
+            path="resources/html5-test"/>
+   </extension>
+
+</plugin>

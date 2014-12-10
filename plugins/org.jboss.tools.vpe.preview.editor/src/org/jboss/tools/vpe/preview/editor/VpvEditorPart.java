@@ -772,12 +772,12 @@ public class VpvEditorPart extends EditorPart implements IVisualEditor2 {
 	}
 
 	@Override
-	public Object getPreviewWebBrowser() {
+	public VpvPreview getPreviewWebBrowser() {
 		return vpvPreview;
 	}
 
 	@Override
-	public Object getVisualEditor() {
+	public VpvEditor getVisualEditor() {
 		return visualEditor;
 	}
 	
