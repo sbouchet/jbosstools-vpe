@@ -61,7 +61,7 @@ import org.jboss.tools.vpe.editor.xpl.SashSetting;
 /**
  * @author Konstantin Marmalyukov (kmarmaliykov)
  */
-public class VpvEditorPart extends EditorPart implements IVisualEditor2 {
+public class VpvEditorPart extends DocumentListeningEditorPart implements IVisualEditor2 {
 
 	public static final String ID = "org.jboss.tools.vpe.vpv.views.VpvView"; //$NON-NLS-1$
 	protected EditorSettings editorSettings;
@@ -86,7 +86,7 @@ public class VpvEditorPart extends EditorPart implements IVisualEditor2 {
 	private ToolBar toolBar = null;
 	
 	IEditorPart activeEditor;
-	
+
 	private VpvEditor visualEditor;
 	private VpvPreview vpvPreview;
 	
@@ -669,6 +669,7 @@ public class VpvEditorPart extends EditorPart implements IVisualEditor2 {
 		}
 		// editor will disposed as part of multipart editor
 		if (sourceEditor != null) {
+			removeDocumentListener(sourceEditor);
 			sourceEditor.dispose();
 			sourceEditor = null;
 		}
@@ -779,6 +780,32 @@ public class VpvEditorPart extends EditorPart implements IVisualEditor2 {
 	@Override
 	public VpvEditor getVisualEditor() {
 		return visualEditor;
+	}
+
+	/**
+	 * Initialize the preview browser.
+	 * Returns false if the browser has been already initialized.
+	 */
+	@Override
+	public boolean initBrowser() {
+		boolean alreadyInitialized = true;
+		if (vpvPreview == null) {
+			createPreviewBrowser();
+			alreadyInitialized = false;
+		}
+
+		addDocumentListener(sourceEditor);
+		return !alreadyInitialized;
+	}
+
+	@Override
+	protected void performAction() {
+		vpvPreview.refresh();
+	}
+
+	@Override
+	protected boolean actionHappening() {
+		return !vpvPreview.getBrowser().isDisposed();
 	}
 	
 	/*
