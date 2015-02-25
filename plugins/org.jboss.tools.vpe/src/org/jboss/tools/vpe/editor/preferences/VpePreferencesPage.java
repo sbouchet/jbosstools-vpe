@@ -105,9 +105,12 @@ public class VpePreferencesPage extends FieldEditorPreferencePage implements
 		pageContainer.setLayout(layout);
 		pageContainer.setLayoutData(gd);
 		
-		visualEditorEngineGroup = createLayoutGroup(pageContainer,
-				SWT.SHADOW_ETCHED_IN,
-				VpeUIMessages.VISUAL_EDITOR_ENGINE_PREFERENCES_GROUP_TITLE);
+		if (PlatformUtil.isLinux()) {
+			visualEditorEngineGroup = createLayoutGroup(pageContainer,
+					SWT.SHADOW_ETCHED_IN,
+					VpeUIMessages.VISUAL_EDITOR_ENGINE_PREFERENCES_GROUP_TITLE);
+		}
+		
 		visualAppearanceGroup = createLayoutGroup(pageContainer,
 				SWT.SHADOW_ETCHED_IN,
 				VpeUIMessages.VISUAL_APPEARANCE_GROUP_TITLE);
