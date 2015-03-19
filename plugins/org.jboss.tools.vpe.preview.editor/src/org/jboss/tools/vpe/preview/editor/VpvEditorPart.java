@@ -208,7 +208,7 @@ public class VpvEditorPart extends EditorPart implements IVisualEditor2 {
 			VpePlugin.getDefault().countVpvTabEvent();
 			setVerticalToolbarVisible(false);
 			if (previewContent != null) {
-			    vpvPreview.refresh(vpvPreview.getBrowser());
+			    vpvPreview.refresh();
 				previewContent.setVisible(true);
 				if (vpvPreview != null) {
 					activeEditor = vpvPreview;
@@ -639,7 +639,7 @@ public class VpvEditorPart extends EditorPart implements IVisualEditor2 {
 			vpvPreview.setEditorLoadWindowListener(new EditorLoadWindowListener() {
 				public void load() {
 					vpvPreview.setEditorLoadWindowListener(null);
-					vpvPreview.load();
+					vpvPreview.refresh();
 				}
 			});
 			vpvPreview.createPartControl(previewContent);
@@ -752,7 +752,7 @@ public class VpvEditorPart extends EditorPart implements IVisualEditor2 {
 			if (controller != null && !controller.isVisualEditorVisible()) {
 				controller.setVisualEditorVisible(true);
 			}
-			visualEditor.reload();
+			visualEditor.refresh();
 		}
 	}
 	
@@ -837,7 +837,7 @@ public class VpvEditorPart extends EditorPart implements IVisualEditor2 {
 			if (fActivePart == multiPageEditor) {
 				if (sourceEditor != null && visualEditor != null) {
 					if (isVisualEditorVisible()) {
-						visualEditor.refresh(visualEditor.getBrowser());
+						visualEditor.refresh();
 					}
 					sourceEditor.safelySanityCheckState(getEditorInput());
 				}

@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.jboss.tools.vpe.preview.editor;
 
+import static org.jboss.tools.vpe.preview.core.server.HttpConstants.ABOUT_BLANK;
+
 import java.io.UnsupportedEncodingException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -512,18 +514,16 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 		}
 	}
 	
-	public void reload() {
-		if (browser != null)
-		formRequestToServer();
-//		browser.setUrl(browser.getUrl());
-	}
-	
-	public void refresh(Browser browser) {
+	public void refresh() {
 		if (browser != null && !browser.isDisposed()) {
-			browser.setUrl(NavigationUtil.fixUrl(browser));
+			if (ABOUT_BLANK.equals(browser.getUrl())) {
+				formRequestToServer();
+			} else {
+				browser.setUrl(NavigationUtil.fixUrl(browser));
+			}
 		}
 	}
-	
+
     /**
      * @return the controller
      */
@@ -575,7 +575,7 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 		return selection;
 	}
 	
-	private void formRequestToServer() {
+	protected void formRequestToServer() {
         IFile ifile = EditorUtil.getFileOpenedInEditor(sourceEditor);
         if (ifile != null) {
             if (SuitableFileExtensions.contains(ifile.getFileExtension().toString())) {
@@ -624,7 +624,7 @@ public class VpvEditor extends EditorPart implements VpvVisualModelHolder, IReus
 			@Override
 			public IStatus runInUIThread(IProgressMonitor monitor) {
 				if (browser != null && !browser.isDisposed()) {
-					refresh(browser);
+					refresh();
 				}
 				return Status.OK_STATUS;
 			}

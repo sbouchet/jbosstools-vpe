@@ -42,8 +42,12 @@ public class VpvPreview extends VpvEditor {
 		}
 	}
 	
-	public void load() {
-		reload();
+	@Override
+	public void refresh() {
+		Browser browser = getBrowser();
+		if (browser != null && !browser.isDisposed()) {
+			formRequestToServer();
+		}
 	}
 	
 	@Override

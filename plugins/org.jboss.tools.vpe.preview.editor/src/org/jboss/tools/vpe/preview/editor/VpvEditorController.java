@@ -159,7 +159,7 @@ public class VpvEditorController extends VisualController implements INodeAdapte
 
 	@Override
 	public void visualRefresh() {
-		visualEditor.reload();
+		visualEditor.refresh();
 	}
 
 	@Override
