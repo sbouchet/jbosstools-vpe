@@ -35,6 +35,6 @@ public class HTMLEditorAllImportantTests {
 	@BeforeClass
 	public static void initialize() {
 		// set this property to make VPE always opened as visual part
-		System.setProperty(VpePlatformUtil.LOAD_XULRUNNER_ENGINE, String.valueOf(false));
+		System.setProperty(VpePlatformUtil.LOAD_DEFAULT_ENGINE, String.valueOf(true));
 	}
 }

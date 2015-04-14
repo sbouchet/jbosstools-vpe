@@ -43,12 +43,11 @@ public class VpeEditorPartFactory implements IVisualEditorFactory {
 	}
 	
 	public IVisualEditor createVisualEditor(final EditorPart multiPageEditor, StructuredTextEditor textEditor, int visualMode, BundleMap bundleMap) {
-	    //this property is added in VPE tests to make VPE always opened 
-	    if (VpePlatformUtil.isXulrunnerEnabled()) {
+	    //return proper visual implementation if it is forced by tests
+	    if (VpePlatformUtil.isXulrunnerForced()) {
 			return getVpeEditor(multiPageEditor, textEditor, visualMode, bundleMap);
 		}
-
-		if (!VpePlatformUtil.isXulrunnerEnabled()) {
+		if (VpePlatformUtil.isDefaultBrowserForced()) {
 			return getPreviewEditor(multiPageEditor, textEditor, visualMode, bundleMap);
 		}
 		

@@ -7,6 +7,7 @@ import org.jboss.tools.vpe.preview.core.util.PlatformUtil;
 
 public class VpePlatformUtil {
 	public static final String LOAD_XULRUNNER_ENGINE = "org.jboss.tools.vpe.engine.xulrunner"; //$NON-NLS-1$
+	public static final String LOAD_DEFAULT_ENGINE = "org.jboss.tools.vpe.engine.default"; //$NON-NLS-1$
 	private static final String SWT_GTK3 = "SWT_GTK3"; //$NON-NLS-1$
 	/* XXX: these constants are duplicated
 	 * in XULRunnerInitializer, see JBIDE-9188 */
@@ -44,10 +45,17 @@ public class VpePlatformUtil {
 	}
 	
 	/**
-	 * @return true if Xulrunner is enabled <b>for tests</b>
+	 * @return true if Xulrunner is forced <b>for tests</b>
 	 */
-	public static boolean isXulrunnerEnabled() {
+	public static boolean isXulrunnerForced() {
 		return Boolean.valueOf(System.getProperty(LOAD_XULRUNNER_ENGINE));
+	}
+	
+	/**
+	 * @return true if system default browser is forced <b>for tests</b>
+	 */
+	public static boolean isDefaultBrowserForced() {
+		return Boolean.valueOf(System.getProperty(LOAD_DEFAULT_ENGINE));
 	}
 	
 	/** 

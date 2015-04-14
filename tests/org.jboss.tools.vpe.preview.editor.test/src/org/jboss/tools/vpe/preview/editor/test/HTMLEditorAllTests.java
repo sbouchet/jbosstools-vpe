@@ -14,7 +14,6 @@ import org.jboss.tools.vpe.editor.util.VpePlatformUtil;
 import org.jboss.tools.vpe.preview.editor.test.editor.OpenEditorTest;
 import org.jboss.tools.vpe.preview.editor.test.editor.PreviewReloadTest;
 import org.jboss.tools.vpe.preview.editor.test.editor.RefrestOptionsTest;
-import org.jboss.tools.vpe.preview.editor.test.editor.ResourcesTest;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -36,6 +35,6 @@ public class HTMLEditorAllTests {
 	@BeforeClass
 	public static void initialize() {
 		// set this property to make VPE always opened as visual part
-		System.setProperty(VpePlatformUtil.LOAD_XULRUNNER_ENGINE, String.valueOf(false));
+		System.setProperty(VpePlatformUtil.LOAD_DEFAULT_ENGINE, String.valueOf(true));
 	}
 }
