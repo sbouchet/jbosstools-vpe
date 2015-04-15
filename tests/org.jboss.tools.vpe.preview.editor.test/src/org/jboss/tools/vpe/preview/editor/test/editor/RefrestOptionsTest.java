@@ -133,7 +133,8 @@ public class RefrestOptionsTest extends RefreshTest{
 		}
 	}
 	
-	@Test
+	//@Test
+	//disabled because of random failures on RHEL6. On RHEL7 works fine
 	public void refreshOnChangeTest() throws Throwable {
 		setException(new Exception("Refresh does not happens")); //$NON-NLS-1$
 		Browser browser = visualEditor.getBrowser();
