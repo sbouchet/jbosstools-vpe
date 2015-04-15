@@ -28,6 +28,7 @@ import org.jboss.tools.jst.web.ui.internal.editor.jspeditor.JSPMultiPageEditor;
 import org.jboss.tools.vpe.preview.editor.VpvEditor;
 import org.jboss.tools.vpe.preview.editor.VpvEditorController;
 import org.jboss.tools.vpe.preview.editor.VpvPreview;
+import org.jboss.tools.vpe.preview.editor.test.PreviewEditorTestPlugin;
 import org.jboss.tools.vpe.preview.editor.test.util.TestUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -90,6 +91,8 @@ public class ResourcesTest extends RefreshTest {
 	
 	@Test
 	public void imagesLoaded() throws Throwable {
+		PreviewEditorTestPlugin.logInfo("Images Loaded test for Preview tab started"); //$NON-NLS-1$
+		
 		VpvEditor visualEditor = controller.getPageContext().getEditPart().getVisualEditor();
 		assertNotNull(visualEditor);
 		
@@ -102,10 +105,12 @@ public class ResourcesTest extends RefreshTest {
 		if (getException() != null) {
 			throw getException();
 		}
+		PreviewEditorTestPlugin.logInfo("Images Loaded test for Preview tab finished"); //$NON-NLS-1$
 	}
 	
 	@Test
 	public void imagesPreviewLoaded() throws Throwable {
+		PreviewEditorTestPlugin.logInfo("Images Loaded test for Preview tab started"); //$NON-NLS-1$
 		editor.pageChange(IVisualEditor.PREVIEW_MODE);
 		TestUtil.waitForJobs();
 		VpvPreview visualPreview = controller.getPageContext().getEditPart().getPreviewWebBrowser();
@@ -120,5 +125,6 @@ public class ResourcesTest extends RefreshTest {
 		if (getException() != null) {
 			throw getException();
 		}
+		PreviewEditorTestPlugin.logInfo("Images Loaded test forPreview tab finished"); //$NON-NLS-1$
 	}
 }

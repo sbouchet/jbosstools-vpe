@@ -27,6 +27,7 @@ import org.jboss.tools.jst.web.ui.internal.editor.editor.IVisualEditor;
 import org.jboss.tools.jst.web.ui.internal.editor.jspeditor.JSPMultiPageEditor;
 import org.jboss.tools.vpe.preview.editor.VpvEditorController;
 import org.jboss.tools.vpe.preview.editor.VpvPreview;
+import org.jboss.tools.vpe.preview.editor.test.PreviewEditorTestPlugin;
 import org.jboss.tools.vpe.preview.editor.test.util.TestUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -61,14 +62,16 @@ public class PreviewReloadTest extends RefreshTest {
 	
 	@Test
 	public void externalUrlReloadTest() throws Throwable {
-		setException(null);
+		PreviewEditorTestPlugin.logInfo("External Url Reload Test started"); //$NON-NLS-1$
 		
+		setException(new Exception("Refresh does not happens")); //$NON-NLS-1$
 		Browser browser = visualPreview.getBrowser();
 		assertNotNull(browser);
 		LocationListener externalUrlListener = new LocationAdapter() {
 			@Override
 			public void changed(LocationEvent event) {
 				setLocationChanged(true);
+				setException(null);
 			}
 		};
 		browser.addLocationListener(externalUrlListener);
@@ -77,6 +80,12 @@ public class PreviewReloadTest extends RefreshTest {
 		
 		browser.removeLocationListener(externalUrlListener);
 		setLocationChanged(false);
+		
+		if (getException() != null) {
+			throw getException();
+		}
+		
+		setException(new Exception("Refresh does not happens")); //$NON-NLS-1$
 		LocationListener pageUrlListener = new LocationAdapter() {
 			@Override
 			public void changed(LocationEvent event) {
@@ -84,6 +93,7 @@ public class PreviewReloadTest extends RefreshTest {
 				assertThat(url, not(ABOUT_BLANK));
 				assertThat(url, startsWith("http://localhost")); //$NON-NLS-1$
 				setLocationChanged(true);
+				setException(null);
 			}
 		};
 		browser.addLocationListener(pageUrlListener);
@@ -93,6 +103,11 @@ public class PreviewReloadTest extends RefreshTest {
 		
 		waitForRefresh();
 		browser.removeLocationListener(pageUrlListener);
+		
+		if (getException() != null) {
+			throw getException();
+		}
+		PreviewEditorTestPlugin.logInfo("External Url Reload Test finished"); //$NON-NLS-1$
 	}
 	
 }

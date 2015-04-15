@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.jboss.tools.vpe.preview.editor.test;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -59,4 +61,11 @@ public class PreviewEditorTestPlugin extends AbstractUIPlugin {
 		return plugin;
 	}
 
+	public static void logError(Throwable e) {
+		getDefault().getLog().log(new Status(IStatus.ERROR, PLUGIN_ID, e.getMessage(), e));
+	}
+	
+	public static void logInfo(String info) {
+		getDefault().getLog().log(new Status(IStatus.INFO, PLUGIN_ID, info));
+	}
 }
