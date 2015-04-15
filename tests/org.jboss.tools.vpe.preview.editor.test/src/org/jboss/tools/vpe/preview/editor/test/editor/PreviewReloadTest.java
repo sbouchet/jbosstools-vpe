@@ -75,7 +75,7 @@ public class PreviewReloadTest extends RefreshTest {
 			}
 		};
 		browser.addLocationListener(externalUrlListener);
-		browser.setUrl("redhat.com"); //$NON-NLS-1$
+		browser.setUrl("https://repository.jboss.org/"); //$NON-NLS-1$
 		waitForRefresh();
 		
 		browser.removeLocationListener(externalUrlListener);
