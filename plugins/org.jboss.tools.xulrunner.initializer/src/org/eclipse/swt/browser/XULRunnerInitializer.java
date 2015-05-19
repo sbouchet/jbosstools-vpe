@@ -9,10 +9,11 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.Bundle;
 
+import static org.eclipse.swt.browser.BrowserInitializer.XULRUNNER_PATH;
+
 public class XULRunnerInitializer {
 
 	private static final String FALSE = "false"; //$NON-NLS-1$
-	private static final String XULRUNNER_PATH = "org.eclipse.swt.browser.XULRunnerPath"; //$NON-NLS-1$
 	private static final String XULRUNNER_ENTRY = "/xulrunner"; //$NON-NLS-1$
 	
 	/* XXX: yradtsevich: these constants are duplicated

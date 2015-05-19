@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.jboss.tools.vpe.preview.editor.test;
 
+import org.jboss.tools.jst.web.ui.WebUiPlugin;
+import org.jboss.tools.jst.web.ui.internal.editor.preferences.IVpePreferencesPage;
 import org.jboss.tools.vpe.editor.util.VpePlatformUtil;
 import org.jboss.tools.vpe.preview.editor.test.editor.OpenEditorTest;
 import org.jboss.tools.vpe.preview.editor.test.editor.PreviewReloadTest;
@@ -36,5 +38,6 @@ public class HTMLEditorAllImportantTests {
 	public static void initialize() {
 		// set this property to make VPE always opened as visual part
 		System.setProperty(VpePlatformUtil.LOAD_DEFAULT_ENGINE, String.valueOf(true));
+		WebUiPlugin.getDefault().getPreferenceStore().setValue(IVpePreferencesPage.USE_VISUAL_EDITOR_FOR_HTML5, Boolean.TRUE.toString());
 	}
 }

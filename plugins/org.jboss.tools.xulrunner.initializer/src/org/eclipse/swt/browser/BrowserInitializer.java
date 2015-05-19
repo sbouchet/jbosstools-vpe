@@ -8,7 +8,8 @@ public class BrowserInitializer {
 
 	private static final String PROPERTY_DEFAULTTYPE = "org.eclipse.swt.browser.DefaultType"; //$NON-NLS-1$
 	private static final String SWT_GTK3 = "SWT_GTK3"; //$NON-NLS-1$
-
+	static final String XULRUNNER_PATH = "org.eclipse.swt.browser.XULRunnerPath"; //$NON-NLS-1$
+	
 	public static boolean isGTK3() {
 		if (Platform.WS_GTK.equals(Platform.getWS())) {
 			try {
@@ -48,13 +49,27 @@ public class BrowserInitializer {
 		if (Platform.OS_LINUX.equals(Platform.getOS())) {
 			String defaultType = System.getProperty(PROPERTY_DEFAULTTYPE);
 			if (defaultType == null) {
-				//loadxulrunner flag on linux must disable only xulrunner engine. But we can use WebKit for Preview
-				boolean XulrunnerCannotBeUsed = isGTK3() 
-											|| !XULRunnerInitializer.EMBEDDED_XULRUNNER_ENABLED 
-											|| WebKitInitializer.WEBKIT_ENABLED_BY_USER;
-				defaultType = XulrunnerCannotBeUsed ? "webkit" : "mozilla"; //$NON-NLS-1$ //$NON-NLS-2$
+				// XULRunner is not ported to GTK3
+				if (isGTK3()) {
+					defaultType = "webkit"; //$NON-NLS-1$
+				} else {
+					// check out browser mode. HTML5 mode is default
+					String mode = Platform.getPreferencesService().getString("org.jboss.tools.jst.web.ui", "Use visual editor for html5 editing", "true", null); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+					if ("false".equals(mode) && XULRunnerInitializer.EMBEDDED_XULRUNNER_ENABLED) { //$NON-NLS-1$
+						defaultType = "mozilla"; //$NON-NLS-1$
+					} else {
+						defaultType = getHTML5Browser();
+					}					
+				}
 				System.setProperty(PROPERTY_DEFAULTTYPE, defaultType);
 			}
 		}
+	}
+	
+	/**
+	 * If XulRunner Path is predefined, we should use mozilla browser implementation
+	 */
+	private static String getHTML5Browser() {
+		return System.getProperty(XULRUNNER_PATH) != null ? "mozilla" : "webkit"; //$NON-NLS-1$ //$NON-NLS-2$
 	}
 }

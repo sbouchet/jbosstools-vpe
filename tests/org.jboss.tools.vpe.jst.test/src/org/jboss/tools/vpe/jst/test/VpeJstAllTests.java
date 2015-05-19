@@ -13,6 +13,8 @@ package org.jboss.tools.vpe.jst.test;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.jboss.tools.jst.web.ui.WebUiPlugin;
+import org.jboss.tools.jst.web.ui.internal.editor.preferences.IVpePreferencesPage;
 import org.jboss.tools.test.util.ProjectImportTestSetup;
 import org.jboss.tools.vpe.editor.util.VpePlatformUtil;
 import org.jboss.tools.vpe.jst.angularjs.test.ca.AngularDynamicCATest;
@@ -25,6 +27,7 @@ public class VpeJstAllTests {
 	public static Test suite() {
 		// set this property to make VPE always opened as visual part
 		System.setProperty(VpePlatformUtil.LOAD_DEFAULT_ENGINE, String.valueOf(true));
+		WebUiPlugin.getDefault().getPreferenceStore().setValue(IVpePreferencesPage.USE_VISUAL_EDITOR_FOR_HTML5, Boolean.TRUE.toString());
 		
 		TestSuite suite = new TestSuite(VpeJstAllTests.class.getName());
 

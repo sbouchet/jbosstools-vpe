@@ -80,6 +80,7 @@ public class VpeTest extends TestCase implements ILogListener {
 	static {
 		//set this property to make VPE always opened as visual part
 		System.setProperty(VpePlatformUtil.LOAD_XULRUNNER_ENGINE, String.valueOf(true));
+		WebUiPlugin.getDefault().getPreferenceStore().setValue(IVpePreferencesPage.USE_VISUAL_EDITOR_FOR_HTML5, Boolean.FALSE.toString());
 	}
 	
 	/**
