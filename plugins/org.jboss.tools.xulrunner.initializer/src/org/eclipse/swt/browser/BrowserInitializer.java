@@ -9,6 +9,7 @@ public class BrowserInitializer {
 	private static final String PROPERTY_DEFAULTTYPE = "org.eclipse.swt.browser.DefaultType"; //$NON-NLS-1$
 	private static final String SWT_GTK3 = "SWT_GTK3"; //$NON-NLS-1$
 	static final String XULRUNNER_PATH = "org.eclipse.swt.browser.XULRunnerPath"; //$NON-NLS-1$
+	public static final String LOAD_DEFAULT_ENGINE = "org.jboss.tools.vpe.engine.default"; //$NON-NLS-1$
 	
 	public static boolean isGTK3() {
 		if (Platform.WS_GTK.equals(Platform.getWS())) {
@@ -70,6 +71,9 @@ public class BrowserInitializer {
 	 * If XulRunner Path is predefined, we should use mozilla browser implementation
 	 */
 	private static String getHTML5Browser() {
+		if (Boolean.valueOf(System.getProperty(LOAD_DEFAULT_ENGINE))) {
+			return "webkit"; //$NON-NLS-1$
+		}
 		return System.getProperty(XULRUNNER_PATH) != null ? "mozilla" : "webkit"; //$NON-NLS-1$ //$NON-NLS-2$
 	}
 }
