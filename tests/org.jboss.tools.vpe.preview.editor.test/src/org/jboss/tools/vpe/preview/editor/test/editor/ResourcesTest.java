@@ -93,17 +93,17 @@ public class ResourcesTest extends RefreshTest {
 	public void imagesLoaded() throws Throwable {
 		PreviewEditorTestPlugin.logInfo("Images Loaded test for Preview tab started"); //$NON-NLS-1$
 		
-		VpvEditor visualEditor = controller.getPageContext().getEditPart().getVisualEditor();
-		assertNotNull(visualEditor);
-		
-		Browser editorBrowser = visualEditor.getBrowser();
-		assertNotNull(editorBrowser);
-		editorBrowser.addLocationListener(locationListener);
-
-		waitForRefresh();
-		
-		if (getException() != null) {
-			throw getException();
+		try {
+			VpvEditor visualEditor = controller.getPageContext().getEditPart().getVisualEditor();
+			assertNotNull(visualEditor);
+			
+			Browser editorBrowser = visualEditor.getBrowser();
+			assertNotNull(editorBrowser);
+			editorBrowser.addLocationListener(locationListener);
+	
+			waitForRefresh();
+		} catch (Exception e) {
+			setException(e);
 		}
 		PreviewEditorTestPlugin.logInfo("Images Loaded test for Preview tab finished"); //$NON-NLS-1$
 	}

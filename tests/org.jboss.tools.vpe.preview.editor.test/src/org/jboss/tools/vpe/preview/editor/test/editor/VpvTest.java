@@ -12,6 +12,7 @@ package org.jboss.tools.vpe.preview.editor.test.editor;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
@@ -61,6 +62,13 @@ public abstract class VpvTest implements ILogListener {
 		setException(null);
 	}
 
+	@After
+	public void failOnException() {
+		if(getException() != null) {
+			fail(getException().getMessage());
+		}
+	}
+	
 	@After
 	public void tearDown() throws Exception {
 		closeEditors();

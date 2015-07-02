@@ -31,6 +31,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.jboss.tools.jst.web.ui.internal.editor.editor.IVisualEditor;
 import org.jboss.tools.jst.web.ui.internal.editor.jspeditor.JSPMultiPageEditor;
+import org.jboss.tools.vpe.preview.core.exceptions.NoEngineException;
 import org.jboss.tools.vpe.preview.editor.Activator;
 import org.jboss.tools.vpe.preview.editor.VpvEditor;
 import org.jboss.tools.vpe.preview.editor.VpvEditorController;
@@ -57,40 +58,46 @@ public class RefrestOptionsTest extends RefreshTest{
 	@Before
 	public void openTestPage() throws CoreException, IOException {
 		setLocationChanged(false);
-		
-		final IFile elementPageFile = (IFile) TestUtil.getComponentPath(PAGE_NAME, PROJECT_NAME);  
-		editor = openEditor(elementPageFile);
-		editor.pageChange(IVisualEditor.VISUALSOURCE_MODE);
-		
-		VpvEditorController controller = TestUtil.getVpvEditorController(editor);
-		visualEditor = controller.getPageContext().getEditPart().getVisualEditor();
-		assertNotNull(visualEditor);
-		
-		TestUtil.waitForJobs();
+		try {	
+			final IFile elementPageFile = (IFile) TestUtil.getComponentPath(PAGE_NAME, PROJECT_NAME);  
+			editor = openEditor(elementPageFile);
+			editor.pageChange(IVisualEditor.VISUALSOURCE_MODE);
+			
+			VpvEditorController controller = TestUtil.getVpvEditorController(editor);
+			visualEditor = controller.getPageContext().getEditPart().getVisualEditor();
+			assertNotNull(visualEditor);
+			
+			TestUtil.waitForJobs();
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
 	}
 	
 	@Test
-	public void norefreshTest() throws Throwable {
+	public void norefreshTest(){
 		setException(null);
-		
-		Browser browser = visualEditor.getBrowser();
-		assertNotNull(browser);
-		LocationListener norefreshListener = new LocationAdapter() {
-			@Override
-			public void changed(LocationEvent event) {
-				fail(event.location);
-			}
-		};
-		browser.addLocationListener(norefreshListener);
-		
-		IPreferenceStore preferences = Activator.getDefault().getPreferenceStore();
-		preferences.setValue(REFRESH_ON_SAVE_PREFERENCES, false);
-		preferences.setValue(REFRESH_ON_CHANGE_PREFERENCES, false);
-		visualEditor.getActionBar().updateRefreshItemsAccordingToPreferences();
-		
-		replaceText(36, 26, "Norefresh replacement text"); //$NON-NLS-1$
-		editor.doSave(new NullProgressMonitor());
-		browser.removeLocationListener(norefreshListener);
+		try {
+			Browser browser = visualEditor.getBrowser();
+			assertNotNull(browser);
+			LocationListener norefreshListener = new LocationAdapter() {
+				@Override
+				public void changed(LocationEvent event) {
+					fail(event.location);
+				}
+			};
+			browser.addLocationListener(norefreshListener);
+			
+			IPreferenceStore preferences = Activator.getDefault().getPreferenceStore();
+			preferences.setValue(REFRESH_ON_SAVE_PREFERENCES, false);
+			preferences.setValue(REFRESH_ON_CHANGE_PREFERENCES, false);
+			visualEditor.getActionBar().updateRefreshItemsAccordingToPreferences();
+			
+			replaceText(36, 26, "Norefresh replacement text"); //$NON-NLS-1$
+			editor.doSave(new NullProgressMonitor());
+			browser.removeLocationListener(norefreshListener);
+		} catch (Exception e) {
+			setException(e);
+		}
 	}
 	
 	//this test is disabled because of unstable working

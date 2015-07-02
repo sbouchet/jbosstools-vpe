@@ -21,6 +21,8 @@ import org.eclipse.wst.sse.core.internal.provisional.IndexedRegion;
 import org.eclipse.wst.sse.ui.internal.contentassist.ContentAssistUtils;
 import org.jboss.tools.jst.web.ui.internal.editor.jspeditor.JSPMultiPageEditor;
 import org.jboss.tools.test.util.JobUtils;
+import org.jboss.tools.test.util.xpl.DisplayDelayHelper;
+import org.jboss.tools.test.util.xpl.DisplayHelper;
 import org.jboss.tools.vpe.base.test.ProjectsLoader;
 import org.jboss.tools.vpe.preview.editor.VpvEditorController;
 import org.jboss.tools.vpe.preview.editor.VpvEditorPart;
@@ -49,13 +51,11 @@ public class TestUtil {
      */
     public static VpvEditorController getVpvEditorController(JSPMultiPageEditor part) {
         VpvEditorPart visualEditor = (VpvEditorPart) part.getVisualEditor();
-        while(visualEditor.getController()==null) {
-			if (!Display.getCurrent().readAndDispatch()) {
-				Display.getCurrent().sleep();
-			}
-        }
+        DisplayHelper helper = new ControllerDisplayHelper(visualEditor);
+        helper.waitForCondition(Display.getCurrent(), 5000);
         return visualEditor.getController();
     }
+
     
     /**
 	 * Gets the component path.
@@ -204,4 +204,17 @@ public class TestUtil {
 		}
 		return resultOffcet;
 	}
+}
+
+class ControllerDisplayHelper extends DisplayHelper {
+	private VpvEditorPart visualEditor;
+	public ControllerDisplayHelper(VpvEditorPart visualEditor) {
+		this.visualEditor = visualEditor;
+	}
+	
+	@Override
+	protected boolean condition() {
+		return visualEditor.getController() != null;
+	}
+	
 }

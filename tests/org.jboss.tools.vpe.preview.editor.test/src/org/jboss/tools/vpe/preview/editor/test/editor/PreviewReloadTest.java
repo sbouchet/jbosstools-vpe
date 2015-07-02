@@ -14,6 +14,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
@@ -46,18 +47,22 @@ public class PreviewReloadTest extends RefreshTest {
 	private VpvPreview visualPreview;
 	
 	@Before
-	public void openTestPage() throws CoreException, IOException {
+	public void openTestPage() {
 		setLocationChanged(false);
 		
-		final IFile elementPageFile = (IFile) TestUtil.getComponentPath(PAGE_NAME, PROJECT_NAME);  
-		editor = openEditor(elementPageFile);
-		editor.pageChange(IVisualEditor.PREVIEW_MODE);
-		
-		VpvEditorController controller = TestUtil.getVpvEditorController(editor);
-		visualPreview = controller.getPageContext().getEditPart().getPreviewWebBrowser();
-		assertNotNull(visualPreview);
-		
-		TestUtil.waitForJobs();
+		try {
+			final IFile elementPageFile = (IFile) TestUtil.getComponentPath(PAGE_NAME, PROJECT_NAME);  
+			editor = openEditor(elementPageFile);
+			editor.pageChange(IVisualEditor.PREVIEW_MODE);
+			
+			VpvEditorController controller = TestUtil.getVpvEditorController(editor);
+			visualPreview = controller.getPageContext().getEditPart().getPreviewWebBrowser();
+			assertNotNull(visualPreview);
+			
+			TestUtil.waitForJobs();
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
 	}
 	
 	@Test
@@ -65,44 +70,48 @@ public class PreviewReloadTest extends RefreshTest {
 		PreviewEditorTestPlugin.logInfo("External Url Reload Test started"); //$NON-NLS-1$
 		
 		setException(new Exception("Refresh does not happens")); //$NON-NLS-1$
-		Browser browser = visualPreview.getBrowser();
-		assertNotNull(browser);
-		LocationListener externalUrlListener = new LocationAdapter() {
-			@Override
-			public void changed(LocationEvent event) {
-				setLocationChanged(true);
-				setException(null);
+		try {
+			Browser browser = visualPreview.getBrowser();
+			assertNotNull(browser);
+			LocationListener externalUrlListener = new LocationAdapter() {
+				@Override
+				public void changed(LocationEvent event) {
+					setLocationChanged(true);
+					setException(null);
+				}
+			};
+			browser.addLocationListener(externalUrlListener);
+			browser.setUrl("https://repository.jboss.org/"); //$NON-NLS-1$
+			waitForRefresh();
+			
+			browser.removeLocationListener(externalUrlListener);
+			setLocationChanged(false);
+			
+			if (getException() != null) {
+				throw getException();
 			}
-		};
-		browser.addLocationListener(externalUrlListener);
-		browser.setUrl("https://repository.jboss.org/"); //$NON-NLS-1$
-		waitForRefresh();
-		
-		browser.removeLocationListener(externalUrlListener);
-		setLocationChanged(false);
-		
-		if (getException() != null) {
-			throw getException();
+			
+			setException(new Exception("Refresh does not happens")); //$NON-NLS-1$
+			LocationListener pageUrlListener = new LocationAdapter() {
+				@Override
+				public void changed(LocationEvent event) {
+					String url = event.location;
+					assertThat(url, not(ABOUT_BLANK));
+					assertThat(url, startsWith("http://localhost")); //$NON-NLS-1$
+					setLocationChanged(true);
+					setException(null);
+				}
+			};
+			browser.addLocationListener(pageUrlListener);
+			editor.pageChange(IVisualEditor.SOURCE_MODE);
+			TestUtil.waitForJobs();
+			editor.pageChange(IVisualEditor.PREVIEW_MODE);
+			
+			waitForRefresh();
+			browser.removeLocationListener(pageUrlListener);
+		} catch (Exception e) {
+			setException(e);
 		}
-		
-		setException(new Exception("Refresh does not happens")); //$NON-NLS-1$
-		LocationListener pageUrlListener = new LocationAdapter() {
-			@Override
-			public void changed(LocationEvent event) {
-				String url = event.location;
-				assertThat(url, not(ABOUT_BLANK));
-				assertThat(url, startsWith("http://localhost")); //$NON-NLS-1$
-				setLocationChanged(true);
-				setException(null);
-			}
-		};
-		browser.addLocationListener(pageUrlListener);
-		editor.pageChange(IVisualEditor.SOURCE_MODE);
-		TestUtil.waitForJobs();
-		editor.pageChange(IVisualEditor.PREVIEW_MODE);
-		
-		waitForRefresh();
-		browser.removeLocationListener(pageUrlListener);
 		
 		if (getException() != null) {
 			throw getException();

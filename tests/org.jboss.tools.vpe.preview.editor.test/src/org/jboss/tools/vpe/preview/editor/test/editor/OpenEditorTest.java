@@ -52,43 +52,52 @@ public class OpenEditorTest extends RefreshTest {
 	}
 	
 	@Test
-	public void openVisualSourceTabTest() throws Throwable {
+	public void openVisualSourceTabTest() {
 		setException(null);
 		setLocationChanged(false);
 		
-		final IFile elementPageFile = (IFile) TestUtil.getComponentPath(PAGE_NAME, PROJECT_NAME);  
-		JSPMultiPageEditor editor = openEditor(elementPageFile);
-		editor.pageChange(IVisualEditor.VISUALSOURCE_MODE);
-
-		VpvEditorController controller = TestUtil.getVpvEditorController(editor);
-		final VpvEditor visualEditor = controller.getPageContext().getEditPart().getVisualEditor();
-		assertNotNull(visualEditor);		
-		Browser editorBrowser = visualEditor.getBrowser();
-		assertNotNull(editorBrowser);
-		editorBrowser.addLocationListener(locationListener);
-
-		waitForRefresh();
-		
-		editorBrowser.removeLocationListener(locationListener);
+		try {
+			final IFile elementPageFile = (IFile) TestUtil.getComponentPath(PAGE_NAME, PROJECT_NAME);  
+			JSPMultiPageEditor editor = openEditor(elementPageFile);
+			editor.pageChange(IVisualEditor.VISUALSOURCE_MODE);
+	
+			VpvEditorController controller = TestUtil.getVpvEditorController(editor);
+			final VpvEditor visualEditor = controller.getPageContext().getEditPart().getVisualEditor();
+			assertNotNull(visualEditor);		
+			Browser editorBrowser = visualEditor.getBrowser();
+			assertNotNull(editorBrowser);
+			editorBrowser.addLocationListener(locationListener);
+	
+			waitForRefresh();
+			
+			editorBrowser.removeLocationListener(locationListener);
+		} catch (Exception e) {
+			setException(e);
+		}
 	}
 	
+	@SuppressWarnings("restriction")
 	@Test
-	public void openPreviewTabTest() throws Throwable {
+	public void openPreviewTabTest() {
 		setException(null);
 		setLocationChanged(false);
 		
-		final IFile elementPageFile = (IFile) TestUtil.getComponentPath(PAGE_NAME, PROJECT_NAME);  
-		JSPMultiPageEditor editor = openEditor(elementPageFile);
-		editor.pageChange(IVisualEditor.PREVIEW_MODE);
-		VpvEditorController controller = TestUtil.getVpvEditorController(editor);
-		VpvPreview preview = controller.getPageContext().getEditPart().getPreviewWebBrowser();
-		assertNotNull(preview);
-		Browser previewBrowser = preview.getBrowser();
-		assertNotNull(previewBrowser);
-		previewBrowser.addLocationListener(locationListener);
-
-		waitForRefresh();
-		
-		previewBrowser.removeLocationListener(locationListener);		
+		try {
+			final IFile elementPageFile = (IFile) TestUtil.getComponentPath(PAGE_NAME, PROJECT_NAME);  
+			JSPMultiPageEditor editor = openEditor(elementPageFile);
+			editor.pageChange(IVisualEditor.PREVIEW_MODE);
+			VpvEditorController controller = TestUtil.getVpvEditorController(editor);
+			VpvPreview preview = controller.getPageContext().getEditPart().getPreviewWebBrowser();
+			assertNotNull(preview);
+			Browser previewBrowser = preview.getBrowser();
+			assertNotNull(previewBrowser);
+			previewBrowser.addLocationListener(locationListener);
+	
+			waitForRefresh();
+			
+			previewBrowser.removeLocationListener(locationListener);
+		} catch (Exception e) {
+			setException(e);
+		}
 	}
 }
