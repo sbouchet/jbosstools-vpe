@@ -80,6 +80,7 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 	private Browser browser;
 	private ActionBar actionBar;
 	private Job currentJob;
+	private Job saveJob;
 	private VpvVisualModel visualModel;
 	private int modelHolderId;
 	private EditorListener editorListener;
@@ -238,12 +239,12 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 					if (actionBar.isAutomaticRefreshEnabled()) {
 						String fileExtension = EditorUtil.getFileExtensionFromEditor(currentEditor);
 						if (SuitableFileExtensions.isCssOrJs(fileExtension)) {
-							currentEditor.doSave(new NullProgressMonitor()); // saving all js and css stuff
+							saveCurrentFile();
+						} else {
+							updatePreview();
 						}
-						updatePreview();
 					}
 				}
-
 			};
 		}
 
@@ -263,6 +264,21 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 		return job;
 	}
 
+	private Job createSaveJob() {
+		Job job = new UIJob("HTML Preview: Saving " + currentEditor.getTitle()) { //$NON-NLS-1$
+			@Override
+			public IStatus runInUIThread(IProgressMonitor monitor) {
+				currentEditor.doSave(new NullProgressMonitor()); // saving all js and css stuff
+				//saving file was delayed - no need to delay refresh
+				if (!browser.isDisposed()) {
+					refresh(browser);
+				}
+				return Status.OK_STATUS;
+			}
+		};
+		return job;
+	}
+ 
 	private void updatePreview() {
 		if (currentJob == null || currentJob.getState() != Job.WAITING) {
 			if (currentJob != null && currentJob.getState() == Job.SLEEPING) {
@@ -274,6 +290,16 @@ public class VpvView extends ViewPart implements VpvVisualModelHolder {
 		currentJob.schedule(500);
 	}
 
+	private void saveCurrentFile() {
+		if (saveJob == null || saveJob.getState() != Job.WAITING) {
+			if (saveJob != null && saveJob.getState() == Job.SLEEPING) {
+				saveJob.cancel();
+			}
+			saveJob = createSaveJob();
+		}
+		saveJob.schedule(500);
+	}
+	
 	private void refresh(Browser browser) {
 		String url = browser.getUrl();
 		if (PlatformUtil.isWindows()) {
