@@ -1,8 +1,20 @@
+/******************************************************************************* 
+ * Copyright (c) 2015 Red Hat, Inc. 
+ * Distributed under license by Red Hat, Inc. All rights reserved. 
+ * This program is made available under the terms of the 
+ * Eclipse Public License v1.0 which accompanies this distribution, 
+ * and is available at http://www.eclipse.org/legal/epl-v10.html 
+ * 
+ * Contributors: 
+ * Red Hat, Inc. - initial API and implementation 
+ ******************************************************************************/
 package org.eclipse.swt.browser;
 
+import java.io.File;
 import java.lang.reflect.Field;
 
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osgi.util.NLS;
 
 public class BrowserInitializer {
 
@@ -42,6 +54,13 @@ public class BrowserInitializer {
 	}
 	
 	static {
+		try {
+			createMozillaProfileDirIfNotExist();
+		} catch (SecurityException e) {
+			System.out.println(NLS.bind(Messages.XULRunnerInitializer_Cannot_check_mozilla_profile_availability, getMozillaEclipseProfilePath()));
+			e.printStackTrace();
+		}
+		
 		/* Under Linux instantiation of WebKit should be avoided,
 		 * because WebKit and XULRunner running simultaneously
 		 * may cause native errors.
@@ -75,5 +94,34 @@ public class BrowserInitializer {
 			return "webkit"; //$NON-NLS-1$
 		}
 		return System.getProperty(XULRUNNER_PATH) != null ? "mozilla" : "webkit"; //$NON-NLS-1$ //$NON-NLS-2$
+	}
+	
+	/**
+	 * Bug 472956 XULRunner crashes when profile path does not exist
+	 * @see <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=472956">Bug 472956</a>
+	 * @see <a href="https://issues.jboss.org/browse/JBIDE-20524">JBIDE-20524</a>
+	 * @throws SecurityException
+	 */
+	private static void createMozillaProfileDirIfNotExist() {
+		String path = getMozillaEclipseProfilePath();
+		if (path != null) {
+			File userHome = new File(System.getProperty("user.home")); //$NON-NLS-1$
+			if (userHome.exists()) {
+				File mozillaProfile = new File(userHome, path);
+				if (!mozillaProfile.exists()) {
+					mozillaProfile.mkdir();
+				}
+			}
+		}
+	}
+
+	private static String getMozillaEclipseProfilePath() {
+		String path = null;
+		if (PlatformUtil.isWindows()) {
+			path = "AppData/Roaming/Mozilla/eclipse"; //$NON-NLS-1$
+		} else if (PlatformUtil.isLinux()) {
+			path = ".mozilla/eclipse"; //$NON-NLS-1$
+		}
+		return path;
 	}
 }
