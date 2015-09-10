@@ -453,6 +453,7 @@ public class VpvEditor extends DocumentListeningEditorPart implements VpvVisualM
 	}
 	
 	public void dispose() {
+		removeDocumentListener(sourceEditor);
 		if (selectionBarCloseListener != null) {
 			WebUiPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(selectionBarCloseListener);
 		}
