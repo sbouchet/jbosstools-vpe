@@ -10,6 +10,7 @@ Require-Bundle: org.eclipse.ui,
  org.junit,
  org.jboss.tools.common,
  org.jboss.tools.vpe.xulrunner,
+ org.jboss.tools.jst.web.ui,
  org.jboss.tools.tests,
  org.mozilla.xpcom
 Bundle-ActivationPolicy: lazy
