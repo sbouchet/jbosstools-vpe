@@ -51,7 +51,7 @@ public class VpvController {
 		this.visualModelHolderRegistry = visualModelHolderRegistry;
 	}
 
-	public void getResource(String path, Integer viewId, ResourceAcceptor resourceAcceptor) {
+	public synchronized void getResource(String path, Integer viewId, ResourceAcceptor resourceAcceptor) {
 		Path workspacePath = new Path(path);
 		IFile requestedFile = null;
 		VpvVisualModel visualModel = null;
