@@ -141,7 +141,6 @@ public class VpvEditorPart extends DocumentListeningEditorPart implements IVisua
 		} else if (input instanceof FileEditorInput) {
 			editorSettings.setInput((FileEditorInput) input);
 		}
-
 	}
 	
 	@Override
@@ -792,9 +791,33 @@ public class VpvEditorPart extends DocumentListeningEditorPart implements IVisua
 		if (vpvPreview == null) {
 			createPreviewBrowser();
 			alreadyInitialized = false;
+			//add documentListener to reload preview for angular CA and remove it on editor close
+			addDocumentListener(sourceEditor);
+			getSite().getPage().addPartListener(new IPartListener() {
+				
+				@Override
+				public void partOpened(IWorkbenchPart part) {
+				}
+				
+				@Override
+				public void partDeactivated(IWorkbenchPart part) {
+				}
+				
+				@Override
+				public void partClosed(IWorkbenchPart part) {
+					removeDocumentListener(sourceEditor);
+				}
+				
+				@Override
+				public void partBroughtToTop(IWorkbenchPart part) {
+				}
+				
+				@Override
+				public void partActivated(IWorkbenchPart part) {
+				}
+			});
 		}
 
-		addDocumentListener(sourceEditor);
 		return !alreadyInitialized;
 	}
 

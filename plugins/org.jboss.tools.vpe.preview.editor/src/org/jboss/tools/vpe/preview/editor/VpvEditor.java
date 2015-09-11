@@ -570,9 +570,8 @@ public class VpvEditor extends DocumentListeningEditorPart implements VpvVisualM
 	 * @param sourceEditor the sourceEditor to set
 	 */
 	protected void setSourceEditor(IEditorPart sourceEditor) {
-		removeDocumentListener(sourceEditor); // removing old document listener
 		this.sourceEditor = sourceEditor;
-		addDocumentListener(sourceEditor); // adding a new one
+		addDocumentListener(sourceEditor);
 	}
 	
 	private void inizializeSelectionListener() {
