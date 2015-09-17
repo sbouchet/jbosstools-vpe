@@ -27,6 +27,7 @@ import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Listener;
+import org.jboss.tools.common.util.PlatformUtil;
 import org.jboss.tools.jst.web.ui.WebUiPlugin;
 import org.jboss.tools.jst.web.ui.internal.editor.preferences.IVpePreferencesPage;
 import org.jboss.tools.vpe.xulrunner.PlatformIsNotSupportedException;
@@ -281,7 +282,7 @@ public class XulRunnerBrowser implements nsIWebBrowserChrome,
 	 * @see <a href="https://issues.jboss.org/browse/JBIDE-18177">JBIDE-18177</a>
 	 */
 	public static void ensureEmbeddedXulRunnerIsNotDisabledByDialog() throws XulRunnerException {
-		if (WebUiPlugin.getDefault().getPreferenceStore().getBoolean(IVpePreferencesPage.USE_VISUAL_EDITOR_FOR_HTML5)) {
+		if (PlatformUtil.isLinux() && WebUiPlugin.getDefault().getPreferenceStore().getBoolean(IVpePreferencesPage.USE_VISUAL_EDITOR_FOR_HTML5)) {
 			throw new XulRunnerException(VpeXulrunnerMessages.XulRunnerBrowser_visualEditorCannotWorkWithWebkit);
 		}
 	}
