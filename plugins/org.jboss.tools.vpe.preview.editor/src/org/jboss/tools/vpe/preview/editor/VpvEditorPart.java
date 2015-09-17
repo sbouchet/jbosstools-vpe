@@ -666,13 +666,6 @@ public class VpvEditorPart extends DocumentListeningEditorPart implements IVisua
 			editorSettings.dispose();
 			editorSettings = null;
 		}
-		// editor will disposed as part of multipart editor
-		if (sourceEditor != null) {
-			removeDocumentListener(sourceEditor);
-			sourceEditor.dispose();
-			sourceEditor = null;
-		}
-
 		if (visualEditor != null) {
 			visualEditor.dispose();
 			visualEditor = null;
@@ -681,6 +674,11 @@ public class VpvEditorPart extends DocumentListeningEditorPart implements IVisua
 		if (vpvPreview != null) {
 			vpvPreview.dispose();
 			vpvPreview=null;
+		}
+		// editor will disposed as part of multipart editor
+		if (sourceEditor != null) {
+			sourceEditor.dispose();
+			sourceEditor = null;
 		}
 		if (previewContent != null) {
 			previewContent.dispose();
@@ -805,7 +803,10 @@ public class VpvEditorPart extends DocumentListeningEditorPart implements IVisua
 				
 				@Override
 				public void partClosed(IWorkbenchPart part) {
-					removeDocumentListener(sourceEditor);
+					if (part.equals(sourceEditor.getEditorPart())) {
+						removeDocumentListener(sourceEditor);
+						getSite().getPage().removePartListener(this);
+					}
 				}
 				
 				@Override
