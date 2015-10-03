@@ -10,8 +10,16 @@
  ******************************************************************************/
 package org.jboss.tools.vpe.xulrunner.test;
 
+import static org.junit.Assume.assumeTrue;
+import static org.junit.Assert.assertNotNull;
+import org.jboss.tools.vpe.base.test.VpeTest;
+import org.junit.Test;
+
 public class XulRunnerBrowserTest extends XulRunnerAbstractTest {
-    public void testXulRunnerBrowser() {
-    	assertNotNull(xulRunnerView);
-    }
+
+	@Test
+	public void testXulRunnerBrowser() {
+		assumeTrue("Not supported environment", !VpeTest.skipTests);
+		assertNotNull(xulRunnerView);
+	}
 }

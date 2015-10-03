@@ -23,7 +23,10 @@ import org.jboss.tools.vpe.base.test.TestUtil;
 import org.jboss.tools.vpe.base.test.VpeTest;
 import org.jboss.tools.vpe.editor.VpeController;
 import org.jboss.tools.vpe.ui.test.VpeUiTests;
+import org.junit.Test;
 import org.mozilla.interfaces.nsIDOMNode;
+import static org.junit.Assert.*;
+import static org.junit.Assume.assumeTrue;
 
 /**
  * Junit test for JBIDE-8115
@@ -35,11 +38,11 @@ public class MultipleSelectionTest extends VpeTest{
  
 	private static final String TEST_CASE="selection/jbide-8115-test-case.html"; //$NON-NLS-1$
 	
-	public MultipleSelectionTest(String name) {
-		super(name);
+	public MultipleSelectionTest() {
 	}
-
+	@Test
 	public void testMultipleSelectionForSimplePage() throws CoreException, IOException{
+		assumeTrue("Not supported environment",!VpeTest.skipTests);
         IFile file = (IFile) TestUtil.getComponentPath(TEST_CASE,
         		VpeUiTests.IMPORT_PROJECT_NAME);
         IEditorInput input = new FileEditorInput(file);
@@ -60,5 +63,4 @@ public class MultipleSelectionTest extends VpeTest{
          */
         assertEquals("Shuld be selected ",4,selectedNodes.size()); //$NON-NLS-1$
 	}
-	
 }

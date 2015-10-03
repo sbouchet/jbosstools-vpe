@@ -13,6 +13,8 @@ package org.jboss.tools.vpe.ui.test;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import javax.annotation.security.RunAs;
+
 import org.jboss.tools.vpe.base.test.VpeTestSetup;
 import org.jboss.tools.vpe.ui.test.dialog.VpeEditAnyDialogTest;
 import org.jboss.tools.vpe.ui.test.dialog.VpeResourcesDialogTest;
@@ -21,22 +23,23 @@ import org.jboss.tools.vpe.ui.test.editor.MultipleSelectionTest;
 import org.jboss.tools.vpe.ui.test.editor.ToggleClassCastTest_Jbide9790;
 import org.jboss.tools.vpe.ui.test.handlers.VpeCommandsTests;
 import org.jboss.tools.vpe.ui.test.preferences.VpeEditorPreferencesPageTest;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 /**
  * @author mareshkau
  *
  */
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+	VpeCommandsTests.class,
+	VpeResourcesDialogTest.class,
+	VpeEditorPreferencesPageTest.class,
+	CustomSashFormTest.class,
+	VpeEditAnyDialogTest.class,
+	MultipleSelectionTest.class,
+	ToggleClassCastTest_Jbide9790.class
+})
 public class VpeUiTests {
-    public static final String IMPORT_PROJECT_NAME = "TestProject"; //$NON-NLS-1$
-	public static Test suite() {
-		TestSuite suite = new TestSuite("UI Tests for vpe"); //$NON-NLS-1$
-		suite.addTestSuite(VpeCommandsTests.class);
-		suite.addTestSuite(VpeResourcesDialogTest.class);
-		suite.addTestSuite(VpeEditorPreferencesPageTest.class);
-		suite.addTestSuite(CustomSashFormTest.class);
-		suite.addTestSuite(VpeEditAnyDialogTest.class);
-		suite.addTestSuite(MultipleSelectionTest.class);
-		suite.addTestSuite(ToggleClassCastTest_Jbide9790.class);
-		return new VpeTestSetup(suite);
-	}
+	public static final String IMPORT_PROJECT_NAME = "TestProject"; //$NON-NLS-1$
 }

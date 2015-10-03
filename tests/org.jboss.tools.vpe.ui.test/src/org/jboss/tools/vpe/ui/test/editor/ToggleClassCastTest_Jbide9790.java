@@ -35,21 +35,22 @@ import org.jboss.tools.vpe.editor.template.VpeToggableTemplate;
 import org.jboss.tools.vpe.editor.util.HTML;
 import org.jboss.tools.vpe.ui.test.VpeUiTests;
 import org.jboss.tools.vpe.xulrunner.editor.XulRunnerEditor;
+import org.junit.Test;
 import org.mozilla.interfaces.nsIDOMDocument;
 import org.mozilla.interfaces.nsIDOMElement;
 import org.mozilla.interfaces.nsIDOMNode;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import static org.junit.Assert.*;
 
 public class ToggleClassCastTest_Jbide9790 extends VpeTest {
 
 	private final String INITIALIZATION_FAILED = "Initialization failed!"; //$NON-NLS-1$
 	private final String FILE_NAME = "facets.jsp"; //$NON-NLS-1$
 	
-	public ToggleClassCastTest_Jbide9790(String name) {
-		super(name);
+	public ToggleClassCastTest_Jbide9790() {
 	}
-
+	@Test
 	public void testCustomTemplate() throws Throwable {
 		IFile file = (IFile) TestUtil.getComponentPath(FILE_NAME,
             	VpeUiTests.IMPORT_PROJECT_NAME);

@@ -12,6 +12,8 @@ package org.jboss.tools.vpe.html.test;
 
 import org.jboss.tools.vpe.html.test.jbide.JBIDE3280Test;
 import org.jboss.tools.vpe.html.test.jbide.TestNPEinPreviewJbide10178;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -20,15 +22,8 @@ import junit.framework.TestSuite;
  * 
  * @author Yahor Radtsevich (yradtsevich)
  */
+
+@RunWith(Suite.class)
+@Suite.SuiteClasses({JBIDE3280Test.class,TestNPEinPreviewJbide10178.class})
 public class HtmlAllImportantTests {
-
-	public static Test suite() {
-		TestSuite suite = new TestSuite(HtmlAllImportantTests.class.getName());
-		//$JUnit-BEGIN$
-		suite.addTestSuite(JBIDE3280Test.class);
-		suite.addTestSuite(TestNPEinPreviewJbide10178.class);
-		//$JUnit-END$
-		return suite;
-	}
-
 }

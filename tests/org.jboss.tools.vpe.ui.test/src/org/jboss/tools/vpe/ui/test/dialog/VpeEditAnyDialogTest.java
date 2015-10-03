@@ -16,13 +16,15 @@ import org.jboss.tools.vpe.editor.template.VpeAnyData;
 import org.jboss.tools.vpe.editor.template.VpeEditAnyDialog;
 import org.jboss.tools.vpe.editor.template.VpeTemplateManager;
 import org.jboss.tools.vpe.editor.util.Constants;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class VpeEditAnyDialogTest extends VpeTest {
 
-	public VpeEditAnyDialogTest(String name) {
-		super(name);
+	public VpeEditAnyDialogTest() {
 	}
-	
+	@Test	
 	public void testVpeEditAnyDialogOpen() throws Throwable {
 		/*
 		 * Create empty data.

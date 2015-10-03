@@ -10,16 +10,15 @@
  ******************************************************************************/
 package org.jboss.tools.vpe.xulrunner.test;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+	XulRunnerBrowserTest.class,
+	DOMCreatingTest.class,
+	XPCOMTest.class,
+	NullpluginTest_JBIDE8792.class
+})
 public class XulRunnerAllTests {
-	public static Test suite() {
-		TestSuite suite = new TestSuite("Test for " + XulRunnerAllTests.class.getName());
-		suite.addTestSuite(XulRunnerBrowserTest.class);
-		suite.addTestSuite(DOMCreatingTest.class);
-		suite.addTestSuite(XPCOMTest.class);
-		suite.addTestSuite(NullpluginTest_JBIDE8792.class);		
-		return suite;
-	}
 }

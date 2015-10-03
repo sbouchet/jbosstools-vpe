@@ -15,16 +15,17 @@ import org.jboss.tools.jst.web.ui.internal.editor.jspeditor.JSPMultiPageEditor;
 import org.jboss.tools.vpe.base.test.TestUtil;
 import org.jboss.tools.vpe.base.test.VpeTest;
 import org.jboss.tools.vpe.html.test.HtmlAllTests;
+import org.junit.Test;
 
 public class TestNPEinPreviewJbide10178 extends VpeTest {
 
 	private static final String TEST_PAGE_NAME="jbide10178/cssInHtml.html"; //$NON-NLS-1$
 	private static final String TEST_PAGE_NAME2="jbide10178/veryLongCssString.html"; //$NON-NLS-1$
 	
-	public TestNPEinPreviewJbide10178(String name) {
-		super(name);
+	public TestNPEinPreviewJbide10178() {
 	}
 
+	@Test
 	public void testNPEinPreviewWhileDecodingUrl() throws Throwable {
 		setException(null);
 		IFile ifile = (IFile) TestUtil.getComponentPath(
@@ -43,7 +44,8 @@ public class TestNPEinPreviewJbide10178 extends VpeTest {
 			jspMultiPageEditor.pageChange(jspMultiPageEditor.getVisualSourceIndex());
 		}
 	}
-	
+
+	@Test
 	public void testNPEinPreviewWhileDecodingUrlInLongCssString() throws Throwable {
 		setException(null);
 		IFile ifile = (IFile) TestUtil.getComponentPath(

@@ -13,7 +13,9 @@ package org.jboss.tools.vpe.base.test;
 
 import static org.jboss.tools.vpe.xulrunner.util.XPCOM.queryInterface;
 
+
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Map;
 
@@ -24,6 +26,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.swt.browser.BrowserInitializer;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
@@ -45,12 +48,18 @@ import org.jboss.tools.vpe.editor.mapping.VpeElementMapping;
 import org.jboss.tools.vpe.editor.mapping.VpeNodeMapping;
 import org.jboss.tools.vpe.editor.util.SelectionUtil;
 import org.jboss.tools.vpe.editor.util.VpePlatformUtil;
+import org.jboss.tools.vpe.xulrunner.browser.XulRunnerBrowser;
 import org.jboss.tools.vpe.xulrunner.editor.XulRunnerEditor;
+import org.junit.After;
+import org.junit.Before;
 import org.mozilla.interfaces.nsIDOMElement;
 import org.mozilla.interfaces.nsIDOMNode;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import static org.junit.Assert.*
+;
+import static org.junit.Assume.assumeTrue;
 
 /**
  * The Class VpeTest.
@@ -59,11 +68,13 @@ import org.w3c.dom.Node;
  * 
  *         Base Class for VPE tests
  */
-public class VpeTest extends TestCase implements ILogListener {
+public class VpeTest implements ILogListener {
 
 	/** Editor in which we open visual page. */
 	protected final static String EDITOR_ID = "org.jboss.tools.jst.jsp.jspeditor.JSPTextEditor"; //$NON-NLS-1$
 
+	public static boolean skipTests = !XulRunnerBrowser.isCurrentPlatformOfficiallySupported() || isGTK3();
+	
 	/** Collects exceptions. */
 	private Throwable exception;
 
@@ -82,16 +93,9 @@ public class VpeTest extends TestCase implements ILogListener {
 		System.setProperty(VpePlatformUtil.LOAD_XULRUNNER_ENGINE, String.valueOf(true));
 		WebUiPlugin.getDefault().getPreferenceStore().setValue(IVpePreferencesPage.USE_VISUAL_EDITOR_FOR_HTML5, Boolean.FALSE.toString());
 	}
-	
-	/**
-	 * The Constructor.
-	 * 
-	 * @param importProjectName
-	 *            * @param name the name
-	 */
 
-	public VpeTest(String name) {
-		super(name);
+	
+	public VpeTest() {
 
 	}
 
@@ -103,9 +107,8 @@ public class VpeTest extends TestCase implements ILogListener {
 	 * 
 	 * @see TestCase#setUp()
 	 */
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 		Platform.addLogListener(this);
 		closeEditors();
 		setException(null);
@@ -119,11 +122,10 @@ public class VpeTest extends TestCase implements ILogListener {
 	 * 
 	 * @see TestCase#tearDown()
 	 */
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		closeEditors();
 		Platform.removeLogListener(this);
-		super.tearDown();
 	}
 
 	/*
@@ -207,6 +209,7 @@ public class VpeTest extends TestCase implements ILogListener {
 	 */
 	protected void performTestForVpeComponent(IFile componentPage)
 			throws PartInitException, Throwable {
+		assumeTrue("Not supported environment",!skipTests);
 		// IFile file = (IFile)
 		// TestUtil.getComponentPath(componentPage,getImportProjectName());
 		IEditorInput input = new FileEditorInput(componentPage);
@@ -240,6 +243,7 @@ public class VpeTest extends TestCase implements ILogListener {
 	 */
 	protected JSPMultiPageEditor openEditor(IEditorInput input)
 			throws PartInitException {
+		assumeTrue("Not supported environment",!skipTests);
 		//set this property to make VPE always opened as visual part
 		System.setProperty(VpePlatformUtil.LOAD_XULRUNNER_ENGINE, String.valueOf(true));
 		
@@ -275,7 +279,7 @@ public class VpeTest extends TestCase implements ILogListener {
 	 */
 	protected JSPMultiPageEditor openEditor(IFile input)
 			throws PartInitException {
-
+		assumeTrue("Not supported environment",!skipTests);
 		// get editor
 		JSPMultiPageEditor part = (JSPMultiPageEditor) IDE.openEditor(PlatformUI
 				.getWorkbench().getActiveWorkbenchWindow().getActivePage(),
@@ -479,5 +483,40 @@ public class VpeTest extends TestCase implements ILogListener {
 	 */
 	protected static nsIDOMNode getSelectedNode(XulRunnerEditor xulRunnerEditor){
 		return (xulRunnerEditor.getSelectedNodes().size()>0)?xulRunnerEditor.getSelectedNodes().get(0):null;
+	}
+	
+	private static final String PROPERTY_DEFAULTTYPE = "org.eclipse.swt.browser.DefaultType"; //$NON-NLS-1$
+	private static final String SWT_GTK3 = "SWT_GTK3"; //$NON-NLS-1$
+	static final String XULRUNNER_PATH = "org.eclipse.swt.browser.XULRunnerPath"; //$NON-NLS-1$
+	public static final String LOAD_DEFAULT_ENGINE = "org.jboss.tools.vpe.engine.default"; //$NON-NLS-1$
+	
+	public static boolean isGTK3() {
+		if (Platform.WS_GTK.equals(Platform.getWS())) {
+			try {
+				Class<?> clazz = Class.forName("org.eclipse.swt.internal.gtk.OS"); //$NON-NLS-1$
+				Field field = clazz.getDeclaredField("GTK3"); //$NON-NLS-1$
+				boolean gtk3 = field.getBoolean(field);
+				return gtk3;
+			} catch (ClassNotFoundException e) {
+				return isGTK3Env();
+			} catch (NoSuchFieldException e) {
+				return false;
+			} catch (SecurityException e) {
+				return isGTK3Env();
+			} catch (IllegalArgumentException e) {
+				return isGTK3Env();
+			} catch (IllegalAccessException e) {
+				return isGTK3Env();
+			}
+		}
+		return false;
+	}
+
+	private static boolean isGTK3Env() {
+		String gtk3 = System.getProperty(SWT_GTK3);
+		if (gtk3 == null) {
+			gtk3 = System.getenv(SWT_GTK3);
+		}
+		return !"0".equals(gtk3); //$NON-NLS-1$
 	}
 }

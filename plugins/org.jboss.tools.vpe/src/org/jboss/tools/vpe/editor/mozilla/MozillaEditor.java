@@ -678,7 +678,9 @@ public class MozillaEditor extends EditorPart implements IReusableEditor {
 	}
 
 	public void dispose() {
-		WebUiPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(selectionBarCloseListener);
+		if(selectionBarCloseListener!=null) {
+			WebUiPlugin.getDefault().getPreferenceStore().removePropertyChangeListener(selectionBarCloseListener);
+		}
 		
 		if (vpeToolBarManager != null) {
 			vpeToolBarManager.dispose();

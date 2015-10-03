@@ -11,14 +11,19 @@
 package org.jboss.tools.vpe.ui.test;
 
 import java.lang.reflect.Method;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import java.util.List;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.Platform;
+import org.junit.internal.builders.AnnotatedBuilder;
+import org.junit.internal.builders.JUnit4Builder;
+import org.junit.runners.Suite;
 import org.osgi.framework.Bundle;
+
+import junit.framework.JUnit4TestAdapter;
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 /**
  * @author Max Areshkau
@@ -47,13 +52,10 @@ public class VpeAllTests {
 						Bundle bundle = Platform.getBundle(configurationElement
 								.getNamespaceIdentifier());
 						Class<?> testObject = bundle.loadClass(clazz);
-						Method method = testObject.getMethod(METHOD_SUITE_NAME, null);
+						JUnit4TestAdapter adapter = new JUnit4TestAdapter(testObject);
 						// null -because static method
-						Object res = method.invoke(null, null);
-						if (res instanceof Test) {
-							Test testSuite = (Test) res;
-							result.addTest(testSuite);
-						}
+						result.addTest(adapter);
+
 					} catch (Exception e) {
 						VPETestPlugin.getDefault().logError(e);
 					}

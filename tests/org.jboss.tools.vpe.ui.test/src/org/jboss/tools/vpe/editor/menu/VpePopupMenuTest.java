@@ -35,7 +35,9 @@ import org.jboss.tools.vpe.editor.mozilla.MozillaEditor;
 import org.jboss.tools.vpe.editor.util.SelectionUtil;
 import org.jboss.tools.vpe.messages.VpeUIMessages;
 import org.jboss.tools.vpe.ui.test.VpeUiTests;
+import org.junit.Test;
 import org.w3c.dom.Node;
+import static org.junit.Assert.*;
 
 /**
  * Performs tests for the VPE pop-up menu. 
@@ -62,10 +64,10 @@ public class VpePopupMenuTest extends VpeTest {
 	private final String INITIALIZATION_FAILED = "Initialization failed!"; //$NON-NLS-1$
 	private final String FILE_NAME = "hello.jsp"; //$NON-NLS-1$
 
-	public VpePopupMenuTest(String name) {
-		super(name);
+	public VpePopupMenuTest() {
 	}
 	
+	@Test
 	public void testPopupMenu() throws Throwable {
         IFile file = (IFile) TestUtil.getComponentPath(FILE_NAME,
             	VpeUiTests.IMPORT_PROJECT_NAME);

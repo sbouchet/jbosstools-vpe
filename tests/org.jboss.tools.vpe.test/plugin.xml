@@ -5,7 +5,7 @@
          point="org.jboss.tools.vpe.ui.test">
       <tests
             testSuite="org.jboss.tools.vpe.test.VpeAllTests"
-            importantTestSuite="org.jboss.tools.vpe.test.VpeAllImportantTests">
+            importantTestSuite="org.jboss.tools.vpe.test.VpeAllTests">
       </tests>
    </extension>
 

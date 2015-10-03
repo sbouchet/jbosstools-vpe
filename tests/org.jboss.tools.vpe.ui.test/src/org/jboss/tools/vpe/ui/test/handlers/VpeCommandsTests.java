@@ -55,6 +55,11 @@ import org.jboss.tools.vpe.handlers.ShowBundleAsELHandler;
 import org.jboss.tools.vpe.handlers.ShowNonVisualTagsHandler;
 import org.jboss.tools.vpe.handlers.ShowTextFormattingHandler;
 import org.jboss.tools.vpe.ui.test.VpeUiTests;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+import static org.junit.Assume.assumeTrue;
 
 /**
  * Class which created for testing VPE commands behavior, see
@@ -105,8 +110,9 @@ public class VpeCommandsTests extends VpeTest {
 				showTextFormattingToogleState);
 	}
 
+	@Before
 	@Override
-	protected void setUp() throws Exception {
+	public void setUp() throws Exception {
 		super.setUp();
 		ICommandService commandService = (ICommandService) PlatformUI
 				.getWorkbench().getService(ICommandService.class);
@@ -131,8 +137,7 @@ public class VpeCommandsTests extends VpeTest {
 				.getService(IHandlerService.class);
 	}
 
-	public VpeCommandsTests(String name) {
-		super(name);
+	public VpeCommandsTests() {
 	}
 
 	/**
@@ -140,6 +145,7 @@ public class VpeCommandsTests extends VpeTest {
 	 * 
 	 * @throws Throwable
 	 */
+	@Test
 	public void testCommandState() throws Throwable {
 		JSPMultiPageEditor multiPageEditor = openInputUserNameJsp();
 		checkCommandState(true);
@@ -156,6 +162,7 @@ public class VpeCommandsTests extends VpeTest {
 	 * 
 	 * @throws Throwable
 	 */
+	@Test
 	public void testRotateEditors() throws Throwable {
 
 		JSPMultiPageEditor multiPageEditor = openInputUserNameJsp();
@@ -201,6 +208,7 @@ public class VpeCommandsTests extends VpeTest {
 	 * 
 	 * @throws Throwable
 	 */
+	@Test
 	public void testShowBorderForUnknownTags() throws Throwable {
 
 		JSPMultiPageEditor multiPageEditor = openInputUserNameJsp();
@@ -241,6 +249,7 @@ public class VpeCommandsTests extends VpeTest {
 	 * 
 	 * @throws Throwable
 	 */
+	@Test
 	public void testShowNonVisualTags() throws Throwable {
 
 		JSPMultiPageEditor multiPageEditor = openInputUserNameJsp();
@@ -285,6 +294,7 @@ public class VpeCommandsTests extends VpeTest {
 	 * 
 	 * @throws Throwable
 	 */
+	@Test
 	public void testShowBundleAsEL() throws Throwable {
 
 		JSPMultiPageEditor multiPageEditor = openInputUserNameJsp();
@@ -323,6 +333,7 @@ public class VpeCommandsTests extends VpeTest {
 	 * 
 	 * @throws Throwable
 	 */
+	@Test
 	public void testShowTextFormattingBar() throws Throwable {
 
 		JSPMultiPageEditor multiPageEditor = openInputUserNameJsp();
@@ -367,6 +378,7 @@ public class VpeCommandsTests extends VpeTest {
 			IOException, SecurityException, IllegalArgumentException,
 			NoSuchMethodException, IllegalAccessException,
 			InvocationTargetException {
+		assumeTrue("Not supported environment",!VpeTest.skipTests);
 		IFile vpeFile = (IFile) TestUtil.getComponentPath("inputUserName.jsp", //$NON-NLS-1$
 				VpeUiTests.IMPORT_PROJECT_NAME);
 		return openFileInVpe(vpeFile);

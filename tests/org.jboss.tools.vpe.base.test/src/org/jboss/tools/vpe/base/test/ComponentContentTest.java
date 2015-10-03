@@ -10,6 +10,9 @@
  ******************************************************************************/
 package org.jboss.tools.vpe.base.test;
 
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assume.assumeThat;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -26,6 +29,7 @@ import org.jboss.tools.test.util.WorkbenchUtils;
 import org.jboss.tools.vpe.editor.VpeController;
 import org.jboss.tools.vpe.editor.mapping.VpeNodeMapping;
 import org.jboss.tools.vpe.editor.util.SourceDomUtil;
+import org.junit.Assume;
 import org.jboss.tools.vpe.base.test.VpeTest;
 import org.mozilla.interfaces.nsIDOMElement;
 import org.mozilla.interfaces.nsIDOMNode;
@@ -33,7 +37,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
+import static org.junit.Assert.*;
+import static org.junit.Assume.assumeTrue;
 /**
  * @author Sergey Dzmitrovich
  * 
@@ -42,8 +47,7 @@ public abstract class ComponentContentTest extends VpeTest {
 
 	public static final String XML_FILE_EXTENSION = ".xml"; //$NON-NLS-1$
 
-	public ComponentContentTest(String name) {
-		super(name);
+	public ComponentContentTest() {
 	}
 
 	/**
@@ -71,6 +75,7 @@ public abstract class ComponentContentTest extends VpeTest {
 	}
 	
 	protected void performContentTestByFullPath(String elementPagePath) throws Throwable {
+		assumeTrue("Not supported environment",!VpeTest.skipTests);
 		setException(null);
 		IFile elementPageFile = (IFile) TestUtil.getComponentFileByFullPath(
 				elementPagePath, getTestProjectName());
@@ -210,7 +215,7 @@ public abstract class ComponentContentTest extends VpeTest {
 	 */
 	protected void performInvisibleTagTestByFullPath(String elementPagePath,
 			String elementId) throws Throwable {
-		
+		assumeTrue("Not supported environment",!VpeTest.skipTests);
 		IFile elementPageFile = (IFile) TestUtil.getComponentFileByFullPath(
 				elementPagePath, getTestProjectName());
 		/*
@@ -284,6 +289,7 @@ public abstract class ComponentContentTest extends VpeTest {
 	 */
 	protected void performInvisibleWrapperTagTest(String elementPagePath,
 			String elementId) throws Throwable {
+		assumeTrue("Not supported environment",!VpeTest.skipTests);
 		setException(null);
 
 		IFile elementPageFile = (IFile) TestUtil.getComponentPath(
@@ -351,6 +357,7 @@ public abstract class ComponentContentTest extends VpeTest {
 	}
 
 	protected void performStyleTest(String elementPagePath) throws Throwable {
+		Assume.assumeTrue("Not supported environment",!VpeTest.skipTests);
 		String fullelementPagePath = TestUtil.COMPONENTS_PATH + elementPagePath; 
 		IFile elementPageFile = (IFile) TestUtil.getComponentFileByFullPath(
 				fullelementPagePath, getTestProjectName());

@@ -19,16 +19,16 @@ import org.jboss.tools.vpe.base.test.TestUtil;
 import org.jboss.tools.vpe.base.test.VpeTest;
 import org.jboss.tools.vpe.editor.VpeEditorPart;
 import org.jboss.tools.vpe.ui.test.VpeUiTests;
+import org.junit.Test;
 
 public class CustomSashFormTest extends VpeTest {
 
     private final String FILE_NAME_ONE = "hello.jsp"; //$NON-NLS-1$
     private final String FILE_NAME_TWO = "inputUserName.jsp"; //$NON-NLS-1$
     
-    public CustomSashFormTest(String name) {
-	super(name);
+    public CustomSashFormTest() {
     }
-
+	@Test
     public void testSashChangesInJBIDE3140() throws Throwable {
         IFile file1 = (IFile) TestUtil.getComponentPath(FILE_NAME_ONE,
         	VpeUiTests.IMPORT_PROJECT_NAME);

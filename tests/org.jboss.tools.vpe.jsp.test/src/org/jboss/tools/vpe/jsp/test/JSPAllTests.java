@@ -11,10 +11,18 @@
 package org.jboss.tools.vpe.jsp.test;
 
 import org.jboss.tools.vpe.base.test.VpeTestSetup;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses({
+	JSPComponentTest.class,
+	JSPTemplatePluginTest.class,
+	JSPComponentContentTest.class,
+})
 public class JSPAllTests {
 	
     // import project name
@@ -24,9 +32,9 @@ public class JSPAllTests {
 		TestSuite suite = new TestSuite("Tests for Vpe JSP components"); //$NON-NLS-1$
 		// $JUnit-BEGIN$
 	
-		suite.addTestSuite(JSPComponentTest.class);
-		suite.addTestSuite(JSPTemplatePluginTest.class);
-		suite.addTestSuite(JSPComponentContentTest.class);
+//		suite.addTestSuite(JSPComponentTest.class);
+//		suite.addTestSuite(JSPTemplatePluginTest.class);
+//		suite.addTestSuite(JSPComponentContentTest.class);
 		// $JUnit-END$
 		return new VpeTestSetup(suite);
     }

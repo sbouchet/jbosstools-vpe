@@ -33,6 +33,7 @@ import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.api.Invocation;
 import org.jmock.lib.action.CustomAction;
+import org.junit.Test;
 import org.mozilla.interfaces.nsIDOMElement;
 import org.mozilla.interfaces.nsIDOMEventTarget;
 import org.mozilla.interfaces.nsIDOMMouseEvent;
@@ -45,6 +46,7 @@ import org.mozilla.interfaces.nsISupportsArray;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
+import static org.junit.Assert.*;
 
 /**
  * Tests Drag&Drop functionality of the VPE.
@@ -72,13 +74,13 @@ public class DnD_JBIDE5042_JBIDE6229_Test  extends VpeTest {
 	private static final Point DROP_POINT = new Point(150, 10);
 	private Mockery context = new Mockery();
 
-	public DnD_JBIDE5042_JBIDE6229_Test(String name) {
-		super(name);
+	public DnD_JBIDE5042_JBIDE6229_Test() {
 	}
 	
 	/**
 	 * Try to open two pages in VPE and refresh them n times.
 	 */
+	@Test
 	public void testElementDnDWithMocks() throws Throwable {
 		setException(null);
 
@@ -103,7 +105,7 @@ public class DnD_JBIDE5042_JBIDE6229_Test  extends VpeTest {
 			throw getException();
 		}
 	}
-
+	@Test
 	public void testTextDnDWithMocks() throws Throwable {
 		setException(null);
 	

@@ -15,6 +15,8 @@ import junit.framework.TestSuite;
 
 import org.jboss.tools.vpe.base.test.VpeTestSetup;
 import org.jboss.tools.vpe.editor.util.VpePlatformUtil;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 
 /**
@@ -24,6 +26,8 @@ import org.jboss.tools.vpe.editor.util.VpePlatformUtil;
  * 
  */
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses({HtmlAllImportantTests.class,HtmlComponentContentTest.class})
 public class HtmlAllTests {
 	
 	// import project name
@@ -35,8 +39,8 @@ public class HtmlAllTests {
 		
 		TestSuite suite = new TestSuite("Tests for Vpe HTML components"); //$NON-NLS-1$
 		// $JUnit-BEGIN$
-		suite.addTest(HtmlAllImportantTests.suite());
-		suite.addTestSuite(HtmlComponentContentTest.class);
+//		suite.addTest(HtmlAllImportantTests.suite());
+//		suite.addTestSuite(HtmlComponentContentTest.class);
 		//$JUnit-END$
 		return new VpeTestSetup(suite);
 	}

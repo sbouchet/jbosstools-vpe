@@ -11,6 +11,8 @@
 package org.jboss.tools.vpe.spring.test;
 
 import org.jboss.tools.vpe.base.test.VpeTestSetup;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -22,19 +24,12 @@ import junit.framework.TestSuite;
  * 
  */
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses({SpringComponentContentTest.class})
 public class SpringAllTests {
 
 	/*
 	 * Import project name
 	 */
 	public static final String IMPORT_PROJECT_NAME = "SpringTest"; //$NON-NLS-1$
-	
-	public static Test suite() {
-		TestSuite suite = new TestSuite("Tests for Vpe Spring components"); //$NON-NLS-1$
-		// $JUnit-BEGIN$
-		suite.addTestSuite(SpringComponentContentTest.class);
-		//cleanUpTests();
-		// $JUnit-END$
-		return new VpeTestSetup(suite);
-	}
 }

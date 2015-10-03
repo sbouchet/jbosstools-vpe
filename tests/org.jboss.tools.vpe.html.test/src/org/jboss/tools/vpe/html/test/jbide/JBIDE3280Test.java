@@ -10,22 +10,24 @@
   ******************************************************************************/
 package org.jboss.tools.vpe.html.test.jbide;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assume.assumeTrue;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.jboss.tools.jst.web.ui.internal.editor.jspeditor.JSPMultiPageEditor;
-import org.jboss.tools.vpe.VpeDebug;
 import org.jboss.tools.vpe.base.test.TestUtil;
 import org.jboss.tools.vpe.base.test.VpeTest;
 import org.jboss.tools.vpe.editor.VpeController;
 import org.jboss.tools.vpe.editor.mozilla.MozillaEditor;
 import org.jboss.tools.vpe.editor.util.HTML;
 import org.jboss.tools.vpe.html.test.HtmlAllTests;
-import org.jboss.tools.vpe.xulrunner.util.DOMTreeDumper;
+import org.junit.Test;
 import org.mozilla.interfaces.nsIDOMDocument;
-
 /**
  * Check if style of body before refresh equals style of body after refresh
  * 
@@ -36,11 +38,12 @@ public class JBIDE3280Test extends VpeTest {
 
 	private static final String TEST_PAGE_NAME="jbide3280/jbide3280.html"; //$NON-NLS-1$
 	
-	public JBIDE3280Test(String name) {
-		super(name);
+	public JBIDE3280Test() {
 	}
 	
+	@Test
 	public void testJBIDE3280() throws Throwable {
+		assumeTrue("Not supported environment",!VpeTest.skipTests);
 		setException(null);
 
 		IFile elementPageFile = (IFile) TestUtil.getComponentPath(

@@ -18,15 +18,18 @@ import org.jboss.tools.vpe.base.test.VpeTest;
 import org.jboss.tools.vpe.editor.util.VpeStyleUtil;
 import org.jboss.tools.vpe.resref.core.VpeResourcesDialog;
 import org.jboss.tools.vpe.ui.test.VpeUiTests;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class VpeResourcesDialogTest extends VpeTest {
 
 	private final String FILE_NAME = "hello.jsp"; //$NON-NLS-1$
 
-	public VpeResourcesDialogTest(String name) {
-		super(name);
+	public VpeResourcesDialogTest() {
 	}
-
+	
+	@Test
 	public void testVpeResourcesDialogOpen() throws Throwable {
 		IFile file = (IFile) TestUtil.getComponentPath(FILE_NAME,
 				VpeUiTests.IMPORT_PROJECT_NAME);

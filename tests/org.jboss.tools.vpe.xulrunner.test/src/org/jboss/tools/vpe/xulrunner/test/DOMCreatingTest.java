@@ -10,6 +10,14 @@
  ******************************************************************************/
 package org.jboss.tools.vpe.xulrunner.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
+
+import org.jboss.tools.vpe.base.test.VpeTest;
+import org.junit.After;
+import org.junit.Test;
 import org.mozilla.interfaces.nsIDOMAttr;
 import org.mozilla.interfaces.nsIDOMDocument;
 import org.mozilla.interfaces.nsIDOMElement;
@@ -28,19 +36,19 @@ public class DOMCreatingTest extends XulRunnerAbstractTest {
 	 * Tests possability add and remove dom elements.
 	 * 
 	 */
+	@Test
 	public void testAddRemovingDOMElements() {
-	    	nsIDOMDocument domDocument = xulRunnerEditor.getDOMDocument();
+		assumeTrue("Not supported environment", !VpeTest.skipTests);
+		nsIDOMDocument domDocument = xulRunnerEditor.getDOMDocument();
 		nsIDOMElement root = domDocument.getDocumentElement();
 		nsIDOMElement child = domDocument.createElement("test-element");
 		root.appendChild(child);
-		assertTrue("We doen't have elements to remove", root.getChildNodes()
-				.getLength() > 0);
+		assertTrue("We doen't have elements to remove", root.getChildNodes().getLength() > 0);
 		for (long i = root.getChildNodes().getLength() - 1; i >= 0; i--) {
 			root.removeChild(root.getChildNodes().item(i));
 		}
 		root.appendChild(child);
-		assertTrue("We haven't remove some elements", root.getChildNodes()
-				.getLength() == 1);
+		assertTrue("We haven't remove some elements", root.getChildNodes().getLength() == 1);
 	}
 
 	/**
@@ -48,7 +56,9 @@ public class DOMCreatingTest extends XulRunnerAbstractTest {
 	 * 
 	 * @throws Exception
 	 */
+	@Test
 	public void testXulRunnerCreatingDOM() throws Exception {
+		assumeTrue("Not supported environment", !VpeTest.skipTests);
 		String chieldName = "H";
 		String attrName = "color";
 		String attrValue = "TEST_VALUE";
@@ -73,31 +83,27 @@ public class DOMCreatingTest extends XulRunnerAbstractTest {
 		// append child element to root element
 		root.appendChild(child);
 		nsIDOMNode toCheck = root.getChildNodes().item(0);
-		assertEquals("We haven't add child element", toCheck.getNodeName(),
-				child.getNodeName());
+		assertEquals("We haven't add child element", toCheck.getNodeName(), child.getNodeName());
 
-		assertEquals("Number of child nodes do not coincide", 4,child
-				.getChildNodes().getLength());
+		assertEquals("Number of child nodes do not coincide", 4, child.getChildNodes().getLength());
 		nsIDOMNodeList nodeList = child.getChildNodes();
 		for (int i = 0; i < nodeList.getLength(); i++) {
-			assertEquals("Child node doesn't concide", nodeList.item(i)
-					.getNodeName(), chieldName + i);
+			assertEquals("Child node doesn't concide", nodeList.item(i).getNodeName(), chieldName + i);
 		}
 
 		for (int i = 0; i < toCheck.getAttributes().getLength(); i++) {
-			assertEquals("Attribute names doesn't coinside", toCheck.getAttributes()
-					.item(i).getNodeName(), attrName + i);
-			assertEquals("Attribute values doesn't coinside", toCheck.getAttributes()
-					.item(i).getNodeValue(), attrValue + i);
+			assertEquals("Attribute names doesn't coinside", toCheck.getAttributes().item(i).getNodeName(),
+					attrName + i);
+			assertEquals("Attribute values doesn't coinside", toCheck.getAttributes().item(i).getNodeValue(),
+					attrValue + i);
 		}
 		nsIDOMText text = domDocument.createTextNode("TEST");
 		root.appendChild(text);
-		assertEquals("Dom element hasn't been created", "TEST", text
-				.getNodeValue());
+		assertEquals("Dom element hasn't been created", "TEST", text.getNodeValue());
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		super.tearDown();
 	}
 }

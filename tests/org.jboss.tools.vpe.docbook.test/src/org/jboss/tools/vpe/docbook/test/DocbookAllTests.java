@@ -10,10 +10,8 @@
   ******************************************************************************/
 package org.jboss.tools.vpe.docbook.test;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
-import org.jboss.tools.vpe.base.test.VpeTestSetup;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 /**
  * Class for testing all Docbook components
@@ -22,19 +20,12 @@ import org.jboss.tools.vpe.base.test.VpeTestSetup;
  * 
  */
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses({DocbookComponentContentTest.class})
 public class DocbookAllTests {
 
 	/*
 	 * Import project name
 	 */
 	public static final String IMPORT_PROJECT_NAME = "DocbookTest"; //$NON-NLS-1$
-	
-	public static Test suite() {
-		TestSuite suite = new TestSuite("Tests for Vpe Docbook components"); //$NON-NLS-1$
-		// $JUnit-BEGIN$
-		suite.addTestSuite(DocbookComponentContentTest.class);
-		//cleanUpTests();
-		// $JUnit-END$
-		return new VpeTestSetup(suite);
-	}
 }

@@ -32,6 +32,7 @@ import org.jboss.tools.test.util.JobUtils;
 import org.jboss.tools.vpe.editor.VpeController;
 import org.jboss.tools.vpe.editor.VpeEditorPart;
 import org.jboss.tools.vpe.xulrunner.editor.XulRunnerEditor;
+import org.junit.Assume;
 import org.mozilla.interfaces.nsIDOMDocument;
 import org.mozilla.interfaces.nsIDOMElement;
 import org.mozilla.interfaces.nsIDOMNode;
@@ -51,47 +52,53 @@ public class TestUtil {
 
 	/** The Constant WEBCONTENT_PATH. */
 	private static final String WEBCONTENT_PATH = "WebContent"; //$NON-NLS-1$
-	
-    /** Editor in which we open visual page. */
-    protected final static String EDITOR_ID = "org.jboss.tools.jst.jsp.jspeditor.JSPTextEditor"; //$NON-NLS-1$
+
+	/** Editor in which we open visual page. */
+	protected final static String EDITOR_ID = "org.jboss.tools.jst.jsp.jspeditor.JSPTextEditor"; //$NON-NLS-1$
 
 	/** The Constant MAX_IDLE. */
-	public static final long MAX_IDLE = 15*1000L;
+	public static final long MAX_IDLE = 15 * 1000L;
 	private static final long STANDARD_DELAY = 50L;
 
 	/**
 	 * Gets the component path.
 	 * 
-	 * @param componentPage the component page
-	 * @param projectName the project name
+	 * @param componentPage
+	 *            the component page
+	 * @param projectName
+	 *            the project name
 	 * 
 	 * @return the component path
 	 * 
-	 * @throws CoreException the core exception
-	 * @throws IOException 
+	 * @throws CoreException
+	 *             the core exception
+	 * @throws IOException
 	 */
-	public static IResource getComponentPath(String componentPage,
-			String projectName) throws CoreException, IOException {
+	public static IResource getComponentPath(String componentPage, String projectName)
+			throws CoreException, IOException {
 		IProject project = ProjectsLoader.getInstance().getProject(projectName);
 		if (project != null) {
 			return project.getFolder(COMPONENTS_PATH).findMember(componentPage);
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Gets the component path.
 	 * 
-	 * @param componentPage the component page
-	 * @param projectName the project name
+	 * @param componentPage
+	 *            the component page
+	 * @param projectName
+	 *            the project name
 	 * 
 	 * @return the component path
 	 * 
-	 * @throws CoreException the core exception
-	 * @throws IOException 
+	 * @throws CoreException
+	 *             the core exception
+	 * @throws IOException
 	 */
-	public static IResource getComponentFileByFullPath(String componentPage,
-			String projectName) throws CoreException, IOException {
+	public static IResource getComponentFileByFullPath(String componentPage, String projectName)
+			throws CoreException, IOException {
 		IProject project = ProjectsLoader.getInstance().getProject(projectName);
 		if (project != null) {
 			return project.findMember(componentPage);
@@ -99,8 +106,7 @@ public class TestUtil {
 		return null;
 	}
 
-	public static IResource getResource(String path, String projectName) 
-			throws CoreException, IOException {
+	public static IResource getResource(String path, String projectName) throws CoreException, IOException {
 		IProject project = ProjectsLoader.getInstance().getProject(projectName);
 		if (project != null) {
 			return project.findMember(path);
@@ -111,16 +117,19 @@ public class TestUtil {
 	/**
 	 * Gets the web content path.
 	 * 
-	 * @param componentPage the component page
-	 * @param projectName the project name
+	 * @param componentPage
+	 *            the component page
+	 * @param projectName
+	 *            the project name
 	 * 
 	 * @return the web content path
 	 * 
-	 * @throws CoreException the core exception
-	 * @throws IOException 
+	 * @throws CoreException
+	 *             the core exception
+	 * @throws IOException
 	 */
-	public static IResource getWebContentPath(String componentPage,
-			String projectName) throws CoreException, IOException {
+	public static IResource getWebContentPath(String componentPage, String projectName)
+			throws CoreException, IOException {
 		IProject project = ProjectsLoader.getInstance().getProject(projectName);
 		return project.getFolder(WEBCONTENT_PATH).findMember(componentPage);
 	}
@@ -135,7 +144,8 @@ public class TestUtil {
 	}
 
 	/**
-	 * Process UI input but do not return for the {@link TestUtil#STANDARD_DELAY} interval.
+	 * Process UI input but do not return for the
+	 * {@link TestUtil#STANDARD_DELAY} interval.
 	 */
 	public static void delay() {
 		delay(STANDARD_DELAY);
@@ -144,7 +154,8 @@ public class TestUtil {
 	/**
 	 * Process UI input but do not return for the specified time interval.
 	 * 
-	 * @param waitTimeMillis the number of milliseconds
+	 * @param waitTimeMillis
+	 *            the number of milliseconds
 	 */
 	public static void delay(long waitTimeMillis) {
 		JobUtils.delay(waitTimeMillis);
@@ -163,7 +174,7 @@ public class TestUtil {
 	public static void waitForIdle(long maxIdle) {
 		JobUtils.waitForIdle(STANDARD_DELAY, maxIdle);
 	}
-	
+
 	public static void waitForIdle() {
 		waitForIdle(MAX_IDLE);
 	}
@@ -171,15 +182,14 @@ public class TestUtil {
 	/**
 	 * find elements by name.
 	 * 
-	 * @param node -
-	 * current node
-	 * @param name -
-	 * name element
-	 * @param elements -
-	 * list of found elements
+	 * @param node
+	 *            - current node
+	 * @param name
+	 *            - name element
+	 * @param elements
+	 *            - list of found elements
 	 */
-	static public void findElementsByName(nsIDOMNode node,
-			List<nsIDOMNode> elements, String name) {
+	static public void findElementsByName(nsIDOMNode node, List<nsIDOMNode> elements, String name) {
 		/*
 		 * Get children
 		 */
@@ -200,15 +210,14 @@ public class TestUtil {
 	/**
 	 * find all elements by name.
 	 * 
-	 * @param node -
-	 * current node
-	 * @param name -
-	 * name element
-	 * @param elements -
-	 * list of found elements
+	 * @param node
+	 *            - current node
+	 * @param name
+	 *            - name element
+	 * @param elements
+	 *            - list of found elements
 	 */
-	static public void findAllElementsByName(nsIDOMNode node,
-			List<nsIDOMNode> elements, String name) {
+	static public void findAllElementsByName(nsIDOMNode node, List<nsIDOMNode> elements, String name) {
 		try {
 			nsIDOMNodeList list = node.getChildNodes();
 			if (node.getNodeName().equalsIgnoreCase(name)) {
@@ -224,131 +233,149 @@ public class TestUtil {
 	}
 
 	/**
-	 * Utility function which returns node mapping by source position(line and position in line).
+	 * Utility function which returns node mapping by source position(line and
+	 * position in line).
 	 * 
-	 * @param linePosition the line position
-	 * @param lineIndex the line index
-	 * @param itextViewer the itext viewer
+	 * @param linePosition
+	 *            the line position
+	 * @param lineIndex
+	 *            the line index
+	 * @param itextViewer
+	 *            the itext viewer
 	 * 
 	 * @return node for specified src position
 	 */
 	@SuppressWarnings("restriction")
-    public static Node getNodeMappingBySourcePosition(ITextViewer itextViewer, int lineIndex, int linePosition) {
+	public static Node getNodeMappingBySourcePosition(ITextViewer itextViewer, int lineIndex, int linePosition) {
 		int offset = getLinePositionOffcet(itextViewer, lineIndex, linePosition);
 		IndexedRegion treeNode = ContentAssistUtils.getNodeAt(itextViewer, offset);
 		return (Node) treeNode;
 	}
-	
+
 	/**
-	 * Utility function which is used to calculate offcet in document by line number and character position.
+	 * Utility function which is used to calculate offcet in document by line
+	 * number and character position.
 	 * 
-	 * @param linePosition the line position
-	 * @param textViewer the text viewer
-	 * @param lineIndex the line index
+	 * @param linePosition
+	 *            the line position
+	 * @param textViewer
+	 *            the text viewer
+	 * @param lineIndex
+	 *            the line index
 	 * 
 	 * @return offcet in document
 	 * 
-	 * @throws IllegalArgumentException 	 */
-	public static final int getLinePositionOffcet(ITextViewer textViewer, int lineIndex, int linePosition) {		
+	 * @throws IllegalArgumentException
+	 */
+	public static final int getLinePositionOffcet(ITextViewer textViewer, int lineIndex, int linePosition) {
 		int resultOffcet = 0;
-		
-		if(textViewer == null) {				
+
+		if (textViewer == null) {
 			throw new IllegalArgumentException("Text viewer shouldn't be a null"); //$NON-NLS-1$
-		}	
-		//lineIndex-1 becose calculating of line begibns in eclipse from one, but should be form zero
-		resultOffcet=textViewer.getTextWidget().getOffsetAtLine(lineIndex-1);
-		//here we get's tabs length
-		//for more example you can see code org.eclipse.ui.texteditor.AbstractTextEditor@getCursorPosition() and class $PositionLabelValue
+		}
+		// lineIndex-1 becose calculating of line begibns in eclipse from one,
+		// but should be form zero
+		resultOffcet = textViewer.getTextWidget().getOffsetAtLine(lineIndex - 1);
+		// here we get's tabs length
+		// for more example you can see code
+		// org.eclipse.ui.texteditor.AbstractTextEditor@getCursorPosition() and
+		// class $PositionLabelValue
 		int tabWidth = textViewer.getTextWidget().getTabs();
-		int characterOffset=0;
-		String currentString = textViewer.getTextWidget().getLine(lineIndex-1);
-		int pos=1;
-		for (int i= 0; (i < currentString.length())&&(pos<linePosition); i++) {
+		int characterOffset = 0;
+		String currentString = textViewer.getTextWidget().getLine(lineIndex - 1);
+		int pos = 1;
+		for (int i = 0; (i < currentString.length()) && (pos < linePosition); i++) {
 			if ('\t' == currentString.charAt(i)) {
-				
+
 				characterOffset += (tabWidth == 0 ? 0 : 1);
-				pos+=tabWidth;
-			}else{
+				pos += tabWidth;
+			} else {
 				pos++;
 				characterOffset++;
 			}
 		}
-		resultOffcet+=characterOffset;
-		if(textViewer.getTextWidget().getLineAtOffset(resultOffcet)!=(lineIndex-1)) {				
+		resultOffcet += characterOffset;
+		if (textViewer.getTextWidget().getLineAtOffset(resultOffcet) != (lineIndex - 1)) {
 			throw new IllegalArgumentException("Incorrect character position in line"); //$NON-NLS-1$
 		}
 		return resultOffcet;
 	}
-	
-    /**
-     * Gets visual page editor controller.
-     * 
-     * @param part the part
-     * 
-     * @return {@link VpeController}
-     */
-    public static VpeController getVpeController(JSPMultiPageEditor part) {
-        VpeEditorPart visualEditor = (VpeEditorPart) part.getVisualEditor();
-        while(visualEditor.getController()==null) {
+
+	/**
+	 * Gets visual page editor controller.
+	 * 
+	 * @param part
+	 *            the part
+	 * 
+	 * @return {@link VpeController}
+	 */
+	public static VpeController getVpeController(JSPMultiPageEditor part) {
+		Assume.assumeTrue(!VpeTest.skipTests);
+		VpeEditorPart visualEditor = (VpeEditorPart) part.getVisualEditor();
+		while (visualEditor.getController() == null) {
 			if (!Display.getCurrent().readAndDispatch()) {
 				Display.getCurrent().sleep();
 			}
-        }
-        return visualEditor.getController();
-    }
+		}
+		return visualEditor.getController();
+	}
 
-    /**
-     * get xulrunner source page.
-     * 
-     * @param part - JSPMultiPageEditor
-     * 
-     * @return nsIDOMDocument
-     */
-    public static nsIDOMDocument getVpeVisualDocument(JSPMultiPageEditor part) {
-    	nsIDOMDocument document = null;
-        VpeController vpeController = TestUtil.getVpeController(part);
-        if (vpeController != null) {
-        	XulRunnerEditor xulRunnerEditor = vpeController.getXulRunnerEditor();
-        	if (xulRunnerEditor != null) {
-    			document = xulRunnerEditor.getDOMDocument();
-    		}
-		} 
-        return document;
-    }
+	/**
+	 * get xulrunner source page.
+	 * 
+	 * @param part
+	 *            - JSPMultiPageEditor
+	 * 
+	 * @return nsIDOMDocument
+	 */
+	public static nsIDOMDocument getVpeVisualDocument(JSPMultiPageEditor part) {
+		nsIDOMDocument document = null;
+		VpeController vpeController = TestUtil.getVpeController(part);
+		if (vpeController != null) {
+			XulRunnerEditor xulRunnerEditor = vpeController.getXulRunnerEditor();
+			if (xulRunnerEditor != null) {
+				document = xulRunnerEditor.getDOMDocument();
+			}
+		}
+		return document;
+	}
 
-    /**
-     * Perform test for rich faces component.
-     * 
-     * @param componentPage the component page
-     * 
-     * @return the ns IDOM element
-     * 
-     * @throws Throwable the throwable
-     */
-    public static nsIDOMElement performTestForRichFacesComponent(IFile componentPage) throws Throwable {
-        nsIDOMElement rst = null;
+	/**
+	 * Perform test for rich faces component.
+	 * 
+	 * @param componentPage
+	 *            the component page
+	 * 
+	 * @return the ns IDOM element
+	 * 
+	 * @throws Throwable
+	 *             the throwable
+	 */
+	public static nsIDOMElement performTestForRichFacesComponent(IFile componentPage) throws Throwable {
+		nsIDOMElement rst = null;
 
-        // IFile file = (IFile)
-        // TestUtil.getComponentPath(componentPage,getImportProjectName());
-        IEditorInput input = new FileEditorInput(componentPage);
+		// IFile file = (IFile)
+		// TestUtil.getComponentPath(componentPage,getImportProjectName());
+		IEditorInput input = new FileEditorInput(componentPage);
 
-        JSPMultiPageEditor editor = (JSPMultiPageEditor) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(
-                input, EDITOR_ID, true);
+		JSPMultiPageEditor editor = (JSPMultiPageEditor) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+				.getActivePage().openEditor(input, EDITOR_ID, true);
 
-        // get dom document
-        nsIDOMDocument document = getVpeVisualDocument(editor);
-        rst = document.getDocumentElement();
-        // check that element is not null
-        Assert.assertNotNull(rst);
-        return rst;
-    }
-    
-    /**
-     * Fail.
-     * 
-     * @param t the t
-     */
-    public static void fail(Throwable t){
-        Assert.fail("Test case was fail "+t.getMessage()+":"+t);
-    }
+		// get dom document
+		nsIDOMDocument document = getVpeVisualDocument(editor);
+		rst = document.getDocumentElement();
+		// check that element is not null
+		Assert.assertNotNull(rst);
+		return rst;
+	}
+
+	/**
+	 * Fail.
+	 * 
+	 * @param t
+	 *            the t
+	 */
+	public static void fail(Throwable t) {
+		Assert.fail("Test case was fail " + t.getMessage() + ":" + t);
+	}
 }

@@ -10,12 +10,17 @@
  ******************************************************************************/
 package org.jboss.tools.vpe.xulrunner.test;
 
+import static org.junit.Assume.assumeTrue;
+
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.jboss.tools.test.util.JobUtils;
+import org.jboss.tools.vpe.base.test.VpeTest;
 import org.jboss.tools.vpe.xulrunner.editor.XulRunnerEditor;
 import org.jboss.tools.vpe.xulrunner.view.XulRunnerView;
+import org.junit.After;
+import org.junit.Before;
 
 import junit.framework.TestCase;
 
@@ -24,7 +29,7 @@ import junit.framework.TestCase;
  * {@code XulRunnerBrowserTest}.
  *
  */
-public abstract class XulRunnerAbstractTest extends TestCase {
+public abstract class XulRunnerAbstractTest {
 
 	public static final String VIEW_ID = "org.jboss.tools.vpe.xulrunner.view.XulRunnerView";
 
@@ -36,13 +41,6 @@ public abstract class XulRunnerAbstractTest extends TestCase {
 	
 	public XulRunnerAbstractTest() {
 		super();
-	}
-
-	/**
-	 * @param name
-	 */
-	public XulRunnerAbstractTest(String name) {
-		super(name);
 	}
 
 	/**
@@ -73,25 +71,27 @@ public abstract class XulRunnerAbstractTest extends TestCase {
 		    }
 		}
 	}
-
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		JobUtils.waitForIdle();
-		xulRunnerView
-			= ((XulRunnerView) PlatformUI.getWorkbench()
-				.getActiveWorkbenchWindow().getActivePage().showView(VIEW_ID));
-		JobUtils.waitForIdle();
-		xulRunnerEditor = xulRunnerView.getBrowser();
+	@Before
+	public void setUp() throws Exception {
+		if(!VpeTest.skipTests) {
+			JobUtils.waitForIdle();
+			xulRunnerView
+				= ((XulRunnerView) PlatformUI.getWorkbench()
+					.getActiveWorkbenchWindow().getActivePage().showView(VIEW_ID));
+			JobUtils.waitForIdle();
+			xulRunnerEditor = xulRunnerView.getBrowser();
+		}
 	}
 	
-	@Override
-	protected void tearDown() throws Exception {
-		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-				.hideView(xulRunnerView);
-		
-		xulRunnerEditor = null;
-		xulRunnerView = null;
-		super.tearDown();
+	@After
+	public void tearDown() throws Exception {
+		if(!VpeTest.skipTests) {
+			assumeTrue("Not supported environment", !VpeTest.skipTests);
+			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+					.hideView(xulRunnerView);
+			
+			xulRunnerEditor = null;
+			xulRunnerView = null;
+		}
 	}
 }

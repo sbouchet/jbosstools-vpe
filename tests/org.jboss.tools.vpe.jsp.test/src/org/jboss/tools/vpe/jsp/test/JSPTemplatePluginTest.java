@@ -10,13 +10,15 @@
  ******************************************************************************/
 package org.jboss.tools.vpe.jsp.test;
 
+import static org.junit.Assert.assertNotNull;
+
 import org.jboss.tools.vpe.jsp.JspTemplatePluign;
+import org.junit.Test;
 
-import junit.framework.TestCase;
+public class JSPTemplatePluginTest {
 
-public class JSPTemplatePluginTest extends TestCase {
-	
-	public void testJspTemplatePluginActivator () {
+	@Test
+	public void testJspTemplatePluginActivator() {
 		assertNotNull(JspTemplatePluign.getDefault());
 	}
 

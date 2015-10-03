@@ -13,16 +13,17 @@ package org.jboss.tools.vpe.ui.test.preferences;
 import org.jboss.tools.tests.PreferencePageTest;
 import org.jboss.tools.vpe.editor.preferences.ELVariablesPreferencePage;
 import org.jboss.tools.vpe.editor.preferences.VpeEditorPreferencesPage;
+import org.junit.Test;
 
 public class VpeEditorPreferencesPageTest extends PreferencePageTest {
 	
 	public VpeEditorPreferencesPageTest() {
 	}
-	
+	@Test
 	public void testVpeEditorPreferencesPageShow() {
 		doDefaultTest(VpeEditorPreferencesPage.ID, VpeEditorPreferencesPage.class); //$NON-NLS-1$
 	}
-	
+	@Test
 	public void testVpeEditorELPreferencesPageShow() {
 		doDefaultTest(ELVariablesPreferencePage.ID, ELVariablesPreferencePage.class); //$NON-NLS-1$
 	}
