@@ -73,7 +73,10 @@ public class VpeTest implements ILogListener {
 	/** Editor in which we open visual page. */
 	protected final static String EDITOR_ID = "org.jboss.tools.jst.jsp.jspeditor.JSPTextEditor"; //$NON-NLS-1$
 
-	public static boolean skipTests = !XulRunnerBrowser.isCurrentPlatformOfficiallySupported() || isGTK3();
+	public static boolean skipTests = 
+			!XulRunnerBrowser.isCurrentPlatformOfficiallySupported() 
+			|| XulRunnerBrowser.CURRENT_PLATFORM_ID.equals("win32.win32.x86_64")
+			|| isGTK3();
 	
 	/** Collects exceptions. */
 	private Throwable exception;
