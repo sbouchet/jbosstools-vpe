@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.sse.ui.StructuredTextEditor;
 import org.jboss.tools.jst.web.ui.internal.editor.editor.IVisualController;
+import org.jboss.tools.jst.web.ui.internal.editor.editor.IVisualEditor;
 import org.jboss.tools.jst.web.ui.internal.editor.jspeditor.JSPMultiPageEditor;
 import org.jboss.tools.vpe.editor.VpeController;
 import org.jboss.tools.vpe.editor.context.VpePageContext;
@@ -52,8 +53,9 @@ public class SetupTemplateContributionItem extends ActionContributionItem {
 		 * When VisualEditor is not initialized it is impossible
 		 * to fill this menu item.
 		 */
-		IVisualController controller = editor.getVisualEditor().getController();
-		if (controller != null && controller instanceof VpeController) {
+		IVisualEditor visualEditor = editor.getVisualEditor();
+		IVisualController controller = visualEditor != null ? visualEditor.getController() : null;
+		if (controller instanceof VpeController) {
 			this.vpeController = (VpeController) controller;
 			this.pageContext = (VpePageContext) vpeController.getPageContext();
 		} else {
