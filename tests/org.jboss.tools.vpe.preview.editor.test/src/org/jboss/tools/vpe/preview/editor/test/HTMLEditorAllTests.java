@@ -15,7 +15,7 @@ import org.jboss.tools.jst.web.ui.internal.editor.preferences.IVpePreferencesPag
 import org.jboss.tools.vpe.editor.util.VpePlatformUtil;
 import org.jboss.tools.vpe.preview.editor.test.editor.OpenEditorTest;
 import org.jboss.tools.vpe.preview.editor.test.editor.PreviewReloadTest;
-import org.jboss.tools.vpe.preview.editor.test.editor.RefrestOptionsTest;
+import org.jboss.tools.vpe.preview.editor.test.editor.RefreshOptionsTest;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -29,8 +29,8 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
 OpenEditorTest.class,
-RefrestOptionsTest.class,
-PreviewReloadTest.class
+RefreshOptionsTest.class,
+PreviewReloadTest.class,
 //ResourcesTest.class
 })
 public class HTMLEditorAllTests {

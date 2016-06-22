@@ -219,7 +219,9 @@ public abstract class ActionBar {
 	
 	public void updateRefreshItemsAccordingToPreferences() {
 		enableRefreshOnSaveAction.setChecked(preferences.getBoolean(REFRESH_ON_SAVE_PREFERENCES));
+		enableRefreshOnSaveAction.run();
 		enableAutomaticRefreshAction.setChecked(preferences.getBoolean(REFRESH_ON_CHANGE_PREFERENCES));
+		enableAutomaticRefreshAction.run();
 	}
 	
 	public void dispose() {
