@@ -13,6 +13,7 @@ package org.jboss.tools.vpe.preview.editor.test.editor;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.swt.browser.Browser;
@@ -23,6 +24,7 @@ import org.jboss.tools.jst.web.ui.internal.editor.editor.IVisualEditor;
 import org.jboss.tools.jst.web.ui.internal.editor.jspeditor.JSPMultiPageEditor;
 import org.jboss.tools.vpe.preview.editor.VpvEditor;
 import org.jboss.tools.vpe.preview.editor.VpvEditorController;
+import org.jboss.tools.vpe.preview.editor.VpvEditorPart;
 import org.jboss.tools.vpe.preview.editor.VpvPreview;
 import org.jboss.tools.vpe.preview.editor.test.util.TestUtil;
 import org.junit.Before;
@@ -33,7 +35,7 @@ import org.junit.Test;
  * @author Konstantin Marmalyukov (kmarmaliykov)
  *
  */
-
+@SuppressWarnings("restriction")
 public class OpenEditorTest extends RefreshTest {
 	private static final String PROJECT_NAME = "html5-test"; //$NON-NLS-1$
 	private static final String PAGE_NAME = "index.html"; //$NON-NLS-1$
@@ -76,7 +78,6 @@ public class OpenEditorTest extends RefreshTest {
 		}
 	}
 	
-	@SuppressWarnings("restriction")
 	@Test
 	public void openPreviewTabTest() {
 		setException(null);
@@ -96,6 +97,24 @@ public class OpenEditorTest extends RefreshTest {
 			waitForRefresh();
 			
 			previewBrowser.removeLocationListener(locationListener);
+		} catch (Exception e) {
+			setException(e);
+		}
+	}
+	
+	@Test
+	public void openSourceTabTest() {
+		setException(null);
+		setLocationChanged(false);
+		
+		try {
+			final IFile elementPageFile = (IFile) TestUtil.getComponentPath(PAGE_NAME, PROJECT_NAME);  
+			JSPMultiPageEditor editor = openEditor(elementPageFile);
+			editor.pageChange(IVisualEditor.SOURCE_MODE);
+			VpvEditorPart vpvEditorPart = (VpvEditorPart) TestUtil.getVpvEditorController(editor).
+					getPageContext().getEditPart();
+			assertNotNull(vpvEditorPart.getVisualEditor());
+			assertNull(vpvEditorPart.getPreviewWebBrowser());
 		} catch (Exception e) {
 			setException(e);
 		}

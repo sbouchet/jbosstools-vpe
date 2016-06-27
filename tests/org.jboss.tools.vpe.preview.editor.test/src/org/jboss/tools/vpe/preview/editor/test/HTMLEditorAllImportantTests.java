@@ -16,6 +16,7 @@ import org.jboss.tools.vpe.editor.util.VpePlatformUtil;
 import org.jboss.tools.vpe.preview.editor.test.editor.OpenEditorTest;
 import org.jboss.tools.vpe.preview.editor.test.editor.PreviewReloadTest;
 import org.jboss.tools.vpe.preview.editor.test.editor.RefreshOptionsTest;
+import org.jboss.tools.vpe.preview.editor.test.editor.VpvToolBarTest;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -30,7 +31,8 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
 OpenEditorTest.class,
 RefreshOptionsTest.class,
-PreviewReloadTest.class
+PreviewReloadTest.class,
+VpvToolBarTest.class,
 //ResourcesTest.class
 })
 public class HTMLEditorAllImportantTests {

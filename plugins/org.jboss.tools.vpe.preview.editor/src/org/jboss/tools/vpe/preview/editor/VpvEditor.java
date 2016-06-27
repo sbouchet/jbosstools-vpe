@@ -23,6 +23,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -624,6 +625,10 @@ public class VpvEditor extends DocumentListeningEditorPart implements VpvVisualM
 
 	public ActionBar getActionBar() {
 		return actionBar;
+	}
+	
+	public ToolBarManager getToolBarManager(){
+		return toolBarManager;
 	}
 	
 	private class SelectionListener implements ISelectionListener {

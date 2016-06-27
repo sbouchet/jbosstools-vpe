@@ -39,6 +39,7 @@ import org.junit.Test;
  *
  */
 
+@SuppressWarnings("restriction")
 public class PreviewReloadTest extends RefreshTest {
 	private static final String PROJECT_NAME = "html5-test"; //$NON-NLS-1$
 	private static final String PAGE_NAME = "index.html"; //$NON-NLS-1$

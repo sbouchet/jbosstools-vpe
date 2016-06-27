@@ -10,11 +10,15 @@
  ******************************************************************************/
 package org.jboss.tools.vpe.preview.editor.test.util;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
 import java.io.IOException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.wst.sse.core.internal.provisional.IndexedRegion;
@@ -39,7 +43,7 @@ public class TestUtil {
     protected final static String EDITOR_ID = "org.jboss.tools.jst.jsp.jspeditor.JSPTextEditor"; //$NON-NLS-1$
 
 	/** The Constant MAX_IDLE. */
-	public static final long MAX_IDLE = 15*1000L;
+	public static final long MAX_IDLE = 5*1000L;
 	private static final long STANDARD_DELAY = 50L;
 	
 	/**
@@ -203,6 +207,12 @@ public class TestUtil {
 			throw new IllegalArgumentException("Incorrect character position in line"); //$NON-NLS-1$
 		}
 		return resultOffcet;
+	}
+	
+	public static void replaceText(JSPMultiPageEditor editor, int end, int start, String text) throws BadLocationException {
+		IDocument document = editor.getDocumentProvider().getDocument(editor.getEditorInput());
+		assertNotNull(document);
+		document.replace(end, start, text);
 	}
 }
 

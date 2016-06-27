@@ -21,8 +21,6 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.LocationAdapter;
 import org.eclipse.swt.browser.LocationEvent;
@@ -74,11 +72,10 @@ public class RefreshOptionsTest extends RefreshTest{
 		setException(null);
 		try {
 			Browser browser = visualEditor.getBrowser();
-			LocationListener norefreshListener = setNoRefreshListener(browser);
 			
 			setRefreshPreferences(false, false);
-			
-			replaceText(36, 26, "Norefresh replacement text"); //$NON-NLS-1$
+			LocationListener norefreshListener = setNoRefreshListener(browser);
+			TestUtil.replaceText(editor, 36, 26, "Norefresh replacement text"); //$NON-NLS-1$
 			saveEditor();
 			waitForRefresh();
 			browser.removeLocationListener(norefreshListener);
@@ -91,11 +88,10 @@ public class RefreshOptionsTest extends RefreshTest{
 	public void refreshOnSaveTest() throws Throwable {
 		setException(new Exception("Refresh does not happens")); //$NON-NLS-1$
 		Browser browser = visualEditor.getBrowser();
-		LocationListener locationListener = setNoRefreshListener(browser);
 
 		setRefreshPreferences(true, false);
-		
-		replaceText(36, 26, "onSaveRefresh replacement1"); //$NON-NLS-1$
+		LocationListener locationListener = setNoRefreshListener(browser);
+		TestUtil.replaceText(editor, 36, 26, "onSaveRefresh replacement1"); //$NON-NLS-1$
 		waitForRefresh();
 		browser.removeLocationListener(locationListener);
 		
@@ -117,19 +113,13 @@ public class RefreshOptionsTest extends RefreshTest{
 		
 		setRefreshPreferences(false, true);
 
-		replaceText(36, 26, "Onchange1 replacement text"); //$NON-NLS-1$
+		TestUtil.replaceText(editor, 36, 26, "Onchange1 replacement text"); //$NON-NLS-1$
 		
 		waitForRefresh();
 		browser.removeLocationListener(locationListener);
 		if (getException() != null) {
 			throw getException();
 		}
-	}
-	
-	private void replaceText(int end, int start, String text) throws BadLocationException {
-		IDocument document = ((JSPMultiPageEditor)editor).getDocumentProvider().getDocument(editor.getEditorInput());
-		assertNotNull(document);
-		document.replace(end, start, text);
 	}
 	
 	private void saveEditor() throws Exception{
