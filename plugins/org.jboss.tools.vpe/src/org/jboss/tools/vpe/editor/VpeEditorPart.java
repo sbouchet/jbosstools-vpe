@@ -226,7 +226,7 @@ public class VpeEditorPart extends EditorPart implements
 			 * https://jira.jboss.org/browse/JBIDE-6832
 			 * Restore the state after switching from Preview, for example.
 			 */
-//			selectionBar.setVisible(selectionBar.getAlwaysVisibleOption());
+//			selectionBar.setRealBarVisible(selectionBar.getAlwaysVisibleOption());
 //			setVerticalToolbarVisible(true);
 			setVerticalToolbarVisible(WebUiPlugin.getDefault().getPreferenceStore()
 					.getBoolean(IVpePreferencesPage.SHOW_VISUAL_TOOLBAR));
@@ -261,7 +261,7 @@ public class VpeEditorPart extends EditorPart implements
 
 		case SOURCE_MODE:
 			VpePlugin.getDefault().countSourceTabEvent();
-//			selectionBar.setVisible(selectionBar.getAlwaysVisibleOption());
+//			selectionBar.setRealBarVisible(selectionBar.getAlwaysVisibleOption());
 			setVerticalToolbarVisible(false);
 			if (sourceContent != null) {
 				sourceContent.setVisible(true);
@@ -296,7 +296,7 @@ public class VpeEditorPart extends EditorPart implements
 		case PREVIEW_MODE:
 			VpePlugin.getDefault().countVpeTabEvent();
 //			if (selectionBar != null) {
-//				selectionBar.setVisible(false);
+//				selectionBar.setRealBarVisible(false);
 //			}
 			setVerticalToolbarVisible(false);
 			/*
@@ -585,7 +585,7 @@ public class VpeEditorPart extends EditorPart implements
 				* do it for newly opened ones only.
 			 	*/
 //			    fillContainer(false, null);
-//			    selectionBar.setVisible(selectionBar.getAlwaysVisibleOption());
+//			    selectionBar.setRealBarVisible(selectionBar.getAlwaysVisibleOption());
 			}
 
 			public void structureChanged(XModelTreeEvent event) {
@@ -1137,7 +1137,7 @@ public class VpeEditorPart extends EditorPart implements
 			visualEditor.getXulRunnerEditor().setHiddenSelectedElementColor(VpeStyleUtil.rgbToString(rgb));
 			
 //			if (presfShowSelectionBar != selectionBar.isVisible()) {
-//				selectionBar.setVisible(presfShowSelectionBar);
+//				selectionBar.setRealBarVisible(presfShowSelectionBar);
 //				doVisualRefresh = true;
 //			}
 	
@@ -1171,7 +1171,7 @@ public class VpeEditorPart extends EditorPart implements
 	
 	public void updateSelectionBar(boolean isSelectionBarVisible) {
 		if (selectionBar != null) {
-			selectionBar.setVisible(isSelectionBarVisible);
+			selectionBar.setRealBarVisible(isSelectionBarVisible);
 		} else {
 			VpePlugin.getDefault().logError("VPE Selection Bar is not initialized."); //$NON-NLS-1$
 		}

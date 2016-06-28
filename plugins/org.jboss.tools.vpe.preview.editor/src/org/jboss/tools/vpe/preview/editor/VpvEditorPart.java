@@ -758,7 +758,7 @@ public class VpvEditorPart extends DocumentListeningEditorPart implements IVisua
 	
 	public void updateSelectionBar(boolean isSelectionBarVisible) {
 		if (selectionBar != null) {
-			selectionBar.setVisible(isSelectionBarVisible);
+			selectionBar.setRealBarVisible(isSelectionBarVisible);
 		} else {
 			VpePlugin.getDefault().logError(Messages.VpvEditorPart_SELECTION_BAR_NOT_INITIALIZED);
 		}
