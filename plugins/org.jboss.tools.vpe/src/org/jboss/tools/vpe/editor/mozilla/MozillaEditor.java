@@ -496,7 +496,12 @@ public class MozillaEditor extends EditorPart implements IReusableEditor {
 				 * Change icon state after sel bar was closed
 				 */
 				if (IVpePreferencesPage.SHOW_SELECTION_TAG_BAR.equalsIgnoreCase(event.getProperty())) {
-					boolean newValue = (Boolean) event.getNewValue();
+					boolean newValue;
+					if(event.getNewValue() instanceof String){ //restore defaults returns String, not boolean
+						newValue = Boolean.parseBoolean((String)event.getNewValue());
+					} else {
+						newValue = (Boolean) event.getNewValue();
+					}
 					if (showSelectionBarAction.isChecked() != newValue) {
 						showSelectionBarAction.setChecked(newValue);
 					}

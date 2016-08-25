@@ -848,6 +848,13 @@ public class VpvEditorPart extends DocumentListeningEditorPart implements IVisua
 		 * When switching from Source view to Visual/Source controller could be null.
 		 */
 		if (getController() != null) {
+			
+			boolean presfShowSelectionBar = WebUiPlugin.getDefault().getPreferenceStore()
+					.getBoolean(IVpePreferencesPage.SHOW_SELECTION_TAG_BAR);
+			if (presfShowSelectionBar != selectionBar.isRealBarVisible()) {
+				updateSelectionBar(presfShowSelectionBar);
+			}
+			
 			boolean prefsShowVPEToolBar = WebUiPlugin.getDefault().getPreferenceStore()
 					.getBoolean(IVpePreferencesPage.SHOW_VISUAL_TOOLBAR);
 			setVerticalToolbarVisible(prefsShowVPEToolBar);

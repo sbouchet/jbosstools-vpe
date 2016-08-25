@@ -1136,10 +1136,13 @@ public class VpeEditorPart extends EditorPart implements
 					.getString(IVpePreferencesPage.SELECTION_HIDDEN_BORDER_COLOR));
 			visualEditor.getXulRunnerEditor().setHiddenSelectedElementColor(VpeStyleUtil.rgbToString(rgb));
 			
-//			if (presfShowSelectionBar != selectionBar.isVisible()) {
-//				selectionBar.setRealBarVisible(presfShowSelectionBar);
-//				doVisualRefresh = true;
-//			}
+			
+			boolean presfShowSelectionBar = WebUiPlugin.getDefault().getPreferenceStore()
+					.getBoolean(IVpePreferencesPage.SHOW_SELECTION_TAG_BAR);
+			if (presfShowSelectionBar != selectionBar.isRealBarVisible()) {
+				selectionBar.setRealBarVisible(presfShowSelectionBar);
+				doVisualRefresh = true;
+			}
 	
 			boolean prefsShowNonVisualTags = WebUiPlugin.getDefault().getPreferenceStore()
 					.getBoolean(IVpePreferencesPage.SHOW_NON_VISUAL_TAGS);

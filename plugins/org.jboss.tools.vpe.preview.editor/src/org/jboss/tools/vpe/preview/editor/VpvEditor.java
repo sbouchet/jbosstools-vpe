@@ -23,7 +23,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -322,7 +321,12 @@ public class VpvEditor extends DocumentListeningEditorPart implements VpvVisualM
 				 * Change icon state after sel bar was closed
 				 */
 				if (IVpePreferencesPage.SHOW_SELECTION_TAG_BAR.equalsIgnoreCase(event.getProperty())) {
-					boolean newValue = (Boolean) event.getNewValue();
+					boolean newValue;
+					if(event.getNewValue() instanceof String){ //restore defaults returns String, not boolean
+						newValue = Boolean.parseBoolean((String)event.getNewValue());
+					} else {
+						newValue = (Boolean) event.getNewValue();
+					}
 					if (showSelectionBarAction.isChecked() != newValue) {
 						showSelectionBarAction.setChecked(newValue);
 					}
@@ -504,7 +508,6 @@ public class VpvEditor extends DocumentListeningEditorPart implements VpvVisualM
 		
 		if (showSelectionBarAction != null) {
 			showSelectionBarAction.setChecked(prefsShowSelectionBar);
-			showSelectionBarAction.run();
 		}
 		if (rotateEditorsAction != null) {
 			currentOrientationIndex = prefsOrientationIndex;
