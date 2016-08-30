@@ -34,6 +34,7 @@ import org.jboss.tools.vpe.preview.editor.VpvEditor;
 import org.jboss.tools.vpe.preview.editor.VpvEditorController;
 import org.jboss.tools.vpe.preview.editor.test.util.TestUtil;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -41,6 +42,7 @@ import org.junit.Test;
  * @author Konstantin Marmalyukov (kmarmaliykov)
  *
  */
+@Ignore("JBIDE-23058 VPE RefreshOptionsTest are failing from time to time on Jenkins")
 @SuppressWarnings("restriction")
 public class RefreshOptionsTest extends RefreshTest{
 	private static final String PROJECT_NAME = "html5-test"; //$NON-NLS-1$
