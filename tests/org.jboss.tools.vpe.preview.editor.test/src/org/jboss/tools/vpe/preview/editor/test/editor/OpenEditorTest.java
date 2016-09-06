@@ -20,13 +20,16 @@ import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.LocationAdapter;
 import org.eclipse.swt.browser.LocationEvent;
 import org.eclipse.swt.browser.LocationListener;
+import org.jboss.tools.jst.web.ui.WebUiPlugin;
 import org.jboss.tools.jst.web.ui.internal.editor.editor.IVisualEditor;
 import org.jboss.tools.jst.web.ui.internal.editor.jspeditor.JSPMultiPageEditor;
+import org.jboss.tools.jst.web.ui.internal.editor.preferences.IVpePreferencesPage;
 import org.jboss.tools.vpe.preview.editor.VpvEditor;
 import org.jboss.tools.vpe.preview.editor.VpvEditorController;
 import org.jboss.tools.vpe.preview.editor.VpvEditorPart;
 import org.jboss.tools.vpe.preview.editor.VpvPreview;
 import org.jboss.tools.vpe.preview.editor.test.util.TestUtil;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -51,6 +54,11 @@ public class OpenEditorTest extends RefreshTest {
 				setLocationChanged(true);
 			}
 		};
+	}
+	
+	@AfterClass
+	public static void cleanup(){
+		WebUiPlugin.getDefault().getPreferenceStore().setToDefault(IVpePreferencesPage.DEFAULT_VPE_TAB);
 	}
 	
 	@Test

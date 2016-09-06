@@ -16,10 +16,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-import java.io.IOException;
-
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.LocationAdapter;
 import org.eclipse.swt.browser.LocationEvent;
@@ -31,7 +28,6 @@ import org.jboss.tools.vpe.preview.editor.VpvPreview;
 import org.jboss.tools.vpe.preview.editor.test.PreviewEditorTestPlugin;
 import org.jboss.tools.vpe.preview.editor.test.util.TestUtil;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**Test for JBIDE-18975
@@ -39,8 +35,6 @@ import org.junit.Test;
  * @author Konstantin Marmalyukov (kmarmaliykov)
  *
  */
-
-@Ignore("JBIDE-23058 VPE RefreshOptionsTest are failing from time to time on Jenkins")
 @SuppressWarnings("restriction")
 public class PreviewReloadTest extends RefreshTest {
 	private static final String PROJECT_NAME = "html5-test"; //$NON-NLS-1$

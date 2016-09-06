@@ -27,7 +27,6 @@ import org.eclipse.wst.sse.core.internal.provisional.IndexedRegion;
 import org.eclipse.wst.sse.ui.internal.contentassist.ContentAssistUtils;
 import org.jboss.tools.jst.web.ui.internal.editor.jspeditor.JSPMultiPageEditor;
 import org.jboss.tools.test.util.JobUtils;
-import org.jboss.tools.test.util.xpl.DisplayDelayHelper;
 import org.jboss.tools.test.util.xpl.DisplayHelper;
 import org.jboss.tools.vpe.base.test.ProjectsLoader;
 import org.jboss.tools.vpe.preview.editor.VpvEditor;
@@ -57,7 +56,8 @@ public class TestUtil {
      * @return {@link VpvEditorController}
      */
     public static VpvEditorController getVpvEditorController(JSPMultiPageEditor part) {
-        VpvEditorPart visualEditor = (VpvEditorPart) part.getVisualEditor();
+    	VpvEditorPart visualEditor = (VpvEditorPart) part.getVisualEditor();
+    	visualEditor.createVisualEditor(); //this needs to be done to make sure visualEditor is created
         DisplayHelper helper = new ControllerDisplayHelper(visualEditor);
         helper.waitForCondition(Display.getCurrent(), 5000);
         return visualEditor.getController();

@@ -20,6 +20,7 @@ import java.io.IOException;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.LocationAdapter;
@@ -29,12 +30,12 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
 import org.jboss.tools.jst.web.ui.internal.editor.editor.IVisualEditor;
 import org.jboss.tools.jst.web.ui.internal.editor.jspeditor.JSPMultiPageEditor;
+import org.jboss.tools.vpe.preview.core.util.Messages;
 import org.jboss.tools.vpe.preview.editor.Activator;
 import org.jboss.tools.vpe.preview.editor.VpvEditor;
 import org.jboss.tools.vpe.preview.editor.VpvEditorController;
 import org.jboss.tools.vpe.preview.editor.test.util.TestUtil;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -42,7 +43,6 @@ import org.junit.Test;
  * @author Konstantin Marmalyukov (kmarmaliykov)
  *
  */
-@Ignore("JBIDE-23058 VPE RefreshOptionsTest are failing from time to time on Jenkins")
 @SuppressWarnings("restriction")
 public class RefreshOptionsTest extends RefreshTest{
 	private static final String PROJECT_NAME = "html5-test"; //$NON-NLS-1$
@@ -71,11 +71,11 @@ public class RefreshOptionsTest extends RefreshTest{
 	
 	@Test
 	public void norefreshTest(){
+		setRefreshPreferences(false, false);
 		setException(null);
 		try {
 			Browser browser = visualEditor.getBrowser();
 			
-			setRefreshPreferences(false, false);
 			LocationListener norefreshListener = setNoRefreshListener(browser);
 			TestUtil.replaceText(editor, 36, 26, "Norefresh replacement text"); //$NON-NLS-1$
 			saveEditor();
@@ -88,10 +88,10 @@ public class RefreshOptionsTest extends RefreshTest{
 	
 	@Test
 	public void refreshOnSaveTest() throws Throwable {
-		setException(new Exception("Refresh does not happens")); //$NON-NLS-1$
-		Browser browser = visualEditor.getBrowser();
-
+		setException(new Exception("Refresh does not happen")); //$NON-NLS-1$
 		setRefreshPreferences(true, false);
+		Browser browser = visualEditor.getBrowser();
+		
 		LocationListener locationListener = setNoRefreshListener(browser);
 		TestUtil.replaceText(editor, 36, 26, "onSaveRefresh replacement1"); //$NON-NLS-1$
 		waitForRefresh();
@@ -109,11 +109,11 @@ public class RefreshOptionsTest extends RefreshTest{
 	@Test
 	public void refreshOnChangeTest() throws Throwable {
 		setException(new Exception("Refresh does not happens")); //$NON-NLS-1$
+		setRefreshPreferences(false, true);
+
 		Browser browser = visualEditor.getBrowser();
 		LocationListener locationListener = setRefreshListener(browser);
 		browser.addLocationListener(locationListener);
-		
-		setRefreshPreferences(false, true);
 
 		TestUtil.replaceText(editor, 36, 26, "Onchange1 replacement text"); //$NON-NLS-1$
 		
@@ -130,10 +130,13 @@ public class RefreshOptionsTest extends RefreshTest{
 	}
 	
 	private void setRefreshPreferences(boolean onSave, boolean onChange){
-		IPreferenceStore preferences = Activator.getDefault().getPreferenceStore();
-		preferences.setValue(REFRESH_ON_SAVE_PREFERENCES, onSave);
-		preferences.setValue(REFRESH_ON_CHANGE_PREFERENCES, onChange);
-		visualEditor.getActionBar().updateRefreshItemsAccordingToPreferences();
+		ActionContributionItem automaticRefresh = TestUtil.getAction(visualEditor,Messages.VpvView_ENABLE_AUTOMATIC_REFRESH);
+		ActionContributionItem onSaveRefresh = TestUtil.getAction(visualEditor,Messages.VpvView_ENABLE_REFRESH_ON_SAVE);
+		automaticRefresh.getAction().setChecked(onChange);
+		onSaveRefresh.getAction().setChecked(onSave);
+		
+		automaticRefresh.getAction().run();
+		onSaveRefresh.getAction().run();
 	}
 	
 	private LocationListener setRefreshListener(Browser browser){
