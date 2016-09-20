@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.jboss.tools.common.log.BaseUIPlugin;
 import org.jboss.tools.common.log.IPluginLog;
-import org.jboss.tools.common.reporting.ProblemReportingHelper;
 import org.jboss.tools.usage.event.UsageEventType;
 import org.jboss.tools.usage.event.UsageReporter;
 import org.osgi.framework.Bundle;
@@ -90,7 +89,6 @@ public class VpePlugin extends BaseUIPlugin {
 		if (VpeDebug.USE_PRINT_STACK_TRACE) {
 			throwable.printStackTrace();
 		} 
-		ProblemReportingHelper.reportProblem(PLUGIN_ID, throwable);
 	}
 	
 	public String getResourcePath(String resourceName) {

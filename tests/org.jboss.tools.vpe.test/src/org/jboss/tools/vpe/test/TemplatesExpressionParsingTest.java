@@ -27,8 +27,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.RegistryFactory;
-import org.jboss.tools.common.reporting.IProblemReporter;
-import org.jboss.tools.common.reporting.ProblemReporterFactory;
 import org.jboss.tools.vpe.editor.template.VpeTemplateManager;
 import org.osgi.framework.Bundle;
 
@@ -49,31 +47,12 @@ public class TemplatesExpressionParsingTest extends TestCase {
 
 	private static final String EXTENSION_ERROR_EXTENSION_ID_2 = "org.jboss.tools.vpe.tests.okExtensions"; //$NON-NLS-1$
 
-	private IStatus iStatus = null;
-
-	private int errorNumber = 0;
-
 	private VpeTemplateManager vpeTemplateManager;
-
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		// sets problem reporter
-		ProblemReporterFactory reporter = ProblemReporterFactory.getInstance();
-		reporter.setReporter(new IProblemReporter() {
-			public void reportProblem(IStatus status) {
-				errorNumber++;
-				iStatus = status;
-			}
-		});
-	}
 
 	@Override
 	protected void tearDown() throws Exception {
 		removeExtension(EXTENSION_POINT_ID, EXTENSION_ERROR_EXTENSION_ID_1);
 		removeExtension(EXTENSION_POINT_ID, EXTENSION_ERROR_EXTENSION_ID_2);
-		iStatus=null;
-		errorNumber = 0;
 		super.tearDown();
 	}
 
@@ -86,8 +65,6 @@ public class TemplatesExpressionParsingTest extends TestCase {
 
 		vpeTemplateManager = VpeTemplateManager.getInstance();
 		vpeTemplateManager.reload();
-		assertNull("Can not parse template from ReDHat DevStudio" + iStatus, iStatus); //$NON-NLS-1$
-		assertEquals("There exist some errors", 0, errorNumber); //$NON-NLS-1$
 		assertNotNull(vpeTemplateManager);
 	}
 
@@ -100,28 +77,8 @@ public class TemplatesExpressionParsingTest extends TestCase {
 		createTemplatesForTesting(PLUGIN_OK_NAME);
 		vpeTemplateManager = VpeTemplateManager.getInstance();
 		vpeTemplateManager.reload();
-		assertNull("Can not parse template from ReDHat DevStudio" + iStatus, iStatus); //$NON-NLS-1$
-		assertEquals("There exist some errors", 0, errorNumber); //$NON-NLS-1$
 		return;
 	}
-	
-	/**
-	 * Creates test template and testing that extensions with errors have errors
-	 * variants
-	 * 
-	 * @throws Exception
-	 */
-	public void testIncorrectTemplates() throws Exception {
-		createTemplatesForTesting(PLUGIN_FAILURE_NAME);
-		vpeTemplateManager = VpeTemplateManager.getInstance();
-		errorNumber = 0;
-		vpeTemplateManager.reload();
-		assertEquals("Number founds error is Incorrect ", 5, errorNumber); //$NON-NLS-1$
-		assertNotNull("Can not parse template from ReDHat DevStudio" + iStatus, //$NON-NLS-1$
-				iStatus);
-		return;
-	}
-
 
 	/**
 	 * Tests passible template
