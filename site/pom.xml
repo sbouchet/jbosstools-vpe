@@ -8,7 +8,14 @@
 	</parent>
 	<groupId>org.jboss.tools.vpe</groupId>
 	<artifactId>vpe.site</artifactId>
+<<<<<<< Updated upstream
 	<name>vpe.site</name>
 	<version>3.8.3-SNAPSHOT</version>
+=======
+	
+>>>>>>> Stashed changes
 	<packaging>eclipse-repository</packaging>
+	<properties>
+		<skipDeployToJBossOrg>false</skipDeployToJBossOrg>
+	</properties>
 </project>
