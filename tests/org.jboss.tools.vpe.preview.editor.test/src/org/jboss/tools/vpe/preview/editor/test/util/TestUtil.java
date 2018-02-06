@@ -57,7 +57,9 @@ public class TestUtil {
      */
     public static VpvEditorController getVpvEditorController(JSPMultiPageEditor part) {
     	VpvEditorPart visualEditor = (VpvEditorPart) part.getVisualEditor();
-    	visualEditor.createVisualEditor(); //this needs to be done to make sure visualEditor is created
+    	if (visualEditor.getVisualEditor() == null) {
+        	visualEditor.createVisualEditor(); //this needs to be done to make sure visualEditor is created
+    	}
         DisplayHelper helper = new ControllerDisplayHelper(visualEditor);
         helper.waitForCondition(Display.getCurrent(), 5000);
         return visualEditor.getController();
