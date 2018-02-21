@@ -26,6 +26,7 @@ import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.LocationAdapter;
 import org.eclipse.swt.browser.LocationEvent;
 import org.eclipse.swt.browser.LocationListener;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
 import org.jboss.tools.jst.web.ui.internal.editor.editor.IVisualEditor;
@@ -62,7 +63,8 @@ public class RefreshOptionsTest extends RefreshTest{
 			VpvEditorController controller = TestUtil.getVpvEditorController(editor);
 			visualEditor = controller.getPageContext().getEditPart().getVisualEditor();
 			assertNotNull(visualEditor);
-			
+			/* some layout event are deferred causing some refresh if processed at end's tests */
+			waitForRefresh();
 			TestUtil.waitForJobs();
 		} catch (Exception e) {
 			fail(e.getMessage());
