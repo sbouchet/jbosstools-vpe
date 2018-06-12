@@ -1,16 +1,16 @@
 <tests>
 	<test id="authorize1">
-		<DIV ID="authorize1">
-			<DIV><A>
-				<SPAN CLASS="vpe-text">Logout</SPAN></A>
-			</DIV>
-		</DIV>
+        <div id="authorize1">
+            <security:authorize ifallgranted="ROLE_USER">
+                <a href="#">Logout</a>
+            </security:authorize>
+        </div>
 	</test>
 	<test id="authorize2">
-		<DIV ID="authorize2">
-			<DIV>
-				<A><SPAN CLASS="vpe-text">Login</SPAN></A>
-			</DIV>
-		</DIV>
+       <div id="authorize2">
+            <security:authorize ifallgranted="ROLE_ANONYMOUS">
+                <a href="#">Login</a>
+            </security:authorize>
+        </div>
 	</test>
 </tests>

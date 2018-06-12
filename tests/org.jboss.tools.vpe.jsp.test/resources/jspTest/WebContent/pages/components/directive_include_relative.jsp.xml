@@ -1,6 +1,5 @@
 <tests>
 <test id="directive_include_relative">
-<DIV VPE:INCLUDE-ELEMENT="yes">
-</DIV>
+<jsp:directive.include file="./include.jsp" id="directive_include_relative"/>
 </test>
 </tests>

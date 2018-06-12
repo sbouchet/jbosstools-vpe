@@ -46,11 +46,11 @@ import org.jboss.tools.jst.web.project.WebProject;
 import org.jboss.tools.jst.web.ui.internal.editor.bundle.BundleMap;
 import org.jboss.tools.jst.web.ui.internal.editor.editor.IJSPTextEditor;
 import org.jboss.tools.jst.web.ui.internal.editor.editor.IVisualController;
+import org.jboss.tools.jst.web.ui.internal.editor.editor.IVisualEditor;
 import org.jboss.tools.jst.web.ui.internal.editor.selection.SelectionHelper;
 import org.jboss.tools.vpe.VpeDebug;
 import org.jboss.tools.vpe.VpePlugin;
 import org.jboss.tools.vpe.editor.VisualController;
-import org.jboss.tools.vpe.editor.VpeEditorPart;
 import org.jboss.tools.vpe.editor.toolbar.format.FormatControllerManager;
 import org.jboss.tools.vpe.handlers.VisualPartAbstractHandler;
 import org.jboss.tools.vpe.preview.editor.context.VpvPageContext;
@@ -178,12 +178,12 @@ public class VpvEditorController extends VisualController implements INodeAdapte
 		/*
 		 * Update Text Formatting Toolbar state
 		 */
-		if (editPart.getVisualMode() != VpeEditorPart.SOURCE_MODE) {
+		if (editPart.getVisualMode() != IVisualEditor.SOURCE_MODE) {
 			if (toolbarFormatControllerManager != null)
 				toolbarFormatControllerManager.selectionChanged();
 		}
 
-		if (editPart.getVisualMode() != VpeEditorPart.SOURCE_MODE) {
+		if (editPart.getVisualMode() != IVisualEditor.SOURCE_MODE) {
 			if (VpeDebug.PRINT_SOURCE_SELECTION_EVENT) {
 				System.out.println(">>>>>>>>>>>>>> selectionChanged  " + event.getSource()); //$NON-NLS-1$
 			}
@@ -306,7 +306,7 @@ public class VpvEditorController extends VisualController implements INodeAdapte
 	}
 
 	public void sourceSelectionToVisualSelection() {
-		if (editPart.getVisualMode() != VpeEditorPart.SOURCE_MODE) {
+		if (editPart.getVisualMode() != IVisualEditor.SOURCE_MODE) {
 			sourceSelectionChanged();
 		}
 	}
@@ -388,6 +388,10 @@ public class VpvEditorController extends VisualController implements INodeAdapte
 	
 	public StructuredTextEditor getSourceEditor() {
 		return sourceEditor;
+	}
+	
+	public VpvEditor getVisualEditor() {
+		return visualEditor;
 	}
 	
 	public void setToolbarFormatControllerManager(

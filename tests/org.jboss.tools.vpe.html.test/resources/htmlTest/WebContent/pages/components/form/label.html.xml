@@ -1,10 +1,8 @@
 <tests>
 	<test id="label">
-		<LABEL ID="label" CLASS="labelClass" DIR="ltr"
-			STYLE="color: red; -moz-user-modify: read-write;">
-			<SPAN>
+		<label id="label" class="labelClass" dir="ltr"
+			style="color: red;">
 				label Value
-			</SPAN>
-		</LABEL>
+		</label>
 	</test>
 </tests>

@@ -31,7 +31,6 @@ import org.jboss.tools.jst.web.ui.internal.editor.jspeditor.JSPMultiPageEditor;
 import org.jboss.tools.jst.web.ui.internal.editor.preferences.IVpePreferencesPage;
 import org.jboss.tools.vpe.VpePlugin;
 import org.jboss.tools.vpe.editor.VisualController;
-import org.jboss.tools.vpe.editor.VpeController;
 import org.jboss.tools.vpe.messages.VpeUIMessages;
 
 /**
@@ -111,7 +110,7 @@ public class RotateEditorsHandler extends VisualPartAbstractHandler{
 			rotateEditor(editor, newOrientation);
 		}
 		Command command = event.getCommand();
-		ICommandService commandService = (ICommandService) PlatformUI
+		ICommandService commandService = PlatformUI
 				.getWorkbench().getService(ICommandService.class);
 		commandService.refreshElements(command.getId(), null);
 		return null;

@@ -10,13 +10,9 @@
  ******************************************************************************/
 package org.jboss.tools.vpe.html.test;
 
-import org.jboss.tools.vpe.html.test.jbide.JBIDE3280Test;
 import org.jboss.tools.vpe.html.test.jbide.TestNPEinPreviewJbide10178;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
 /**
  * Test suite containing all important HTML tests
  * 
@@ -24,6 +20,6 @@ import junit.framework.TestSuite;
  */
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({JBIDE3280Test.class,TestNPEinPreviewJbide10178.class})
+@Suite.SuiteClasses({TestNPEinPreviewJbide10178.class})
 public class HtmlAllImportantTests {
 }

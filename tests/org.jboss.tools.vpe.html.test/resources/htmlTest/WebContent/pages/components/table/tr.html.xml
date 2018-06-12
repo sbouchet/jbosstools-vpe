@@ -1,30 +1,22 @@
 <tests>
 	<test id="tr">
-		<TR ID="tr" CLASS="trClass" STYLE="color: red; -moz-user-modify: read-write;">
-			<TD
-				STYLE="background: rgb(176, 178, 142) none repeat scroll 0% 0%; -moz-background-clip: border; -moz-background-origin: padding; -moz-background-inline-policy: continuous; -moz-user-modify: read-write;">
-				<SPAN CLASS="vpe-text">
+		<tr id="tr" class="trClass" style="color: red;">
+			<td
+				style="/background: rgb(176, 178, 142)|background: #B0B28E/">
 					Some Text
-				</SPAN>
-			</TD>
-			<TD
-				STYLE="background: rgb(204, 204, 204) none repeat scroll 0% 0%; -moz-background-clip: border; -moz-background-origin: padding; -moz-background-inline-policy: continuous; -moz-user-modify: read-write;">
-				<SPAN CLASS="vpe-text">
+			</td>
+			<td
+				style="/background: rgb(204, 204, 204)|background: #CCCCCC/">
 					Some Text
-				</SPAN>
-			</TD>
-			<TD
-				STYLE="background: rgb(176, 178, 142) none repeat scroll 0% 0%; -moz-background-clip: border; -moz-background-origin: padding; -moz-background-inline-policy: continuous; -moz-user-modify: read-write;">
-				<SPAN CLASS="vpe-text">
+			</td>
+			<td
+				style="/background: rgb(176, 178, 142)|background: #B0B28E/">
 					Some Text
-				</SPAN>
-			</TD>
-			<TD
-				STYLE="background: rgb(204, 204, 204) none repeat scroll 0% 0%; -moz-background-clip: border; -moz-background-origin: padding; -moz-background-inline-policy: continuous; -moz-user-modify: read-write;">
-				<SPAN CLASS="vpe-text">
+			</td>
+			<td
+				style="/background: rgb(204, 204, 204)|background: #CCCCCC/">
 					Some Text
-				</SPAN>
-			</TD>
-		</TR>
+			</td>
+		</tr>
 	</test>
 </tests>

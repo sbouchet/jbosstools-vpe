@@ -1,9 +1,7 @@
 <tests>
 	<test id="mark-id">
-		<MARK ID="mark-id">
-<SPAN CLASS="vpe-text">
+		<mark id="mark-id">
 milk
-</SPAN>
-</MARK>
+</mark>
 	</test>
 </tests>

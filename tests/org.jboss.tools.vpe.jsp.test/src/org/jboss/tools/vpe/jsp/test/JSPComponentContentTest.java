@@ -117,11 +117,6 @@ public class JSPComponentContentTest extends ComponentContentTest {
 	}
 
 	@Test
-	public void testRoot() throws Throwable {
-		performInvisibleTagTest("components/root.jsp", "root"); //$NON-NLS-1$ //$NON-NLS-2$
-	}
-
-	@Test
 	public void testSetProperty() throws Throwable {
 		performInvisibleTagTest("components/set_property.jsp", "set_property"); //$NON-NLS-1$ //$NON-NLS-2$
 	}

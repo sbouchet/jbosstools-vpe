@@ -22,7 +22,6 @@ public class VpeEditorPreferencesPage extends TabbedPreferencesPage implements I
 	public static final String ID = "org.jboss.tools.vpe.editor";  //$NON-NLS-1$
 	public VpeEditorPreferencesPage() {
 		addPreferencePage(new VpePreferencesPage());
-		addPreferencePage(new TemplatesPreferencePage());
 	}
 
 	public static void openPreferenceDialog() {

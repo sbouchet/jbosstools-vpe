@@ -1,13 +1,9 @@
 <tests>
 	<test id="textArea1">
-		<TEXTAREA ID="textArea1" CSSCLASS="green" CSSSTYLE="font-weight: bold;"
-			PATH="textarea1" CLASS="green" STYLE="font-weight: bold;">
-		</TEXTAREA>
+        <form:textarea id="textArea1" cssclass="green" cssstyle="font-weight: bold;" path="textarea1" />
 	</test>
 	<test id="textArea2">
-		<TEXTAREA ID="textArea2" CSSCLASS="blue" CSSSTYLE="font-style: italic;"
-			PATH="textarea2" CLASS="blue" STYLE="font-style: italic;">
-		</TEXTAREA>
+        <form:textarea id="textArea2" cssclass="blue" cssstyle="font-style: italic;" path="textarea2"/>
 	</test>
 
 </tests>

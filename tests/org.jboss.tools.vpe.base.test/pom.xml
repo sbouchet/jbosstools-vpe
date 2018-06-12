@@ -4,11 +4,40 @@
 	<parent>
 		<groupId>org.jboss.tools.vpe</groupId>
 		<artifactId>tests</artifactId>
-		<version>3.8.100-SNAPSHOT</version>
+		<version>3.8.200-SNAPSHOT</version>
 	</parent>
 	<groupId>org.jboss.tools.vpe.tests</groupId>
 	<artifactId>org.jboss.tools.vpe.base.test</artifactId>
 	
 	<packaging>eclipse-plugin</packaging>
+	<build>
+	   <plugins>
+	               <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>get-libs</id>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <skip>false</skip>
+                    <outputDirectory>${basedir}/lib/</outputDirectory>
+                    <artifactItems>
+                        <artifactItem>
+                            <groupId>org.jsoup</groupId>
+                            <artifactId>jsoup</artifactId>
+                            <version>1.11.3</version>
+                        </artifactItem>
+                    </artifactItems>
+                </configuration>
+            </plugin>
+	   
+	   </plugins>
+	</build>
 
 </project>

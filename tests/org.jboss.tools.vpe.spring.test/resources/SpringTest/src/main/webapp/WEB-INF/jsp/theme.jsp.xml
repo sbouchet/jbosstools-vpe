@@ -1,22 +1,14 @@
 <tests>
 	<test id="theme1">
-		<SPAN CLASS="vpe-text" >
-			some.id.in.bundle
-		</SPAN>
+        <spring:theme id="theme1" code="some.id.in.bundle"/>
 	</test>
 	<test id="theme2">
-		<SPAN CLASS="vpe-text" >
-			someId1, someId2, someId3
-		</SPAN>
+        <spring:theme id="theme2" code="someId1, someId2, someId3" htmlescape="true"/>
 	</test>
 	<test id="theme3">
-		<SPAN CLASS="vpe-text" >
-			someId1 someId2 someId3
-		</SPAN>
+        <spring:theme id="theme3" code="someId1 someId2 someId3" htmlescape="true"/>
 	</test>
 	<test id="theme4">
-		<SPAN CLASS="vpe-text" >
-			someId1 someId2 someId3
-		</SPAN>
+        <spring:theme id="theme4" code="someId1 someId2 someId3" argumentseparator=" "/>
 	</test>
 </tests>

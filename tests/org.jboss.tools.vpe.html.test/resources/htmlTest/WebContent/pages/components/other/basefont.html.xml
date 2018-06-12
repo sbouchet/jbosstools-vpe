@@ -1,7 +1,6 @@
 <tests>
 	<test id="basefont">
-		<BASEFONT ID="basefont" FACE="Arial, Helvetica, sans-serif"
-			SIZE="4" COLOR="red" STYLE="-moz-user-modify: read-write;"  />
-		<BR VPE:PSEUDO-ELEMENT="yes"/>
+		<basefont id="basefont" face="Arial, Helvetica, sans-serif"
+			size="4" color="red"/>
 	</test>
 </tests>

@@ -1,10 +1,12 @@
 <tests>
 	<test id="htmlEscapeTrue">
-		<SPAN ID="htmlEscapeTrue">
-		</SPAN>
+            <span id="htmlEscapeTrue">
+                <spring:htmlEscape defaulthtmlescape="true" />
+            </span>
 	</test>
 	<test id="htmlEscapeFalse">
-		<SPAN ID="htmlEscapeFalse">
-		</SPAN>
+            <span id="htmlEscapeFalse">
+                <spring:htmlEscape defaulthtmlescape="false" />
+            </span>
 	</test>
 </tests>

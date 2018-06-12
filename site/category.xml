@@ -27,12 +27,4 @@
 		<category name="JBoss Tools VPE Test Nightly Build Update Site"/>
 	</feature>
 
-	<!-- include but leave uncategorized -->
-	<feature url="features/org.mozilla.xulrunner.feature_0.0.0.jar" id="org.mozilla.xulrunner.feature" version="0.0.0">
-	</feature>
-	<feature url="features/org.jboss.tools.xulrunner.feature_0.0.0.jar" id="org.jboss.tools.xulrunner.feature" version="0.0.0">
-	</feature>
-	<feature url="features/org.jboss.tools.xulrunner.feature.source_0.0.0.jar" id="org.jboss.tools.xulrunner.feature.source" version="0.0.0">
-	</feature>
-
 </site>

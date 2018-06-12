@@ -21,10 +21,13 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.jboss.tools.jst.web.ui.internal.editor.jspeditor.JSPMultiPageEditor;
 import org.jboss.tools.vpe.base.test.TestUtil;
 import org.jboss.tools.vpe.base.test.VpeTest;
-import org.jboss.tools.vpe.editor.VpeController;
+import org.jboss.tools.vpe.preview.editor.VpvEditorController;
+import org.jboss.tools.vpe.preview.editor.util.VpvSelectionUtil;
 import org.jboss.tools.vpe.ui.test.VpeUiTests;
 import org.junit.Test;
-import org.mozilla.interfaces.nsIDOMNode;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import static org.junit.Assert.*;
 import static org.junit.Assume.assumeTrue;
 
@@ -42,7 +45,6 @@ public class MultipleSelectionTest extends VpeTest{
 	}
 	@Test
 	public void testMultipleSelectionForSimplePage() throws CoreException, IOException{
-		assumeTrue("Not supported environment",!VpeTest.skipTests);
         IFile file = (IFile) TestUtil.getComponentPath(TEST_CASE,
         		VpeUiTests.IMPORT_PROJECT_NAME);
         IEditorInput input = new FileEditorInput(file);
@@ -52,15 +54,16 @@ public class MultipleSelectionTest extends VpeTest{
 		int startSelectionOffcet = TestUtil.getLinePositionOffcet(viewer, 4, 1);
 		int length = TestUtil.getLinePositionOffcet(viewer, 4, 45)-startSelectionOffcet;
 		viewer.setSelectedRange(startSelectionOffcet, length);
-		VpeController vpeController = TestUtil.getVpeController(part);
+		VpvEditorController vpeController = TestUtil.getVpvController(part);
         vpeController.sourceSelectionChanged();
-        List<nsIDOMNode> selectedNodes = vpeController.getXulRunnerEditor().getSelectedNodes();
+        Node node = VpvSelectionUtil.getSelectedNode(vpeController.getPageContext());
+        NodeList selectedNodes = node.getChildNodes();
         /*
          * When Git repository is checked out on Windows OS
          * git could add window style caret return symbol,
          * after that additional text nodes appear.
          * To fix it: test page was changed.
          */
-        assertEquals("Shuld be selected ",4,selectedNodes.size()); //$NON-NLS-1$
+        assertEquals("Should be selected ",1,selectedNodes.getLength()); //$NON-NLS-1$
 	}
 }

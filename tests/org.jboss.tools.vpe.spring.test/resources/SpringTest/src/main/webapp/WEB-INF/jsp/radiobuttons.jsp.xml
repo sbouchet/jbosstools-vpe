@@ -1,20 +1,19 @@
 <tests>
 	<test id="radiobuttons1">
-		<span>
-			<input id="radiobuttons11" type="radio"/>
-			<label>${formBean.availableCategories}</label>
-		</span>
+        <form:radiobuttons id="radiobuttons1"
+                path="selectedCategories1" 
+                items="${formBean.availableCategories}" />
 	</test>
 	<test id="radiobuttons2">
-		<span>
-			<input id="radiobuttons21"  type="radio" class="tall-radiobuttons" style="width: 30px;"/>
-			<label>${formBean.availableCategories}</label>
-		</span>
+        <form:radiobuttons id="radiobuttons2"
+                    cssclass="tall-radiobuttons" cssstyle="width: 30px;"
+                    items="${formBean.availableCategories}"
+                    path="selectedCategories2" />
 	</test>
 	<test id="radiobuttons3">
-		<span>
-			<input id="radiobuttons31" disabled="disabled" type="radio"/>
-			<label>${formBean.favoriteCategories}.id</label>
-		</span>
+        <form:radiobuttons id="radiobuttons3" disabled="true"
+                    itemlabel="id" itemvalue="id"
+                    items="${formBean.favoriteCategories}"
+                    path="selectedCategories3" />
 	</test>
 </tests>

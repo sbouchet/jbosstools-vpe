@@ -1,8 +1,8 @@
 <tests>
 	<test id="input1">
-		<INPUT TYPE="text" ID="input1" VALUE="input"/>
-	</test>
+        <form:input id="input1" path="input"/>
+   	</test>
 	<test id="input2">
-		<INPUT TYPE="text" DISABLED="disabled" ID="input2" VALUE="input"/>
+        <form:input id="input2" path="input" disabled="true"/>
 	</test>
 </tests>

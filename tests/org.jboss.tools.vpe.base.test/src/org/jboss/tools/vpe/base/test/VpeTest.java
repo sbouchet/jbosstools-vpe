@@ -11,23 +11,23 @@
 
 package org.jboss.tools.vpe.base.test;
 
-import static org.jboss.tools.vpe.xulrunner.util.XPCOM.queryInterface;
-
-
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.Collection;
-import java.util.Map;
+
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import junit.framework.TestCase;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.Adapters;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.swt.browser.BrowserInitializer;
-import org.eclipse.swt.custom.StyledText;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -36,27 +36,19 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
-import org.eclipse.wst.xml.core.internal.provisional.document.IDOMDocument;
+import org.eclipse.wst.sse.core.internal.provisional.IStructuredModel;
+import org.eclipse.wst.xml.core.internal.provisional.document.IDOMModel;
 import org.jboss.tools.jst.web.ui.WebUiPlugin;
 import org.jboss.tools.jst.web.ui.internal.editor.jspeditor.JSPMultiPageEditor;
 import org.jboss.tools.jst.web.ui.internal.editor.preferences.IVpePreferencesPage;
 import org.jboss.tools.vpe.VpePlugin;
-import org.jboss.tools.vpe.editor.VpeController;
-import org.jboss.tools.vpe.editor.VpeSourceDomBuilder;
-import org.jboss.tools.vpe.editor.mapping.VpeDomMapping;
-import org.jboss.tools.vpe.editor.mapping.VpeElementMapping;
-import org.jboss.tools.vpe.editor.mapping.VpeNodeMapping;
-import org.jboss.tools.vpe.editor.util.SelectionUtil;
-import org.jboss.tools.vpe.editor.util.VpePlatformUtil;
-import org.jboss.tools.vpe.xulrunner.browser.XulRunnerBrowser;
-import org.jboss.tools.vpe.xulrunner.editor.XulRunnerEditor;
+import org.jboss.tools.vpe.preview.editor.VpvEditorController;
 import org.junit.After;
 import org.junit.Before;
-import org.mozilla.interfaces.nsIDOMElement;
-import org.mozilla.interfaces.nsIDOMNode;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+
 import static org.junit.Assert.*
 ;
 import static org.junit.Assume.assumeTrue;
@@ -73,11 +65,6 @@ public class VpeTest implements ILogListener {
 	/** Editor in which we open visual page. */
 	protected final static String EDITOR_ID = "org.jboss.tools.jst.jsp.jspeditor.JSPTextEditor"; //$NON-NLS-1$
 
-	public static boolean skipTests = 
-			!XulRunnerBrowser.isCurrentPlatformOfficiallySupported() 
-			|| XulRunnerBrowser.CURRENT_PLATFORM_ID.equals("win32.win32.x86_64")
-			|| isGTK3();
-	
 	/** Collects exceptions. */
 	private Throwable exception;
 
@@ -93,7 +80,6 @@ public class VpeTest implements ILogListener {
 
 	static {
 		//set this property to make VPE always opened as visual part
-		System.setProperty(VpePlatformUtil.LOAD_XULRUNNER_ENGINE, String.valueOf(true));
 		WebUiPlugin.getDefault().getPreferenceStore().setValue(IVpePreferencesPage.USE_VISUAL_EDITOR_FOR_HTML5, Boolean.FALSE.toString());
 	}
 
@@ -187,16 +173,12 @@ public class VpeTest implements ILogListener {
 	 * 
 	 * @return source document
 	 */
-	protected Document getSourceDocument(VpeController controller) {
-		/*
-		 * https://issues.jboss.org/browse/JBIDE-11360
-		 * Check that VpeController and VpeSourceDomBuilder
-		 * are created.
-		 */
-		assertNotNull("VpeController is not initialized.", controller); //$NON-NLS-1$
-		VpeSourceDomBuilder vpeSourceDomBuilder = controller.getSourceBuilder();
-		assertNotNull("VpeSourceDomBuilder is not initialized.", vpeSourceDomBuilder); //$NON-NLS-1$
-		return vpeSourceDomBuilder.getSourceDocument();
+	protected Document getSourceDocument(VpvEditorController controller) {
+		IStructuredModel model = controller.getSourceEditor().getModel();
+		assertNotNull("source model is not available.", model); //$NON-NLS-1$
+		assertTrue("model is not DOM model", model instanceof IDOMModel);
+		IDOMModel domModel = (IDOMModel) model;
+		return domModel.getDocument();
 	}
 
 	/**
@@ -212,7 +194,6 @@ public class VpeTest implements ILogListener {
 	 */
 	protected void performTestForVpeComponent(IFile componentPage)
 			throws PartInitException, Throwable {
-		assumeTrue("Not supported environment",!skipTests);
 		// IFile file = (IFile)
 		// TestUtil.getComponentPath(componentPage,getImportProjectName());
 		IEditorInput input = new FileEditorInput(componentPage);
@@ -221,7 +202,7 @@ public class VpeTest implements ILogListener {
 				.getActiveWorkbenchWindow().getActivePage().openEditor(input,
 						getEditorID(), true);
 		// here we wait for inintialization VPE controller
-		TestUtil.getVpeController((JSPMultiPageEditor) editor);
+		TestUtil.getVpvController((JSPMultiPageEditor) editor);
 
 		assertNotNull(editor);
 
@@ -246,9 +227,6 @@ public class VpeTest implements ILogListener {
 	 */
 	protected JSPMultiPageEditor openEditor(IEditorInput input)
 			throws PartInitException {
-		assumeTrue("Not supported environment",!skipTests);
-		//set this property to make VPE always opened as visual part
-		System.setProperty(VpePlatformUtil.LOAD_XULRUNNER_ENGINE, String.valueOf(true));
 		
 		// get editor
 		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
@@ -282,7 +260,6 @@ public class VpeTest implements ILogListener {
 	 */
 	protected JSPMultiPageEditor openEditor(IFile input)
 			throws PartInitException {
-		assumeTrue("Not supported environment",!skipTests);
 		// get editor
 		JSPMultiPageEditor part = (JSPMultiPageEditor) IDE.openEditor(PlatformUI
 				.getWorkbench().getActiveWorkbenchWindow().getActivePage(),
@@ -332,74 +309,6 @@ public class VpeTest implements ILogListener {
 	}
 
 	/**
-	 * Compares source nodes selection and visual selection
-	 * 
-	 * @param VPE
-	 *            Editor part
-	 */
-	protected void checkSourceSelection(JSPMultiPageEditor part) {
-		// get controller
-		VpeController controller = TestUtil.getVpeController(part);
-		assertNotNull(controller);
-
-		// get dommapping
-		VpeDomMapping domMapping = controller.getDomMapping();
-
-		assertNotNull(domMapping);
-
-		// get source map
-		Map<Node, VpeNodeMapping> sourceMap = domMapping.getSourceMap();
-		assertNotNull(sourceMap);
-
-		// get collection of VpeNodeMapping
-		Collection<VpeNodeMapping> mappings = sourceMap.values();
-		assertNotNull(mappings);
-
-		// get editor control
-		StyledText styledText = part.getSourceEditor().getTextViewer()
-				.getTextWidget();
-		assertNotNull(styledText);
-
-		// get xulrunner editor
-		XulRunnerEditor xulRunnerEditor = controller.getXulRunnerEditor();
-		assertNotNull(xulRunnerEditor);
-
-		for (VpeNodeMapping nodeMapping : mappings) {
-
-			/**
-			 * exclude out DomDocument ( it is added to mapping specially ) and
-			 * nodes without visual representation
-			 */
-			Node sourceNode = nodeMapping.getSourceNode();
-			nsIDOMNode visualNode = nodeMapping.getVisualNode();
-			if (!(sourceNode instanceof IDOMDocument)
-					&& (visualNode != null)) {
-
-				SelectionUtil.setSourceSelection(controller.getPageContext(),
-						sourceNode, 1, 0);
-
-				TestUtil.delay();
-
-				assertNotNull(getSelectedNode(xulRunnerEditor));
-
-				nsIDOMNode sample;
-				if ((sourceNode.getNodeType() == Node.TEXT_NODE)
-						&& (((VpeElementMapping) nodeMapping).getElementData() != null)) {
-					/*
-					 * ElementData could be null. Thus the check is required.
-					 */
-					sample = ((VpeElementMapping) nodeMapping).getElementData()
-							.getNodesData().get(0).getVisualNode();
-				} else {
-					sample = visualNode;
-				}
-
-				assertEquals(sample, getSelectedNode(xulRunnerEditor));
-			}
-		}
-	}
-
-	/**
 	 * Opens specified file in the VPE editor.
 	 * 
 	 * @param projectName
@@ -411,7 +320,7 @@ public class VpeTest implements ILogListener {
 	 * @throws CoreException
 	 * @throws IOException
 	 */
-	protected VpeController openInVpe(String projectName, String fileName)
+	protected VpvEditorController openInVpv(String projectName, String fileName)
 			throws CoreException, IOException {
 		// get test page path
 		final IFile file = (IFile) TestUtil.getComponentPath(fileName,
@@ -426,8 +335,7 @@ public class VpeTest implements ILogListener {
 		// open and get the editor
 		final JSPMultiPageEditor part = openEditor(input);
 
-		final VpeController vpeController = TestUtil.getVpeController(part);
-		return vpeController;
+		return TestUtil.getVpvController(part);
 	}
 
 	/**
@@ -437,7 +345,7 @@ public class VpeTest implements ILogListener {
 	 * @param elementId
 	 * @return
 	 */
-	protected Element findSourceElementById(VpeController controller, String elementId) {
+	protected Element findSourceElementById(VpvEditorController controller, String elementId) {
 		/*
 		 * https://issues.jboss.org/browse/JBIDE-11360
 		 * Check that SourceDocument is found.
@@ -446,7 +354,6 @@ public class VpeTest implements ILogListener {
 		assertNotNull("SourceDocument is not found.", document); //$NON-NLS-1$
 		return document.getElementById(elementId);
 	}
-
 	/**
 	 * find visual element by "id" entered in source part of vpe
 	 * 
@@ -454,72 +361,26 @@ public class VpeTest implements ILogListener {
 	 * @param elementId
 	 * @return
 	 */
-	protected nsIDOMElement findElementById(VpeController controller,String elementId) {
-		Element sourceElement = findSourceElementById(controller, elementId);
-		assertNotNull("Source element with id='" + elementId + "' cannot be found.", sourceElement); //$NON-NLS-1$ //$NON-NLS-2$ 
-		nsIDOMElement element = null;
-		VpeNodeMapping nodeMapping = controller
-				.getDomMapping().getNodeMapping(sourceElement);
-		if (nodeMapping != null) {
-			nsIDOMNode node = nodeMapping.getVisualNode();
-			if (node != null) {
-				try {
-					element = queryInterface(node, nsIDOMElement.class);
-				} catch (org.mozilla.xpcom.XPCOMException e) { 
-					//Do nothing
-				} catch (NullPointerException e) { 
-					//Do nothing					
-				}
+	protected Element findElementById(VpvEditorController controller,String elementId) {
+		Document document = TestUtil.getVpvVisualDocument(controller);
+		if (document != null) {
+			XPath xPath = XPathFactory.newInstance().newXPath();
+			String expression = "//*[@" + "id" + "='" + elementId + "']"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			try {
+				return (Element) xPath.compile(expression).evaluate(document, XPathConstants.NODE);
+			} catch (XPathExpressionException e) {
+				return null;
 			}
+		} else {
+			return null;
 		}
-		return element; 
 	}
 	
+
 	protected String getEditorID(){
 		return EDITOR_ID;
 	}
 	
-	/**
-	 * @author mareshkau
-	 * @param xulRunnerEditor
-	 * @return first node in nodes selection, if it selected
-	 */
-	protected static nsIDOMNode getSelectedNode(XulRunnerEditor xulRunnerEditor){
-		return (xulRunnerEditor.getSelectedNodes().size()>0)?xulRunnerEditor.getSelectedNodes().get(0):null;
-	}
-	
 	private static final String PROPERTY_DEFAULTTYPE = "org.eclipse.swt.browser.DefaultType"; //$NON-NLS-1$
-	private static final String SWT_GTK3 = "SWT_GTK3"; //$NON-NLS-1$
-	static final String XULRUNNER_PATH = "org.eclipse.swt.browser.XULRunnerPath"; //$NON-NLS-1$
-	public static final String LOAD_DEFAULT_ENGINE = "org.jboss.tools.vpe.engine.default"; //$NON-NLS-1$
 	
-	public static boolean isGTK3() {
-		if (Platform.WS_GTK.equals(Platform.getWS())) {
-			try {
-				Class<?> clazz = Class.forName("org.eclipse.swt.internal.gtk.OS"); //$NON-NLS-1$
-				Field field = clazz.getDeclaredField("GTK3"); //$NON-NLS-1$
-				boolean gtk3 = field.getBoolean(field);
-				return gtk3;
-			} catch (ClassNotFoundException e) {
-				return isGTK3Env();
-			} catch (NoSuchFieldException e) {
-				return false;
-			} catch (SecurityException e) {
-				return isGTK3Env();
-			} catch (IllegalArgumentException e) {
-				return isGTK3Env();
-			} catch (IllegalAccessException e) {
-				return isGTK3Env();
-			}
-		}
-		return false;
-	}
-
-	private static boolean isGTK3Env() {
-		String gtk3 = System.getProperty(SWT_GTK3);
-		if (gtk3 == null) {
-			gtk3 = System.getenv(SWT_GTK3);
-		}
-		return !"0".equals(gtk3); //$NON-NLS-1$
-	}
 }

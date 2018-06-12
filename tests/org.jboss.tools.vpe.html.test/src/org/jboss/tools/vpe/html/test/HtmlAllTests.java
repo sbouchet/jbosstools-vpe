@@ -34,8 +34,6 @@ public class HtmlAllTests {
 	public static final String IMPORT_PROJECT_NAME = "htmlTest"; //$NON-NLS-1$
 	
 	public static Test suite() {
-		//set this property to make VPE always opened as visual part
-		System.setProperty(VpePlatformUtil.LOAD_XULRUNNER_ENGINE, String.valueOf(true));
 		
 		TestSuite suite = new TestSuite("Tests for Vpe HTML components"); //$NON-NLS-1$
 		// $JUnit-BEGIN$

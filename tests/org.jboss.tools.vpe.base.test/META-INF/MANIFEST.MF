@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: VPE Base Classes for tests
 Bundle-SymbolicName: org.jboss.tools.vpe.base.test;singleton:=true
-Bundle-Version: 3.8.100.qualifier
+Bundle-Version: 3.8.200.qualifier
 Bundle-Vendor: JBoss by RedHat
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.eclipse.ui;bundle-version="3.7.0",
@@ -18,11 +18,12 @@ Require-Bundle: org.eclipse.ui;bundle-version="3.7.0",
  org.eclipse.ui.ide;bundle-version="3.7.0",
  org.jboss.tools.jst.web.ui,
  org.eclipse.wst.xml.xpath.core;bundle-version="1.1.100",
- org.mozilla.xpcom,
- org.jboss.tools.vpe.xulrunner,
  org.jboss.tools.common.text.ext,
  org.jboss.tools.common.model.ui,
- org.jboss.tools.vpe.preview.editor;bundle-version="3.5.100"
+ org.jboss.tools.vpe.preview.editor;bundle-version="3.5.100",
+ org.jboss.tools.common.resref.core
 Export-Package: org.jboss.tools.vpe.base.test
 Bundle-Activator: org.jboss.tools.vpe.base.test.VPEBaseTestPlugin
 Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: lib/jsoup-1.11.3.jar,
+ .

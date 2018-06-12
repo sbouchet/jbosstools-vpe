@@ -1,16 +1,12 @@
 <tests>
 	<test id="details-id">
-		<DETAILS ID="details-id">
-<SUMMARY>
-<SPAN CLASS="vpe-text">
+		<details id="details-id">
+<summary>
 Copyright 1999-2011.
-</SPAN>
-</SUMMARY>
-<P>
-<SPAN CLASS="vpe-text">
+</summary>
+<p>
 All pages and graphics on this web site are the property of the company Refsnes Data.
-</SPAN>
-</P>
-</DETAILS>
+</p>
+</details>
 	</test>
 </tests>

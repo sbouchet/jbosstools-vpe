@@ -1,8 +1,7 @@
 <tests>
 	<test id="xmp">
-		<XMP ID="xmp" STYLE="-moz-user-modify: read-only;" >
-<SPAN>
-while (&lt;&gt;) {  
+		<xmp id="xmp">
+while (&amp;lt;&amp;gt;) {  
       $org=$_;  
       s/\\["']//g;  
       s/\/\/[^:].*//;  
@@ -22,7 +21,6 @@ while (&lt;&gt;) {
         next;  
       }  
     }
-</SPAN>
-</XMP>
+</xmp>
 	</test>
 </tests>

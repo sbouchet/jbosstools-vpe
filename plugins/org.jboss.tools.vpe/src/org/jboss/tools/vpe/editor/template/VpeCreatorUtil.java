@@ -14,20 +14,12 @@ import java.io.IOException;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.ui.IEditorInput;
 import org.eclipse.wst.sse.core.internal.provisional.IModelManager;
-import org.eclipse.wst.sse.core.internal.provisional.IStructuredModel;
 import org.eclipse.wst.sse.core.internal.provisional.StructuredModelManager;
 import org.eclipse.wst.sse.core.internal.provisional.text.IStructuredDocument;
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMModel;
 import org.eclipse.wst.xml.core.internal.provisional.document.IDOMNode;
 import org.jboss.tools.vpe.VpePlugin;
-import org.jboss.tools.vpe.editor.VpeIncludeInfo;
-import org.jboss.tools.vpe.editor.context.VpePageContext;
-import org.jboss.tools.vpe.editor.template.custom.VpeCustomStringStorage;
-import org.jboss.tools.vpe.editor.util.FileUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -83,41 +75,6 @@ public class VpeCreatorUtil {
 		return false;
 	}
 	
-	private static IDOMModel getWtpModelForRead(String fileName, VpePageContext pageContext) {
-		IEditorInput input = pageContext.getEditPart().getEditorInput();
-		IFile file = FileUtil.getFile(input, fileName);
-		if (file != null && file.exists()) {
-			try {
-				return (IDOMModel)StructuredModelManager.getModelManager().getModelForRead(file);
-			} catch(IOException ex) {
-				VpePlugin.reportProblem(ex);
-			} catch(CoreException ex) {
-				VpePlugin.reportProblem(ex);	
-			}
-		}
-		return null;
-	}
-
-	public static Document getIncludeDocument(Node includeNode, VpePageContext pageContext) {
-		if (isInclude(includeNode)) {
-			Element includeElement = (Element)includeNode;
-			String pageAttrName = "page"; //$NON-NLS-1$
-			String fileAttrName = "file"; //$NON-NLS-1$
-			String pageName = null;
-			if (includeElement.hasAttribute(pageAttrName)) {
-				pageName = includeElement.getAttribute(pageAttrName);
-			} else if (includeElement.hasAttribute(fileAttrName)) {
-				pageName = includeElement.getAttribute(fileAttrName);
-			}
-			if (pageName != null) {
-				IDOMModel wtpModel = getWtpModelForRead(pageName, pageContext);
-				if (wtpModel != null) {
-					return wtpModel.getDocument();												
-				}
-			}							
-		}
-		return null;
-	}
 	/**
 	 * Releases document model from read
 	 * @see VpeCreatorUtil#getDocumentForRead(IFile)
@@ -132,40 +89,6 @@ public class VpeCreatorUtil {
 		}
 	}
 
-	public static IFile getFile(String fileName, VpePageContext pageContext) {
-		if (null == fileName) {
-			return null;
-		}
-		IEditorInput input = pageContext.getEditPart().getEditorInput();
-		IFile file = null;
-
-		VpeIncludeInfo currentIncludeInfo
-				= pageContext.getVisualBuilder().getCurrentIncludeInfo();
-		if(currentIncludeInfo==null 
-				|| !(currentIncludeInfo.getStorage() instanceof IFile)) {
-			file = FileUtil.getFile(input, fileName);
-		} else {
-			IFile includedFile = 
-				(IFile) currentIncludeInfo.getStorage();
-			file = FileUtil.getFile(fileName, includedFile);
-		}
-		
-		if (file != null) {
-			if (!file.isSynchronized(0)){
-				try {
-					file.refreshLocal(0, null);
-				} catch (CoreException ex) {
-					VpePlugin.getPluginLog().logError(ex);
-				} catch (OperationCanceledException ex) {
-					VpePlugin.getPluginLog().logError(ex);
-				}
-			}
-			if (file.exists()) {
-				return file;
-			}
-		}
-		return null;
-	}
 	/**
 	 * Return dom document for read, document shoud be released from read
 	 * @see VpeCreatorUtil#releaseDocumentFromRead(Document)
@@ -204,30 +127,6 @@ public class VpeCreatorUtil {
 		return null;
 	}
 
-	public static int getFacetType(Node node, VpePageContext pageContext) {
-		if (VpeCreatorUtil.isFacet(node)) {
-			return getFacetType(node);
-		} else {
-			Document document = getIncludeDocument(node, pageContext);
-			if (document != null) {
-				try {
-					NodeList list = document.getChildNodes();
-					int cnt = list != null ? list.getLength() : 0;
-					for (int i = 0; i < cnt; i++) {
-						Node child = list.item(i);
-						int type = getFacetType(child, pageContext);
-						if (type != FACET_TYPE_NONE) {
-							return type;
-						}
-					}
-				} finally {
-					releaseDocumentFromRead(document);
-				}
-			}
-		}
-		return FACET_TYPE_NONE;
-	}
-	
 	public static void setAttributes(Element visualElement, Element sourceElement, VpeAttributeInfo[] attrsInfo) {
 		if (attrsInfo != null) {
 			for (int i = 0; i < attrsInfo.length; i++) {

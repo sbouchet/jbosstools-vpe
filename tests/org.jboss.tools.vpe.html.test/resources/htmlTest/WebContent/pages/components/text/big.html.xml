@@ -1,10 +1,8 @@
 <tests>
 	<test id="big">
-		<BIG ID="big" CLASS="bigClass" STYLE="color: red; -moz-user-modify: read-write;"
-			DIR="ltr">
-			<SPAN>
+		<big id="big" class="bigClass" style="color: red"
+			dir="ltr">
 				big text
-			</SPAN>
-		</BIG>
+		</big>
 	</test>
 </tests>

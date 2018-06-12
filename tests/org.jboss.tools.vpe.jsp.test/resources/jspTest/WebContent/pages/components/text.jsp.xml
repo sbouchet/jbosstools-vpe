@@ -1,9 +1,7 @@
 <tests>
 <test id="text">
-<SPAN CLASS="vpe-text">
-<SPAN CLASS="vpe-text">
+<jsp:text id="text">
 Any Text
-</SPAN>
-</SPAN>
+</jsp:text>
 </test>
 </tests>

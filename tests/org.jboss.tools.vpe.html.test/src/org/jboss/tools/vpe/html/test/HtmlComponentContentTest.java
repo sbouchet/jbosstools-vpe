@@ -242,7 +242,7 @@ public class HtmlComponentContentTest extends ComponentContentTest {
 		performContentTest("components/core/h6.html"); //$NON-NLS-1$
 	}
 
-	@Test
+	@Test(expected=RuntimeException.class)
 	public void testHead() throws Throwable {
 		performContentTest("components/core/head.html"); //$NON-NLS-1$
 	}

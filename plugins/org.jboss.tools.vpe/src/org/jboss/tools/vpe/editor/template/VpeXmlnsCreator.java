@@ -18,11 +18,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-import org.jboss.tools.vpe.editor.context.VpePageContext;
-import org.jboss.tools.vpe.editor.template.expression.VpeExpressionBuilder;
-import org.mozilla.interfaces.nsIDOMDocument;
-import org.mozilla.interfaces.nsIDOMElement;
-
 public class VpeXmlnsCreator //extends VpeAbstractCreator
 {
 //	private static final String ATTR_XMLNS = "xmlns";

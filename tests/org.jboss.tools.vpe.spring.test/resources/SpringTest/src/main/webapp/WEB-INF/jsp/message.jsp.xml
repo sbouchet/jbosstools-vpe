@@ -1,22 +1,14 @@
 <tests>
 	<test id="message1">
-		<SPAN CLASS="vpe-text" >
-			some.id.in.bundle
-		</SPAN>
+        <spring:message id="message1" code="some.id.in.bundle"/>
 	</test>
 	<test id="message2">
-		<SPAN CLASS="vpe-text" >
-			someId1, someId2, someId3
-		</SPAN>
+        <spring:message id="message2" code="someId1, someId2, someId3" htmlescape="true"/>
 	</test>
 	<test id="message3">
-		<SPAN CLASS="vpe-text" >
-			someId1 someId2 someId3
-		</SPAN>
+        <spring:message id="message3" code="someId1 someId2 someId3" htmlescape="true"/>
 	</test>
 	<test id="message4">
-		<SPAN CLASS="vpe-text" >
-			someId1 someId2 someId3
-		</SPAN>
+        <spring:message id="message4" code="someId1 someId2 someId3" argumentseparator=" "/>
 	</test>
 </tests>

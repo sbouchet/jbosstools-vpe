@@ -1,23 +1,16 @@
 <tests>
 	<test id="ul">
-		<UL TYPE="disc" CLASS="ulClass" DIR="ltr" ID="ul"
-			STYLE="color: red; -moz-user-modify: read-write;">
-			<LI STYLE="-moz-user-modify: read-write;">
-				<SPAN>
+		<ul type="disc" class="ulClass" dir="ltr" id="ul"
+			style="color: red;">
+			<li>
 					text 1
-</SPAN>
-			</LI>
-			<LI STYLE="-moz-user-modify: read-write;">
-				<SPAN>
+			</li>
+			<li>
 					text 2
-</SPAN>
-			</LI>
-			<LI STYLE="-moz-user-modify: read-write;">
-				<SPAN>
+			</li>
+			<li>
 					text 3
-</SPAN>
-			</LI>
-		</UL>
-
+			</li>
+		</ul>
 	</test>
 </tests>

@@ -14,11 +14,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.sse.ui.StructuredTextEditor;
 import org.jboss.tools.jst.web.ui.internal.editor.jspeditor.JSPMultiPageEditor;
-import org.jboss.tools.vpe.editor.VpeEditorPart;
-import org.jboss.tools.vpe.editor.context.AbstractPageContext;
-import org.jboss.tools.vpe.editor.context.VpePageContext;
-import org.jboss.tools.vpe.editor.mapping.VpeDomMapping;
-import org.jboss.tools.vpe.editor.mozilla.MozillaEditor;
 import org.w3c.dom.Node;
 
 /**
@@ -41,16 +36,10 @@ public class VpeMenuUtil {
 	private boolean editorInitialized = false;
 	private StructuredTextEditor sourceEditor;
 	private boolean sourceEditorInitialized = false;
-	private VpeDomMapping domMapping;
-	private boolean domMappingInitialized = false;
-	private AbstractPageContext pageContext;
-	private boolean pageContextInitialized = false;
 	private Node selectedNode;
 	private boolean selectedNodeInitialized = false;
 	private IStructuredSelection selection;
 	private boolean selectionInitialized = false;
-	private MozillaEditor mozillaEditor;
-	private boolean mozillaEditorInitialized = false;
 
 	/**
 	 * Returns active {@code JSPMultiPageEditor}
@@ -74,28 +63,7 @@ public class VpeMenuUtil {
 		}
 		return sourceEditor;
 	}
-	/**
-	 * Returns active {@code StructuredTextEditor}
-	 */
-	public VpeDomMapping getDomMapping() {
-		if (!domMappingInitialized) {
-			domMapping = getPageContext().getDomMapping();
-			domMappingInitialized = true;
-		}
-		return domMapping;
-	}
-	/**
-	 * Returns {@code VpePageContext} of 
-	 * the active editor
-	 */
-	public VpePageContext getPageContext() {
-		if (!pageContextInitialized) {
-			pageContext = ((VpeEditorPart) getEditor().getVisualEditor())
-					.getController().getPageContext();
-			pageContextInitialized = true;
-		}
-		return (VpePageContext)pageContext;
-	}
+
 	/**
 	 * Returns active source selection
 	 */
@@ -120,16 +88,5 @@ public class VpeMenuUtil {
 			selectedNodeInitialized = true;
 		}
 		return selectedNode;
-	}
-	/**
-	 * Returns active {@code MozillaEditor}
-	 */
-	public MozillaEditor getMozillaEditor() {
-		if (!mozillaEditorInitialized) {
-			mozillaEditor = ((VpeEditorPart) getEditor().getVisualEditor())
-					.getVisualEditor();
-			mozillaEditorInitialized = true;
-		}
-		return mozillaEditor;
 	}
 }

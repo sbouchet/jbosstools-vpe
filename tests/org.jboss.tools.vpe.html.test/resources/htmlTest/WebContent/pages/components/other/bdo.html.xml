@@ -1,9 +1,7 @@
 <tests>
 	<test id="bdo">
-		<BDO DIR="rtl" STYLE="-moz-user-modify: read-write;" >
-			<SPAN>
+		<bdo dir="rtl">
 				some text
-			</SPAN>
-		</BDO>
+		</bdo>
 	</test>
 </tests>

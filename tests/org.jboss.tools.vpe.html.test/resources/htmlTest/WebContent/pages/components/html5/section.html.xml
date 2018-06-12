@@ -1,16 +1,12 @@
 <tests>
 	<test id="section-id">
-		<SECTION ID="section-id">
-<H1>
-<SPAN CLASS="vpe-text">
+		<section id="section-id">
+<h1>
 WWF
-</SPAN>
-</H1>
-<P>
-<SPAN CLASS="vpe-text">
+</h1>
+<p>
 The World Wildlife Foundation was born in 1961...
-</SPAN>
-</P>
-</SECTION>
+</p>
+</section>
 	</test>
 </tests>

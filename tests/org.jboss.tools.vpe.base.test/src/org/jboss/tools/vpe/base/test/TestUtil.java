@@ -12,7 +12,16 @@ package org.jboss.tools.vpe.base.test;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.List;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import junit.framework.Assert;
 
@@ -29,16 +38,20 @@ import org.eclipse.wst.sse.core.internal.provisional.IndexedRegion;
 import org.eclipse.wst.sse.ui.internal.contentassist.ContentAssistUtils;
 import org.jboss.tools.jst.web.ui.internal.editor.jspeditor.JSPMultiPageEditor;
 import org.jboss.tools.test.util.JobUtils;
-import org.jboss.tools.vpe.editor.VpeController;
-import org.jboss.tools.vpe.editor.VpeEditorPart;
-import org.jboss.tools.vpe.xulrunner.editor.XulRunnerEditor;
+import org.jboss.tools.vpe.preview.editor.VpvEditor;
+import org.jboss.tools.vpe.preview.editor.VpvEditorController;
+import org.jboss.tools.vpe.preview.editor.VpvEditorPart;
+import org.jsoup.Jsoup;
+import org.jsoup.helper.W3CDom;
 import org.junit.Assume;
-import org.mozilla.interfaces.nsIDOMDocument;
-import org.mozilla.interfaces.nsIDOMElement;
-import org.mozilla.interfaces.nsIDOMNode;
-import org.mozilla.interfaces.nsIDOMNodeList;
-import org.mozilla.xpcom.XPCOMException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSSerializer;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  * Class for importing project from jar file.
@@ -59,6 +72,10 @@ public class TestUtil {
 	/** The Constant MAX_IDLE. */
 	public static final long MAX_IDLE = 15 * 1000L;
 	private static final long STANDARD_DELAY = 50L;
+	
+	private static final W3CDom JSOUP_DOM_HELPER = new W3CDom();
+	
+	private static final DocumentBuilderFactory DOCUMENT_FACTORY = DocumentBuilderFactory.newInstance();
 
 	/**
 	 * Gets the component path.
@@ -189,13 +206,13 @@ public class TestUtil {
 	 * @param elements
 	 *            - list of found elements
 	 */
-	static public void findElementsByName(nsIDOMNode node, List<nsIDOMNode> elements, String name) {
+	static public void findElementsByName(Node node, List<Node> elements, String name) {
 		/*
 		 * Get children
 		 */
-		nsIDOMNodeList children = node.getChildNodes();
+		NodeList children = node.getChildNodes();
 		for (int i = 0; i < children.getLength(); i++) {
-			nsIDOMNode child = children.item(i);
+			Node child = children.item(i);
 			/*
 			 * if current child is required then add it to list
 			 */
@@ -217,21 +234,16 @@ public class TestUtil {
 	 * @param elements
 	 *            - list of found elements
 	 */
-	static public void findAllElementsByName(nsIDOMNode node, List<nsIDOMNode> elements, String name) {
-		try {
-			nsIDOMNodeList list = node.getChildNodes();
-			if (node.getNodeName().equalsIgnoreCase(name)) {
-				elements.add(node);
-			}
-			for (int i = 0; i < list.getLength(); i++) {
-				findAllElementsByName(list.item(i), elements, name);
-			}
-		} catch (XPCOMException e) {
-			// Ignore
-			return;
+	static public void findAllElementsByName(Node node, List<Node> elements, String name) {
+		NodeList list = node.getChildNodes();
+		if (node.getNodeName().equalsIgnoreCase(name)) {
+			elements.add(node);
+		}
+		for (int i = 0; i < list.getLength(); i++) {
+			findAllElementsByName(list.item(i), elements, name);
 		}
 	}
-
+	
 	/**
 	 * Utility function which returns node mapping by source position(line and
 	 * position in line).
@@ -309,9 +321,8 @@ public class TestUtil {
 	 * 
 	 * @return {@link VpeController}
 	 */
-	public static VpeController getVpeController(JSPMultiPageEditor part) {
-		Assume.assumeTrue(!VpeTest.skipTests);
-		VpeEditorPart visualEditor = (VpeEditorPart) part.getVisualEditor();
+	public static VpvEditorController getVpvController(JSPMultiPageEditor part) {
+		VpvEditorPart visualEditor = (VpvEditorPart) part.getVisualEditor();
 		while (visualEditor.getController() == null) {
 			if (!Display.getCurrent().readAndDispatch()) {
 				Display.getCurrent().sleep();
@@ -319,24 +330,54 @@ public class TestUtil {
 		}
 		return visualEditor.getController();
 	}
-
+	
 	/**
-	 * get xulrunner source page.
+	 * get preview source page.
 	 * 
 	 * @param part
 	 *            - JSPMultiPageEditor
 	 * 
 	 * @return nsIDOMDocument
 	 */
-	public static nsIDOMDocument getVpeVisualDocument(JSPMultiPageEditor part) {
-		nsIDOMDocument document = null;
-		VpeController vpeController = TestUtil.getVpeController(part);
-		if (vpeController != null) {
-			XulRunnerEditor xulRunnerEditor = vpeController.getXulRunnerEditor();
-			if (xulRunnerEditor != null) {
-				document = xulRunnerEditor.getDOMDocument();
+	public static Document getVpvVisualDocument(JSPMultiPageEditor part) {
+		Document document = null;
+		try {
+			VpvEditorController vpvController = TestUtil.getVpvController(part);
+			if (vpvController != null) {
+				document = getVpvVisualDocument(vpvController);
 			}
-		}
+		} catch (Exception e) {
+			// returns null
+		} 
+		return document;
+	}
+	
+	/**
+	 * get preview source page.
+	 * 
+	 * @param part
+	 *            - JSPMultiPageEditor
+	 * 
+	 * @return nsIDOMDocument
+	 */
+	public static Document getVpvVisualDocument(VpvEditorController controller) {
+		Document document = null;
+		try {
+				VpvEditor vpvEditor = controller.getVisualEditor();
+				if (vpvEditor != null) {
+					String text = vpvEditor.getBrowser().getText();
+					document = DOCUMENT_FACTORY.newDocumentBuilder().newDocument();
+					document.setStrictErrorChecking(false);
+					JSOUP_DOM_HELPER.convert(Jsoup.parse(text), document);
+					DOMImplementationLS impl = (DOMImplementationLS) document.getImplementation();
+					LSSerializer lsSerializer = impl.createLSSerializer();
+				    String xml = lsSerializer.writeToString(document); 
+					document = DOCUMENT_FACTORY.newDocumentBuilder().parse(new InputSource(new StringReader(xml)));
+				}
+		} catch (Exception e) {
+			// returns null
+			e.printStackTrace();
+		} 
 		return document;
 	}
 
@@ -351,8 +392,8 @@ public class TestUtil {
 	 * @throws Throwable
 	 *             the throwable
 	 */
-	public static nsIDOMElement performTestForRichFacesComponent(IFile componentPage) throws Throwable {
-		nsIDOMElement rst = null;
+	public static Element performTestForRichFacesComponent(IFile componentPage) throws Throwable {
+		Element rst = null;
 
 		// IFile file = (IFile)
 		// TestUtil.getComponentPath(componentPage,getImportProjectName());
@@ -362,12 +403,13 @@ public class TestUtil {
 				.getActivePage().openEditor(input, EDITOR_ID, true);
 
 		// get dom document
-		nsIDOMDocument document = getVpeVisualDocument(editor);
+		Document document = getVpvVisualDocument(editor);
 		rst = document.getDocumentElement();
 		// check that element is not null
 		Assert.assertNotNull(rst);
 		return rst;
 	}
+
 
 	/**
 	 * Fail.

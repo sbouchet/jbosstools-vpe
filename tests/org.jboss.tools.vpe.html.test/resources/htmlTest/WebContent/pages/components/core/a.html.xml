@@ -1,8 +1,8 @@
 <tests>
 	<test id="a">
-		<A DIR="ltr" STYLE="color: red; -moz-user-modify: read-write;"
-			CLASS="aClass">
-			<SPAN>link</SPAN>
-		</A>
+		<a dir="ltr" style="color: red;"
+			class="aClass">
+			link
+		</a>
 	</test>
 </tests>

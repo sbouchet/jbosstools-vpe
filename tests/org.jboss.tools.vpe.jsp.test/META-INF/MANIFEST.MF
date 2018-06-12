@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name.0
 Bundle-SymbolicName: org.jboss.tools.vpe.jsp.test;singleton:=true
-Bundle-Version: 3.8.100.qualifier
+Bundle-Version: 3.8.200.qualifier
 Bundle-Activator: org.jboss.tools.vpe.jsp.test.JSPTestPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -12,10 +12,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.ide,
  org.jboss.tools.common,
  org.jboss.tools.jst.web.ui,
- org.jboss.tools.vpe.xulrunner,
- org.mozilla.xpcom,
- org.jboss.tools.vpe.jsp,
- org.jboss.tools.vpe.html,
  org.jboss.tools.vpe.base.test;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.jboss.tools.vpe.jsp.test

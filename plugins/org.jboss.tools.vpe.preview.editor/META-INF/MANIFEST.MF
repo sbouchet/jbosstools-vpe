@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.jboss.tools.vpe.preview.editor;singleton:=true
-Bundle-Version: 3.8.100.qualifier
+Bundle-Version: 3.8.200.qualifier
 Bundle-Activator: org.jboss.tools.vpe.preview.editor.Activator
 Bundle-Vendor: %Bundle-Vendor
 Require-Bundle: org.eclipse.ui,
@@ -21,11 +21,11 @@ Require-Bundle: org.eclipse.ui,
  org.jboss.tools.vpe.resref,
  org.eclipse.compare,
  org.jboss.tools.common.model.ui,
- org.jboss.tools.vpe.xulrunner,
  org.eclipse.swt,
  org.jboss.tools.jst.web.kb
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Bundle-Localization: plugin
 Export-Package: org.jboss.tools.vpe.preview.editor;x-internal:=true,
- org.jboss.tools.vpe.preview.editor.context;x-internal:=true
+ org.jboss.tools.vpe.preview.editor.context;x-internal:=true,
+ org.jboss.tools.vpe.preview.editor.util

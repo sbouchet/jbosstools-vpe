@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.jboss.tools</groupId>
 		<artifactId>vpe</artifactId>
-		<version>3.8.100-SNAPSHOT</version>
+		<version>3.8.200-SNAPSHOT</version>
 	</parent>
 	<groupId>org.jboss.tools.vpe</groupId>
 	<artifactId>tests</artifactId>
@@ -14,20 +14,17 @@
 
 	<modules>
 		<module>org.jboss.tools.vpe.base.test</module>
-		<module>org.jboss.tools.vpe.docbook.test</module>
 		<module>org.jboss.tools.vpe.ui.test</module>
 		<module>org.jboss.tools.vpe.html.test</module>
 		<module>org.jboss.tools.vpe.spring.test</module>
 		<module>org.jboss.tools.vpe.jsp.test</module>
 		<module>org.jboss.tools.vpe.jst.test</module>
 		<module>org.jboss.tools.vpe.test</module>
-		<module>org.jboss.tools.vpe.xulrunner.test</module>
 		<module>org.jboss.tools.vpe.preview.editor.test</module>
 	</modules>
 
 	<properties>
 		<surefire.timeout>3600</surefire.timeout>
-		<enable.gtk3>0</enable.gtk3>
 	</properties>
 
 	<build>
@@ -38,32 +35,7 @@
 				<configuration>
 					<product>org.jboss.tools.tests.product</product>
 					<appArgLine>-debug -consolelog</appArgLine>
-					<explodedBundles>
-						<bundle>org.mozilla.xulrunner.cocoa.macosx</bundle>
-						<bundle>org.mozilla.xulrunner.gtk.linux.x86</bundle>
-						<bundle>org.mozilla.xulrunner.gtk.linux.x86_64</bundle>
-						<bundle>org.mozilla.xulrunner.win32.win32.x86</bundle>
-					</explodedBundles>
-					<environmentVariables>
-              			<SWT_GTK3>${enable.gtk3}</SWT_GTK3>
-            		</environmentVariables>
 				</configuration>
-			</plugin>
-			<plugin>
-			      <groupId>org.eclipse.tycho</groupId>
-			      <artifactId>target-platform-configuration</artifactId>
-			      <version>${tychoVersion}</version>
-			      <configuration>
-				  <dependency-resolution>
-				    <extraRequirements>
-					<requirement>
-					  <type>eclipse-plugin</type>
-					  <id>org.jboss.tools.xulrunner.initializer</id>
-					  <versionRange>0.0.0</versionRange>
-					</requirement>
-				    </extraRequirements>
-				  </dependency-resolution>
-			      </configuration>
 			</plugin>
 		</plugins>
 	</build>

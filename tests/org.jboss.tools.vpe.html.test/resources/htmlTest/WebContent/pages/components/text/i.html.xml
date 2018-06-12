@@ -1,9 +1,7 @@
 <tests>
 	<test id="i">
-		<I ID="i" CLASS="iClass" STYLE="color: red; -moz-user-modify: read-write;" DIR="ltr">
-<SPAN>
+		<i id="i" class="iClass" style="color: red;" dir="ltr">
 Some Text
-</SPAN>
-</I>
+</i>
 	</test>
 </tests>

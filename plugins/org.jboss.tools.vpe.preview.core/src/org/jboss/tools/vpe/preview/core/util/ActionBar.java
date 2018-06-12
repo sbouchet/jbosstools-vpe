@@ -15,7 +15,6 @@ import static org.jboss.tools.vpe.preview.core.preferences.VpvPreferencesInitial
 
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -27,8 +26,8 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.browser.Browser;
-import org.eclipse.swt.browser.TitleEvent;
-import org.eclipse.swt.browser.TitleListener;
+import org.eclipse.swt.browser.ProgressAdapter;
+import org.eclipse.swt.browser.ProgressEvent;
 import org.eclipse.swt.program.Program;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
@@ -109,10 +108,9 @@ public abstract class ActionBar {
 		enableRefreshOnSaveAction.run();
 		
 		if (browser != null && !browser.isDisposed()) {
-			browser.addTitleListener(new TitleListener() {
-				
+			browser.addProgressListener(new ProgressAdapter() {
 				@Override
-				public void changed(TitleEvent event) {
+				public void changed(ProgressEvent event) {
 					goBackAction.setEnabled(browser.isBackEnabled());
 					goForwardAction.setEnabled(browser.isForwardEnabled());
 				}

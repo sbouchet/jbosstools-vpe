@@ -1,14 +1,10 @@
 <tests>
 	<test id="progress-id">
-		<PROGRESS ID="progress-id">
-<SPAN ID="objprogress">
-<SPAN CLASS="vpe-text">
+		<progress id="progress-id">
+<span id="objprogress">
 76
-</SPAN>
-</SPAN>
-<SPAN CLASS="vpe-text">
+</span>
 %
-</SPAN>
-</PROGRESS>
+</progress>
 	</test>
 </tests>

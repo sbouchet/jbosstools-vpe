@@ -1,27 +1,19 @@
 <tests>
 	<test id="dl">
-		<DL ID="dl" CLASS="dlClass" DIR="ltr"
-			STYLE="color: red; -moz-user-modify: read-only;">
-			<DT STYLE="-moz-user-modify: read-write;">
-				<SPAN>
+		<dl id="dl" class="dlClass" dir="ltr"
+			style="color: red;">
+			<dt>
 					some term 1
-</SPAN>
-			</DT>
-			<DD STYLE="-moz-user-modify: read-write;">
-				<SPAN>
+			</dt>
+			<dd>
 					some definition 1
-</SPAN>
-			</DD>
-			<DT STYLE="-moz-user-modify: read-write;">
-				<SPAN>
+			</dd>
+			<dt>
 					some term 2
-</SPAN>
-			</DT>
-			<DD STYLE="-moz-user-modify: read-write;">
-				<SPAN>
+			</dt>
+			<dd>
 					some definition 2
-</SPAN>
-			</DD>
-		</DL>
+			</dd>
+		</dl>
 	</test>
 </tests>

@@ -1,9 +1,7 @@
 <tests>
 	<test id="rp-id">
-		<RP ID="rp-id">
-<SPAN CLASS="vpe-text">
+		<rp id="rp-id">
 (
-</SPAN>
-</RP>
+</rp>
 	</test>
 </tests>

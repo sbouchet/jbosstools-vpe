@@ -23,7 +23,6 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.jboss.tools.common.util.SwtUtil;
-import org.jboss.tools.vpe.editor.mozilla.MozillaEditor;
 
 /**
  * @author Sergey Dzmitrovich
@@ -36,7 +35,7 @@ public class VpeDropDownMenu {
 	public VpeDropDownMenu(ToolBar bar, String toolTipText) {
 		ToolItem item = new ToolItem(bar, SWT.MENU);
 		item.setToolTipText(toolTipText);
-		final Image arrowImage = ImageDescriptor.createFromFile(MozillaEditor.class,
+		final Image arrowImage = ImageDescriptor.createFromFile(VpeDropDownMenu.class,
 				"icons/arrow.gif").createImage(); //$NON-NLS-1$
 		item.setImage(arrowImage);
 		SwtUtil.bindDisposal(arrowImage, item);

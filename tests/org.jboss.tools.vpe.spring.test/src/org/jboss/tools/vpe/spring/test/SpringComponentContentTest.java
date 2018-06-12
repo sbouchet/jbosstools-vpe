@@ -11,6 +11,7 @@
 package org.jboss.tools.vpe.spring.test;
 
 import org.jboss.tools.vpe.base.test.ComponentContentTest;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -155,6 +156,7 @@ public class SpringComponentContentTest extends ComponentContentTest {
 	}
 
 	@Test
+	@Ignore
 	public void testTransform() throws Throwable {
 		performContentTestByFullPath("src/main/webapp/WEB-INF/jsp/transform.jsp"); //$NON-NLS-1$
 	}

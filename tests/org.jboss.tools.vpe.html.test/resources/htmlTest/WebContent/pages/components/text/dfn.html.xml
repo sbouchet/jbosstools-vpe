@@ -1,10 +1,8 @@
 <tests>
 	<test id="dfn">
-		<DFN ID="dfn" CLASS="dfnClass" STYLE="color: red; -moz-user-modify: read-write;"
-			DIR="ltr">
-			<SPAN>
+		<dfn id="dfn" class="dfnClass" style="color: red"
+			dir="ltr">
 				Some Text
-			</SPAN>
-		</DFN>
+		</dfn>
 	</test>
 </tests>

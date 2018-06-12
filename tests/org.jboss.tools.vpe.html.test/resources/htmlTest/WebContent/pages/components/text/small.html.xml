@@ -1,9 +1,7 @@
 <tests>
 	<test id="small">
-		<SMALL ID="small" CLASS="smallClass" STYLE="color: red; -moz-user-modify: read-write;" DIR="ltr">
-<SPAN>
+		<small id="small" class="smallClass" style="color: red;" dir="ltr">
 very small text
-</SPAN>
-</SMALL>
+</small>
 	</test>
 </tests>

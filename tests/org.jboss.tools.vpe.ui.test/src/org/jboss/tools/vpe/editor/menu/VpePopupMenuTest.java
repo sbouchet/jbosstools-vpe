@@ -29,11 +29,11 @@ import org.jboss.tools.jst.web.ui.internal.editor.jspeditor.JSPMultiPageEditor;
 import org.jboss.tools.jst.web.ui.internal.editor.messages.JstUIMessages;
 import org.jboss.tools.vpe.base.test.TestUtil;
 import org.jboss.tools.vpe.base.test.VpeTest;
-import org.jboss.tools.vpe.editor.VpeController;
-import org.jboss.tools.vpe.editor.VpeEditorPart;
-import org.jboss.tools.vpe.editor.mozilla.MozillaEditor;
 import org.jboss.tools.vpe.editor.util.SelectionUtil;
 import org.jboss.tools.vpe.messages.VpeUIMessages;
+import org.jboss.tools.vpe.preview.editor.VpvEditor;
+import org.jboss.tools.vpe.preview.editor.VpvEditorController;
+import org.jboss.tools.vpe.preview.editor.VpvEditorPart;
 import org.jboss.tools.vpe.ui.test.VpeUiTests;
 import org.junit.Test;
 import org.w3c.dom.Node;
@@ -84,11 +84,11 @@ public class VpePopupMenuTest extends VpeTest {
         JSPMultiPageEditor part = openEditor(input);
         assertNotNull(INITIALIZATION_FAILED, part);
         
-        VpeEditorPart vep = (VpeEditorPart) part.getVisualEditor();
+        VpvEditorPart vep = (VpvEditorPart) part.getVisualEditor();
         assertNotNull(INITIALIZATION_FAILED, vep);
         
-        VpeController vc = TestUtil.getVpeController(part);
-        MozillaEditor visualEditor = vep.getVisualEditor();
+        VpvEditorController vc = TestUtil.getVpvController(part);
+        VpvEditor visualEditor = vc.getVisualEditor();
         StructuredTextEditor sourceEditor = vc. getSourceEditor();
         
         // Selecting h:outputText tag for popup menu.
@@ -98,7 +98,7 @@ public class VpePopupMenuTest extends VpeTest {
 
 		// Creating popup menu.
 		MenuManager menuManager = new MenuManager("#popup"); //$NON-NLS-1$
-		final Menu contextMenu = menuManager.createContextMenu(visualEditor.getControl());
+		final Menu contextMenu = menuManager.createContextMenu(visualEditor.getBrowser());
 
 		VpeMenuCreator menuCreator = new VpeMenuCreator(menuManager, sourceNode);
 		assertEquals("Menu Manger should have no items before creation.", //$NON-NLS-1$

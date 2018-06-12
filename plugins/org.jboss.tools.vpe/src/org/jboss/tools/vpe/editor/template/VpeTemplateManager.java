@@ -34,8 +34,6 @@ import org.eclipse.wst.xml.core.internal.provisional.document.IDOMElement;
 import org.jboss.tools.common.xml.XMLUtilities;
 import org.jboss.tools.jst.web.tld.TaglibData;
 import org.jboss.tools.vpe.VpePlugin;
-import org.jboss.tools.vpe.editor.context.VpePageContext;
-import org.jboss.tools.vpe.editor.template.custom.CustomTLDReference;
 import org.jboss.tools.vpe.editor.template.textformating.TextFormatingData;
 import org.jboss.tools.vpe.editor.util.Constants;
 import org.jboss.tools.vpe.editor.util.HTML;
@@ -262,18 +260,10 @@ public class VpeTemplateManager {
 	private Map<String,String> templateTaglibs = new HashMap<String,String>();
 	private Map<String,String> matchingTemplateTaglibs = new HashMap<String,String>();
 	
-	private Map<String,VpeTemplateSet> caseSensitiveTags = new HashMap<String,VpeTemplateSet>();
-	private Map<String,VpeTemplateSet> ignoreSensitiveTags = new HashMap<String,VpeTemplateSet>();
-	//added by Maksim Areshkau, docbook tags stored separately, because name duality
-	private Map<String,VpeTemplateSet> docbookTags = new HashMap<String,VpeTemplateSet>();
-	//added by Denis Vinnichek, for tags which are defined with regexp
-	private Map<String,VpeTemplateSet> matchingTags = new HashMap<String,VpeTemplateSet>();
 	
 	private static final String ATTR_DOCBOOK_NAME = "docbook"; //$NON-NLS-1$
 	
-	private VpeTemplate defTemplate;
 	private VpeTemplateListener[] templateListeners = new VpeTemplateListener[0];
-	private VpeTemplateFileList templateFileList = new VpeTemplateFileList();
 	private Set<String> withoutWhitespaceContainerSet = new HashSet<String>();
 	private Set<String> withoutPseudoElementContainerSet = new HashSet<String>();
 	//text template name
@@ -318,143 +308,9 @@ public class VpeTemplateManager {
 	private static final IPath DEFAULT_AUTO_TEMPLATES_PATH = VpePlugin.getDefault()
 			.getStateLocation().append(VPE_TEMPLATES_AUTO);
 	
-	private VpeTemplateManager() {
-		// singleton
-	}
-
-	public static final VpeTemplateManager getInstance() {
-		if (instance != null) {
-			return instance;
-		} else {
-			synchronized (monitor) {
-				if (instance == null) {
-					VpeTemplateManager inst = new VpeTemplateManager();
-					inst.load();
-					instance = inst;
-				}
-			}
-			return instance;
-		}
-	}
 	
-	public VpeTemplate getTemplate(VpePageContext pageContext, Node sourceNode, Set<?> dependencySet) {
-		VpeTemplate template = getTemplateImpl(pageContext, sourceNode, dependencySet);
-		if (template != null) {
-			return template;
-		}
-		return this.defTemplate;
-	}
 
-	private VpeTemplate getTemplateImpl(VpePageContext pageContext, Node sourceNode, Set<?> dependencySet) {
-		//Fix for JBIDE-4179, mareshkau
-		if((sourceNode instanceof Element) &&
-				SourceDomUtil.isRenderedAttrEqFalse(pageContext,(Element) sourceNode)){
-			return  VpeRenderingTemplate.getInstance();
-		}
-		
-		String name = getTemplateName(pageContext, sourceNode);
-		if (name == null) {
-			return null;
-		}
-		//added by Maksim Areshkau, as fix for docbook templates
-		//see JBIDE-6600
-		VpeTemplateSet set=null;
-		if(DOCBOOKEDITORID.equals(pageContext.getEditPart().getSite().getId())){
-			set = docbookTags.get(name);
-			if (set != null) {
-				return set.getTemplate(pageContext, sourceNode, dependencySet);
-			}
-		}
-		
-		set = caseSensitiveTags.get(name);
-		if (set != null) {
-			return set.getTemplate(pageContext, sourceNode, dependencySet);
-		}
-		set = ignoreSensitiveTags.get(name.toLowerCase());
-		if (set != null) {
-			return set.getTemplate(pageContext, sourceNode, dependencySet);
-		}
-		//added by Denis Vinnichek, for tags which are defined with regexp
-		if (matchingTags.entrySet() != null) {
-			for (Map.Entry<String,VpeTemplateSet> entry : matchingTags.entrySet()) {
-				if (name.matches(entry.getKey())) {
-					set = entry.getValue();
-					if (set != null) {
-						return set.getTemplate(pageContext, sourceNode, dependencySet);
-					}
-				}
-			}
-		}
-		
-		return null;
-	}
 
-	/**
-	 * 
-	 * @param pageContext
-	 * @param sourceNode
-	 * @return name of template
-	 */
-	public  String getTemplateName(VpePageContext pageContext, Node sourceNode) {
-		
-		if(sourceNode==null) {
-			return null;
-		}
-		switch (sourceNode.getNodeType()){
-		
-		case Node.TEXT_NODE:
-			
-			return TEXT_TEMPLATE_NAME;
-			
-		case Node.COMMENT_NODE:
-			
-			return COMMENT_TEMPLATE_NAME;
-			
-		case Node.ATTRIBUTE_NODE: 
-			
-			return  ATTRIBUTE_TEMPLATE_NAME;
-		case Node.ELEMENT_NODE:
-			String sourcePrefix = sourceNode.getPrefix();
-			//added by Maksim Areshkau as fix for JBIDE-5352
-			if(sourcePrefix==null) {
-				sourcePrefix=""; //$NON-NLS-1$
-			}
-			
-			if (((IDOMElement)sourceNode).isJSPTag()
-						|| "jsp".equals(sourcePrefix)) { //$NON-NLS-1$
-				return sourceNode.getNodeName();
-			}
-			
-			List<TaglibData> taglibs = XmlUtil.getTaglibsForNode(sourceNode,pageContext);
-			
-			TaglibData sourceNodeTaglib = XmlUtil.getTaglibForPrefix(sourcePrefix, taglibs);		
-
-			if(sourceNodeTaglib == null) {
-				return sourceNode.getLocalName();
-			}
-			
-			String sourceNodeUri = sourceNodeTaglib.getUri();
-
-			
-			String templateTaglibPrefix = getTemplateTaglibPrefix(sourceNodeUri);
-
-			if(templateTaglibPrefix != null) {
-				return templateTaglibPrefix + ":" + sourceNode.getLocalName();  //$NON-NLS-1$
-			}
-			
-			if(sourceNodeUri!=null
-					&& CustomTLDReference.isExistInCustomTlds(pageContext,sourceNodeUri)) {
-				return VpeTemplateManager.CUSTOM_TEMPLATE_NAME;
-			}
-
-			return sourceNode.getNodeName();
-		case Node.DOCUMENT_NODE:
-			return sourceNode.getNodeName();
-		default : 
-			return null;
-		}
-		
-	}
 	
 	public String getTemplateTaglibPrefix(String sourceUri) {
 		String result = templateTaglibs.get(sourceUri);
@@ -469,203 +325,12 @@ public class VpeTemplateManager {
 		return result;
 	}
 
-	private void load() {
-		initWithoutWhitespaceContainerSet();
-		initPseudoElementContainerSet();
-		/*
-		 * loads templates configurations files
-		 */
-		templateFileList.load();
-		/*
-		 * load templates
-		 */
-		loadImpl();
-	}
 
-	private void loadImpl() {
-		VpeTemplateFile autoTemplateFile = templateFileList.getAutoTemplateFile();
-		if (autoTemplateFile != null) {
-			loadTemplates(autoTemplateFile.getPath(),autoTemplateFile.getConfigurableElement());
-		}
-		
-		VpeTemplateFile[] templateFiles = templateFileList.getTemplateFiles();
-		for (int i = 0; i < templateFiles.length; i++) {
-			loadTemplates(templateFiles[i].getPath(),templateFiles[i].getConfigurableElement());
-		}
-		
-		if (defTemplate == null) {
-			defTemplate = createDefTemplate();
-		}
-	}
 
-	private void loadTemplates(IPath vpeFilePath, IConfigurationElement confElement) {
-			Element root = XMLUtilities.getElement(vpeFilePath.toFile(), null);
-			loadTemplates(root,confElement);
-	}
 	
-	private void loadTemplates(Element root, IConfigurationElement confElement) {
-		if (root == null || !TAG_TEMPLATES.equals(root.getNodeName())) {
-			return;
-		}
-		
-		NodeList children = root.getChildNodes();
-		if (children != null) {
-			int len = children.getLength();
-			for (int i = 0; i < len; i++) {
-				Node node = children.item(i);
-				if (node.getNodeType() == Node.ELEMENT_NODE) {
-					if (TAG_TAG.equals(node.getNodeName())) {
-						setTagElement((Element)node, confElement);
-					} else if (TAG_TEMPLATE.equals(node.getNodeName())) {
-						setDefTemplate(createTemplate((Element)node,confElement, true));
-					} else if (TAG_TEMPLATE_TAGLIB.equals(node.getNodeName())) {
-						boolean templateTaglibMatchingMode = Constants.YES_STRING.equals(( (Element) node).getAttribute(VpeTemplateManager.ATTR_TEMPLATE_TAGLIB_MATCHING_MODE));
-						setTemplateTaglib((Element) node, templateTaglibMatchingMode);
-					}
-				}
-			}
-		}
-	}
 	
-	private void setTagElement(Element tagElement,IConfigurationElement confElement) {
-		
-		String name = tagElement.getAttribute(ATTR_TAG_NAME);
-		
-		if (name.length() > 0) {
-			
-			boolean docbookTemplate = ATTR_VALUE_YES.equalsIgnoreCase(tagElement.getAttribute(ATTR_DOCBOOK_NAME));
-			boolean caseSensitive = !ATTR_VALUE_NO.equals(tagElement.getAttribute(ATTR_TAG_CASE_SENSITIVE));
-			boolean matchingMode = ATTR_VALUE_YES.equals(tagElement.getAttribute(ATTR_TAG_MATCHING_MODE));
-			Map<String,VpeTemplateSet> tags;
-			
-			if (!matchingMode) {
-				if(docbookTemplate){
-					tags = docbookTags;
-				}else if (caseSensitive) {
-					tags = caseSensitiveTags;
-				} else {
-					name = name.toLowerCase();
-					tags = ignoreSensitiveTags;
-				}
-			} else {
-				tags = matchingTags;
-			}
-			
-			VpeTemplateSet set = (VpeTemplateSet) tags.get(name);
-			if (set == null) {
-				set = new VpeTemplateSet();
-				tags.put(name, set);
-			}
-			
-			addChildren(tagElement, set, confElement, caseSensitive);
-		}
-	}
 	
-	private void addChildren(Element element, VpeTemplateSet set, IConfigurationElement confElement,boolean caseSensitive) {
-		NodeList children = element.getChildNodes();
-		if (children != null) {
-			int len = children.getLength();
-			for (int i = 0; i < len; i++) {
-				Node node = children.item(i);
-				if (node.getNodeType() == Node.ELEMENT_NODE) {
-					if (TAG_IF.equals(node.getNodeName())) {
-						addIfElement((Element)node, set, confElement,caseSensitive);
-					} else if (TAG_TEMPLATE.equals(node.getNodeName())) {
-						set.setDefTemplate(createTemplate((Element)node, confElement, caseSensitive));
-					}
-				}
-			}
-		}
-	}
 	
-	private void addIfElement(Element ifElement, VpeTemplateSet parentSet, IConfigurationElement confElement,boolean caseSensitive) {
-		String test = ifElement.getAttribute(ATTR_IF_TEST);
-		VpeTemplateConditionSet set = new VpeTemplateConditionSet(test, caseSensitive);
-		parentSet.addChild(set);
-		addChildren(ifElement, set, confElement,caseSensitive);
-	}
-	
-	public void setDefTemplate(VpeTemplate defTemplate) {
-		if (this.defTemplate == null) {
-			this.defTemplate = defTemplate;
-		}
-	}
-	
-	/**
-	 * Register templates taglibs from templates files
-	 * @param templateTaglibElement
-	 */
-	private void setTemplateTaglib(Element templateTaglibElement, boolean templateTaglibMatchingMode) {
-		String uri = templateTaglibElement.getAttribute(ATTR_DIRECTIVE_TAGLIB_URI);
-		String pefix = templateTaglibElement.getAttribute(ATTR_DIRECTIVE_TAGLIB_PREFIX);
-		if (uri.length() > 0 && pefix.length() > 0) {
-			if (!templateTaglibs.containsKey(uri)) {
-				if (templateTaglibMatchingMode) {
-					matchingTemplateTaglibs.put(uri, pefix);
-				} else {
-					templateTaglibs.put(uri, pefix);
-				}
-			}
-		}
-	}
-	
-	public void setAnyTemplate(VpeAnyData data) {
-		String elementName = data.getName();
-		boolean caseSensitive = data.isCaseSensitive();
-		
-		Element root = loadAutoTemplate(DEFAULT_AUTO_TEMPLATES_PATH);
-		if (root == null) {
-			root = XMLUtilities.createDocumentElement(TAG_TEMPLATES);
-		}
-		
-		Set<String> prefixSet = new HashSet<String>();
-		Node tagElement = null;
-		NodeList children = root.getChildNodes();
-		if (children != null) {
-			int len = children.getLength();
-			for (int i = len - 1; i >= 0; i--) {
-				Node node = children.item(i);
-				if (node.getNodeType() == Node.ELEMENT_NODE) {
-					if (TAG_TAG.equals(node.getNodeName())) {
-						if (caseSensitive == !ATTR_VALUE_NO.equals(((Element)node).getAttribute(ATTR_TAG_CASE_SENSITIVE))) {
-							String name = ((Element)node).getAttribute(ATTR_TAG_NAME);
-							if (caseSensitive && name.equals(elementName) || !caseSensitive && name.equalsIgnoreCase(elementName)) {
-								tagElement = node;
-							}
-						}
-					} else if (TAG_TEMPLATE_TAGLIB.equals(node.getNodeName())) {
-						Node prefixAttr = node.getAttributes().getNamedItem(ATTR_DIRECTIVE_TAGLIB_PREFIX);
-						String prefix = prefixAttr != null ? prefixAttr.getNodeValue() : ""; //$NON-NLS-1$
-						if (prefix.length() > 0) {
-							prefixSet.add(prefix);
-						}
-					} else {
-						root.removeChild(node);
-					}
-				}
-			}
-		}
-
-		Document document = root.getOwnerDocument();
-		Element newTagElement = createNewTagElement(document, data);
-
-		if (tagElement != null) {
-			root.replaceChild(newTagElement, tagElement);
-		} else {
-			root.appendChild(newTagElement);
-		}
-
-		root = appendTaglib(prefixSet, document, root, data);
-
-		try {
-			IPath path = getAutoTemplates(DEFAULT_AUTO_TEMPLATES_PATH);
-			XMLUtilities.serialize(root, path.toOSString());
-		} catch(IOException e) {
-			VpePlugin.reportProblem(e);
-		}
-		
-		reload();
-	}
 	
 	private Element appendTaglib(Set<?> prefixSet, Document document, Element root, VpeAnyData data) {
 		if (data.getPrefix() != null && data.getUri() != null &&
@@ -926,21 +591,6 @@ public class VpeTemplateManager {
 		return null;
 	}
 
-	public void reload() {
-		synchronized (monitor) {
-			templateFileList.load();
-			if (templateFileList.isChanged()) {
-				caseSensitiveTags.clear();
-				ignoreSensitiveTags.clear();
-				matchingTags.clear();
-				docbookTags.clear();
-				defTemplate = null;
-				loadImpl();
-				fireTemplateReloaded();
-			}
-		}
-	}
-
 	public void addTemplateListener(VpeTemplateListener listener) {
 		if (listener != null) {
 			VpeTemplateListener[] newTemplateListeners = new VpeTemplateListener[templateListeners.length + 1];
@@ -970,24 +620,6 @@ public class VpeTemplateManager {
 		templateListeners = newTemplateListeners;
 	}
 	
-	private void fireTemplateReloaded() {
-		for (int i = 0; i < templateListeners.length; i++) {
-			templateListeners[i].templateReloaded();
-		}
-	}
-	
-	private Element createDefTemplateElement() {
-		Element newTemplateElement = XMLUtilities.createDocumentElement(TAG_TEMPLATE);
-		newTemplateElement.setAttribute(ATTR_TEMPLATE_CHILDREN, ATTR_VALUE_YES);
-		newTemplateElement.setAttribute(ATTR_TEMPLATE_MODIFY, ATTR_VALUE_NO);
-		Document document = newTemplateElement.getOwnerDocument();
-		Element newAnyElement = document.createElement(TAG_ANY);
-		newAnyElement.setAttribute(ATTR_ANY_VALUE, "{name()}"); //$NON-NLS-1$
-		newAnyElement.setAttribute("title", "{tagstring()}"); //$NON-NLS-1$ //$NON-NLS-2$
-		newTemplateElement.appendChild(newAnyElement);
-		return newTemplateElement;
-	}
-	
 	static String[] WITHOUT_WHITESPACE_ELEMENT_NAMES = {
 		HTML.TAG_TABLE,
 		HTML.TAG_CAPTION,
@@ -1001,17 +633,6 @@ public class VpeTemplateManager {
 		HTML.TAG_TD
 	};
 	
-	private void initWithoutWhitespaceContainerSet() {
-		for (int i = 0; i < WITHOUT_WHITESPACE_ELEMENT_NAMES.length; i++) {
-			withoutWhitespaceContainerSet.add(WITHOUT_WHITESPACE_ELEMENT_NAMES[i]);
-		}
-	}
-	
-	private void initPseudoElementContainerSet() {
-		withoutPseudoElementContainerSet.add(HTML.TAG_BR);
-		withoutPseudoElementContainerSet.add(HTML.TAG_INPUT);
-	}
-	
 	public boolean isWithoutWhitespaceContainer(String name) {
 		return withoutWhitespaceContainerSet.contains(name.toLowerCase());
 	}
@@ -1020,110 +641,8 @@ public class VpeTemplateManager {
 		return withoutPseudoElementContainerSet.contains(name.toLowerCase());
 	}
 	
-	@SuppressWarnings("unchecked")
-	private VpeTemplate createTemplate(Element templateElement,IConfigurationElement confElement, boolean caseSensitive) {
-		VpeTemplate template = null;
-		String templateClassName = templateElement
-				.getAttribute(VpeTemplateManager.ATTR_TEMPLATE_CLASS);
-		String nameSpaceIdentifyer = templateElement
-				.getAttribute(VpeTemplateManager.NAMESPACE_IDENTIFIER_ATTRIBUTE);
-		String priority = templateElement
-				.getAttribute(VpeTemplateManager.PRIORITY);
-		if (priority != null) {
-			priority = priority.trim();
-		}
-		if (priority == null || priority.isEmpty()) {
-			priority = "0"; //$NON-NLS-1$
-		}
-		if (templateClassName != null && templateClassName.length() > 0) {
-			if (nameSpaceIdentifyer == null
-					|| nameSpaceIdentifyer.length() == 0) {
-				nameSpaceIdentifyer = confElement.getNamespaceIdentifier();
-			}
 
-			Bundle bundle = Platform.getBundle(nameSpaceIdentifyer);
-			if (bundle == null) {
-				template = null;
-			} else {
-				try {
-					Class templateClass = bundle.loadClass(templateClassName);
-					template = (VpeTemplate) templateClass.newInstance();
-				} catch (ClassNotFoundException e) {
-					template = handleTemplateClassLoadException(template,
-							templateClassName, nameSpaceIdentifyer, e);
-				} catch (IllegalAccessException e) {
-					template = handleTemplateClassLoadException(template,
-							templateClassName, nameSpaceIdentifyer, e);
-				} catch (InstantiationException e) {
-					template = handleTemplateClassLoadException(template,
-							templateClassName, nameSpaceIdentifyer, e);
-				}
-			}
-		} else {
-			template = new VpeHtmlTemplate();
-		}
-		if (template != null) {
-			template.init(templateElement, caseSensitive);
-			template.setPriority(Double.parseDouble(priority));
-			template = new VpeTemplateSafeWrapper(template);
-		}
-		/*
-		 * In any case VpeTemplateSafeWrapper will be return,
-		 * or null.
-		 */
-		return template;
-	}
 
-	private VpeTemplate handleTemplateClassLoadException(VpeTemplate template,
-			String templateClassName, String nameSpaceIdentifyer,
-			Exception e) {
-
-			Class templateClass = null;
-			try {
-				templateClass = Class.forName(templateClassName);
-			} catch (ClassNotFoundException e1) {
-				handleTemplateLoadException(templateClassName,
-						nameSpaceIdentifyer, e1);
-			}
-			try {
-				if(templateClass!=null) {
-					template = (VpeTemplate)templateClass.newInstance();
-				}
-			} catch (InstantiationException e2) {
-				handleTemplateLoadException(templateClassName,
-						nameSpaceIdentifyer, e2);
-			} catch (IllegalAccessException e3) {
-				handleTemplateLoadException(templateClassName,
-						nameSpaceIdentifyer, e3);
-			}
-
-		return template;
-	}
-
-	private void handleTemplateLoadException(String templateClassName,
-			String nameSpaceIdentifyer, Exception e) {
-		String message = e.getMessage();
-		if(message==null) {
-			message = "Can't get VPE template class: " + templateClassName + ", from bundle:" + nameSpaceIdentifyer; //$NON-NLS-1$ //$NON-NLS-2$
-		}
-		VpePlugin.getPluginLog().logError(message, e);
-	}
-	
-	private VpeTemplate createDefTemplate() {
-		VpeTemplate localDefTemplate = new VpeHtmlTemplate();
-		localDefTemplate.init(createDefTemplateElement(), true);
-		return localDefTemplate;
-	}
-
-	/**
-	 * @return the defTemplate
-	 */
-	public VpeTemplate getDefTemplate() {
-		if(defTemplate==null) {
-			defTemplate=createDefTemplate();
-		}
-		return defTemplate;
-	}
 
 	/**
 	 * Initialize and returns default text formatting data
@@ -1142,59 +661,4 @@ public class VpeTemplateManager {
 
 		return defaultTextFormattingData;
 	}
-	
-	/**
-	 * Returns the user's template file path.
-	 * <P>
-	 * If the file does not exist in the workspace, it is created
-	 * by copying the default user template file to the workspace.
-	 * </P>
-	 * 
-	 * @return user's template file path
-	 * @throws IOException
-	 * 
-	 * @see <a href="https://jira.jboss.org/jira/browse/JBIDE-4131" >
-				JBIDE-4131: Change saving of vpe auto templates</a> 
-	 */
-	public static IPath getAutoTemplates(IPath workspaceTemplatePath) {
-		final File workspaceTemplateFile = workspaceTemplatePath.toFile();
-		if (!workspaceTemplateFile.exists()) {
-			IPath dafaultTemplatePath;
-			try {
-				dafaultTemplatePath = VpeTemplateFileList
-						.getFilePath(EMPTY_VPE_TEMPLATES_AUTO, null);
-			final File defaultTemplateFile = dafaultTemplatePath.toFile();
-			copy(defaultTemplateFile, workspaceTemplateFile);
-			} catch (IOException e) {
-				VpePlugin.reportProblem(e);
-			}
-		}
-		return workspaceTemplatePath;
-	}
-	
-
-	public static IPath getAutoTemplates() {
-		return getAutoTemplates(DEFAULT_AUTO_TEMPLATES_PATH);
-	}
-
-    /** 
-     * Copies {@code src} file to {@code dst} file.
-     * If the {@code dst} file does not exist, it is created.
-     */
-    private static void copy(File src, File dst) throws IOException {
-    	// make sure the parent directory of the dst file is exist
-    	dst.getParentFile().mkdirs();
-
-        final InputStream in = new FileInputStream(src);
-        final OutputStream out = new FileOutputStream(dst);
-
-        // Transfer bytes from in to out
-        final byte[] buf = new byte[1024];
-        int len;
-        while ((len = in.read(buf)) > 0) {
-            out.write(buf, 0, len);
-        }
-        in.close();
-        out.close();
-    }
 }

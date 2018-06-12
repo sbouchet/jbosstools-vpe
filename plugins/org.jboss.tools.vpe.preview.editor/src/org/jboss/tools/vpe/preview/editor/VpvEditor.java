@@ -60,7 +60,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.editors.text.ILocationProvider;
 import org.jboss.tools.jst.web.ui.WebUiPlugin;
 import org.jboss.tools.jst.web.ui.internal.editor.preferences.IVpePreferencesPage;
-import org.jboss.tools.vpe.editor.mozilla.MozillaEditor;
+import org.jboss.tools.vpe.editor.Message;
 import org.jboss.tools.vpe.editor.mozilla.listener.EditorLoadWindowListener;
 import org.jboss.tools.vpe.editor.preferences.VpeEditorPreferencesPage;
 import org.jboss.tools.vpe.editor.preferences.VpeResourcesDialogFactory;
@@ -212,7 +212,7 @@ public class VpvEditor extends DocumentListeningEditorPart implements VpvVisualM
 				VpeEditorPreferencesPage.openPreferenceDialog();
 			}
 		};
-		openVPEPreferencesAction.setImageDescriptor(ImageDescriptor.createFromFile(MozillaEditor.class,
+		openVPEPreferencesAction.setImageDescriptor(ImageDescriptor.createFromFile(Message.class,
 				ICON_PREFERENCE));
 		openVPEPreferencesAction.setToolTipText(VpeUIMessages.PREFERENCES);
 		toolBarManager.add(openVPEPreferencesAction);
@@ -242,7 +242,7 @@ public class VpvEditor extends DocumentListeningEditorPart implements VpvVisualM
 				VpeResourcesDialogFactory.openVpeResourcesDialog(VpvEditor.this);
 			}
 		};
-		showResouceDialogAction.setImageDescriptor(ImageDescriptor.createFromFile(MozillaEditor.class,
+		showResouceDialogAction.setImageDescriptor(ImageDescriptor.createFromFile(Message.class,
 				fileExistsInWorkspace ? ICON_PAGE_DESIGN_OPTIONS : ICON_PAGE_DESIGN_OPTIONS_DISABLED));
 		if (!fileExistsInWorkspace) {
 			showResouceDialogAction.setEnabled(false);
@@ -278,7 +278,7 @@ public class VpvEditor extends DocumentListeningEditorPart implements VpvVisualM
 				 * Update icon and tooltip
 				 */
 				this.setImageDescriptor(ImageDescriptor.createFromFile(
-						MozillaEditor.class, layoutIcons.get(newOrientation)));
+						Message.class, layoutIcons.get(newOrientation)));
 				
 				this.setToolTipText(layoutNames.get(newOrientation));
 				/*
@@ -290,7 +290,7 @@ public class VpvEditor extends DocumentListeningEditorPart implements VpvVisualM
 					setValue(IVpePreferencesPage.VISUAL_SOURCE_EDITORS_SPLITTING, newOrientation);
 			}
 		};
-		rotateEditorsAction.setImageDescriptor(ImageDescriptor.createFromFile(MozillaEditor.class,
+		rotateEditorsAction.setImageDescriptor(ImageDescriptor.createFromFile(Message.class,
 				layoutIcons.get(newOrientation)));
 		rotateEditorsAction.setToolTipText(layoutNames.get(newOrientation));
 		toolBarManager.add(rotateEditorsAction);
@@ -337,7 +337,7 @@ public class VpvEditor extends DocumentListeningEditorPart implements VpvVisualM
 		};
 		WebUiPlugin.getDefault().getPreferenceStore().addPropertyChangeListener(selectionBarCloseListener);
 		
-		showSelectionBarAction.setImageDescriptor(ImageDescriptor.createFromFile(MozillaEditor.class,
+		showSelectionBarAction.setImageDescriptor(ImageDescriptor.createFromFile(Message.class,
 				ICON_SELECTION_BAR));
 		showSelectionBarAction.setToolTipText(VpeUIMessages.SHOW_SELECTION_BAR);
 		toolBarManager.add(showSelectionBarAction);
@@ -521,7 +521,7 @@ public class VpvEditor extends DocumentListeningEditorPart implements VpvVisualM
 		if (rotateEditorsAction != null) {
 			currentOrientationIndex = prefsOrientationIndex;
 			rotateEditorsAction.setImageDescriptor(ImageDescriptor.createFromFile(
-					MozillaEditor.class, layoutIcons.get(prefsOrientation)));
+					Message.class, layoutIcons.get(prefsOrientation)));
 			rotateEditorsAction.setToolTipText(layoutNames.get(prefsOrientation));
 		}
 	}

@@ -1,9 +1,7 @@
 <tests>
 	<test id="button">
-		<BUTTON ID="button" CLASS="buttonClass" DIR="ltr" VALUE="value" STYLE="color: red; -moz-user-modify: read-only;">
-<SPAN>
+		<button id="button" class="buttonClass" dir="ltr" value="value" style="color: red;">
 button
-</SPAN>
-</BUTTON>
+</button>
 	</test>
 </tests>

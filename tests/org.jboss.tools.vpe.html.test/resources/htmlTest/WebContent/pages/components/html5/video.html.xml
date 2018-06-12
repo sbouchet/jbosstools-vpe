@@ -1,10 +1,7 @@
 <tests>
 	<test id="video-id">
-		<VIDEO ID="video-id" SRC="http://www.w3schools.com/html5/movie.ogg" CONTROLS="controls" STYLE="-moz-us
-er-modify: read-write;" TABINDEX="0">
-<SPAN CLASS="vpe-text">
+		<video id="video-id" src="http://www.w3schools.com/html5/movie.ogg" controls="controls">
 your browser does not support the video tag
-</SPAN>
-</VIDEO>
+</video>
 	</test>
 </tests>

@@ -2,7 +2,7 @@
 <feature
       id="org.jboss.tools.vpe.feature"
       label="%featureName"
-      version="3.8.100.qualifier"
+      version="3.8.200.qualifier"
       provider-name="%providerName"
       plugin="org.jboss.tools.vpe"
 	  license-feature="org.jboss.tools.foundation.license.feature"
@@ -37,18 +37,6 @@
          version="0.0.0"/>
 
    <plugin
-         id="org.jboss.tools.vpe.html"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.jboss.tools.vpe.jsp"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
          id="org.jboss.tools.vpe.resref"
          download-size="0"
          install-size="0"
@@ -59,24 +47,5 @@
          download-size="0"
          install-size="0"
          version="0.0.0"/>
-
-   <plugin
-         id="org.jboss.tools.vpe.xulrunner"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.jboss.tools.vpe.spring"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.jboss.tools.xulrunner.initializer"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"/>
 
 </feature>

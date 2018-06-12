@@ -1,9 +1,7 @@
 <tests>
 	<test id="footer-id">
-		<FOOTER ID="footer-id">
-<SPAN CLASS="vpe-text">
+		<footer id="footer-id">
 This document was written in 2009
-</SPAN>
-</FOOTER>
+</footer>
 	</test>
 </tests>

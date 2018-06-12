@@ -13,7 +13,6 @@ package org.jboss.tools.vpe.editor.util;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.jboss.tools.vpe.editor.context.VpePageContext;
 import org.w3c.dom.Attr;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -127,29 +126,6 @@ public class Jsf2ResourceUtil {
 					}
 				}
 			}
-		}
-		return result;
-	}
-
-	/**
-	 * Replaces custom jsf attribute with attribute from VPE
-	 * 
-	 * @param pageContext
-	 * @param value
-	 * @return
-	 */
-	public static final String processCustomJSFAttributes(
-			VpePageContext pageContext, String value) {
-		String result = null;
-		// fix for JBIDE-2550, author Maksim Areshkau
-		Matcher singleQuotesMatcher = 
-				resourcePatternWithSingleQuotes.matcher(value);
-		Matcher doubleQuotesMatcher = 
-				resourcePatternWithDoableQuotes.matcher(value);
-		if (doubleQuotesMatcher.find()) {
-			result = FileUtil.getJSF2ResourcePath(pageContext, doubleQuotesMatcher.group(1));
-		} else if (singleQuotesMatcher.find()) {
-			result = FileUtil.getJSF2ResourcePath(pageContext, singleQuotesMatcher.group(1));
 		}
 		return result;
 	}

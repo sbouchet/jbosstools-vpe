@@ -1,23 +1,22 @@
 <tests>
 	<test id="url1">
-		<DIV ID="url1">
-			<SPAN CLASS="vpe-text">
-				http://community.jboss.org/en/jbosstools?view=discussions
-			</SPAN>
-		</DIV>
+        <div id="url1">
+            <spring:url value="http://community.jboss.org/en/jbosstools?view=discussions"/>
+    </div>
 	</test>
 	<test id="url2">
-		<DIV ID="url2">
-			<SPAN CLASS="vpe-text">
-				http://community.jboss.org/en/jbosstools?view=discussions&amp;emptyParam2
-			</SPAN>
-		</DIV>
+        <div id="url2">
+            <spring:url value="http://community.jboss.org/en/jbosstools">
+                <spring:param name="view" value="discussions" />
+                <spring:param name="emptyParam2"/>
+            </spring:url>
+        </div>
 	</test>
 	<test id="url3">
-		<DIV ID="url3">
-			<SPAN CLASS="vpe-text">
-				http://community.jboss.org/en/jbosstools?view=discussions&amp;emptyParam2
-			</SPAN>
-		</DIV>
+        <div id="url3">
+            <spring:url value="http://community.jboss.org/en/jbosstools?view=discussions">
+                <spring:param name="emptyParam2"/>
+            </spring:url>
+        </div>
 	</test>
 </tests>

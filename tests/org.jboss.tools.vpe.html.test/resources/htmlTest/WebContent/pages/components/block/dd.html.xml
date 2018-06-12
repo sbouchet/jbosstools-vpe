@@ -1,9 +1,7 @@
 <tests>
 	<test id="dd">
-		<DD ID="dd" CLASS="ddClass" STYLE="color: red; -moz-user-modify: read-write;" DIR="ltr">
-<SPAN>
+		<dd id="dd" class="ddClass" style="color: red;" dir="ltr">
 some definition 1
-</SPAN>
-</DD>
+</dd>
 	</test>
 </tests>

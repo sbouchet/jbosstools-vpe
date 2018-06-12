@@ -1,10 +1,8 @@
 <tests>
 	<test id="legend">
-		<LEGEND DIR="ltr" ID="legend" CLASS="legendClass"
-			STYLE="color: red; -moz-user-modify: read-write;">
-			<SPAN>
+		<legend dir="ltr" id="legend" class="legendClass"
+			style="color: red;">
 				legend
-			</SPAN>
-		</LEGEND>
+		</legend>
 	</test>
 </tests>

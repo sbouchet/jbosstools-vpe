@@ -1,17 +1,8 @@
 <tests>
 	<test id="form1">
-		<FORM ID="form1">
-			<SPAN CLASS="vpe-text">
-				This is a form:form with id-attribute.
-			</SPAN>
-		</FORM>
+        <form:form id="form1">This is a form:form with id-attribute.</form:form>
 	</test>
 	<test id="form2">
-		<FORM CLASS="yellow-text" ID="form2"
-			STYLE="background-color: black;">
-			<SPAN CLASS="vpe-text">
-				This is a form:form with style and class attributes. Yellow text on black background.
-			</SPAN>
-		</FORM>
+        <form:form id="form2" cssclass="yellow-text" cssstyle="background-color: black">This is a form:form with style and class attributes. Yellow text on black background.</form:form>
 	</test>
 </tests>

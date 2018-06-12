@@ -1,6 +1,7 @@
 <tests>
 	<test id="dayOfWeekTransformer">
-		<SPAN ID="dayOfWeekTransformer">
-		</SPAN>
+        <span id="dayOfWeekTransformer">
+            <spring:transform value="${dayOfWeekNumber}" var="dayOfWeekName"/>
+        </span>
 	</test>
 </tests>

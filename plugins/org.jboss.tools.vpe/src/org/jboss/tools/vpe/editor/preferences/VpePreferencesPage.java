@@ -38,10 +38,6 @@ import org.jboss.tools.jst.web.ui.internal.editor.selection.bar.SelectionBarHand
 import org.jboss.tools.vpe.VpePlugin;
 import org.jboss.tools.vpe.editor.util.VpePlatformUtil;
 import org.jboss.tools.vpe.handlers.ScrollLockSourceVisualHandler;
-import org.jboss.tools.vpe.handlers.ShowBorderHandler;
-import org.jboss.tools.vpe.handlers.ShowBundleAsELHandler;
-import org.jboss.tools.vpe.handlers.ShowNonVisualTagsHandler;
-import org.jboss.tools.vpe.handlers.ShowTextFormattingHandler;
 import org.jboss.tools.vpe.messages.VpeUIMessages;
 import org.jboss.tools.vpe.preview.core.util.PlatformUtil;
 
@@ -71,7 +67,6 @@ public class VpePreferencesPage extends FieldEditorPreferencePage implements
 	private Group tabsGroup;
 	//JBIDE-18275 Visual Editor: remove option of showing VPE toolbar in Eclipse toolbar
 //	private Group visualEditorToolbarGroup;
-	private Group visualEditorEngineGroup;
 	private boolean iswebkit;
 	private VpeRadioGroupFieldEditor mode;
 
@@ -107,12 +102,6 @@ public class VpePreferencesPage extends FieldEditorPreferencePage implements
 		pageContainer.setLayout(layout);
 		pageContainer.setLayoutData(gd);
 		
-		if (PlatformUtil.isLinux()) {
-			visualEditorEngineGroup = createLayoutGroup(pageContainer,
-					SWT.SHADOW_ETCHED_IN,
-					VpeUIMessages.VISUAL_EDITOR_ENGINE_PREFERENCES_GROUP_TITLE);
-		}
-		
 		visualAppearanceGroup = createLayoutGroup(pageContainer,
 				SWT.SHADOW_ETCHED_IN,
 				VpeUIMessages.VISUAL_APPEARANCE_GROUP_TITLE);
@@ -142,26 +131,6 @@ public class VpePreferencesPage extends FieldEditorPreferencePage implements
 //		addField(new VpeBooleanFieldEditor(SHOW_VISUAL_TOOLBAR,
 //				VpeUIMessages.SHOW_VPE_TOOLBAR,
 //				visualEditorToolbarGroup));
-	    if (PlatformUtil.isLinux()) {
-	    	boolean xulrunnerCanBeLoaded = VpePlatformUtil.xulrunnerCanBeLoadedOnLinux();
-	    	String[][] labelsAndValues = new String[][] {
-	    			{ VpeUIMessages.VISUAL_EDITOR_ENGINE_PREFERENCES_JSF, String.valueOf(false) },
-	    			{ VpeUIMessages.VISUAL_EDITOR_ENGINE_PREFERENCES_HTML5, String.valueOf(true) } };
-	    	
-	    	mode = new VpeRadioGroupFieldEditor(USE_VISUAL_EDITOR_FOR_HTML5,
-	    			VpeUIMessages.VISUAL_EDITOR_ENGINE_PREFERENCES_HEADER, 1, labelsAndValues, visualEditorEngineGroup);
-	    	VpeBooleanFieldEditor remember = new VpeBooleanFieldEditor(REMEMBER_VISUAL_EDITOR_ENGINE,
-	    			VpeUIMessages.VISUAL_EDITOR_ENGINE_PREFERENCES_SHOW_DIALOG, visualEditorEngineGroup);
-	    	if (!xulrunnerCanBeLoaded) {
-	    		addField(new LabelFieldEditor(VpeUIMessages.VISUAL_EDITOR_ENGINE_PREFERENCES_DISABLED, visualEditorEngineGroup));
-	    		remember.setEnabled(false, visualEditorEngineGroup);
-	    		mode.setEnabled(false, visualEditorEngineGroup);	    		
-	    		
-	    	}
-	    	addField(mode);
-    		addField(remember);
-	    	
-	    }
 	    addField(new VpeBooleanFieldEditor(SHOW_BORDER_FOR_UNKNOWN_TAGS,
 				VpeUIMessages.SHOW_BORDER_FOR_UNKNOWN_TAGS,
 				visualAppearanceGroup));
@@ -200,18 +169,6 @@ public class VpePreferencesPage extends FieldEditorPreferencePage implements
 
 	@Override
 	public boolean performOk() {
-	    if (VpePlatformUtil.xulrunnerCanBeLoadedOnLinux() && iswebkit != getSelectedVisualMode()) {
-	    	if (MessageDialog.openConfirm(Display.getDefault().getActiveShell(), VpeUIMessages.VISUAL_EDITOR_ENGINE_RESTART_CONFIRM, VpeUIMessages.VISUAL_EDITOR_ENGINE_RESTART_CONFIRM_MESSAGE) ){
-	    	    super.performOk();
-	    		Display.getDefault().asyncExec(new Runnable() {
-	    			public void run() {
-	    				PlatformUI.getWorkbench().restart();
-	    			}
-	    		});	    		
-	    	} else {
-	    		return false;
-	    	}
-	    } else {
 		    super.performOk();
 			IEditorReference[] editors = VpePlugin.getDefault().getWorkbench()
 					.getActiveWorkbenchWindow().getActivePage()
@@ -253,27 +210,12 @@ public class VpePreferencesPage extends FieldEditorPreferencePage implements
 								.getPreferenceStore().getBoolean(IVpePreferencesPage.SYNCHRONIZE_SCROLLING_BETWEEN_SOURCE_VISUAL_PANES);
 						
 						
-						setCommandToggleState(ShowBorderHandler.COMMAND_ID, presfShowBorderForUnknownTags);
-						setCommandToggleState(ShowNonVisualTagsHandler.COMMAND_ID, prefsShowNonVisualTags);
 						setCommandToggleState(SelectionBarHandler.COMMAND_ID, prefsShowSelectionBar);
-						setCommandToggleState(ShowTextFormattingHandler.COMMAND_ID, prefsShowTextFormattingBar);
-						setCommandToggleState(ShowBundleAsELHandler.COMMAND_ID, prefsShowBundlesAsEL);
 						setCommandToggleState(ScrollLockSourceVisualHandler.COMMAND_ID, prefsSynchronizeScrolling);
 					//}
 				}
 			}
-	    }
 	    return true;
-	}
-	
-	/**
-	 * 
-	 * @return <code>true</code> for HTML5 mode, <code>false</code> for JSF mode
-	 */
-	private Boolean getSelectedVisualMode() {
-		Control[] radiobuttons = mode.getRadioBoxControl(visualEditorEngineGroup).getChildren();
-		Button html5Mode = (Button) radiobuttons[1];
-		return html5Mode.getSelection();
 	}
 	
 	/**

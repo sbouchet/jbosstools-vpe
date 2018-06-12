@@ -12,21 +12,13 @@ package org.jboss.tools.vpe.editor.util;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.eclipse.swt.graphics.Point;
-import org.jboss.tools.jst.web.ui.internal.editor.util.NodesManagingUtil;
 import org.jboss.tools.vpe.VpePlugin;
-import org.jboss.tools.vpe.editor.context.VpePageContext;
-import org.mozilla.interfaces.nsIDOMKeyEvent;
-import org.w3c.dom.Node;
 
 public class TextUtil {
 
@@ -447,62 +439,4 @@ public class TextUtil {
 		return true;
 	}
 
-	public static String getChar(nsIDOMKeyEvent keyEvent) {
-		// get inserted string
-		long charCode = keyEvent.getCharCode();
-		char[] s = new char[1];
-		s[0] = (char) charCode;
-		String str = new String(s);
-		if (TextUtil.containsKey(s[0])) {
-			str = TextUtil.getValue(s[0]);
-		}
-
-		return str;
-	}
-	/**
-	 * @author mareshkau
-	 * @author Yahor Radtsevich (yradtsevich)
-	 * @param node or attribute for which we want calculate position start el position
-	 * 
-	 * @return position if we can find position
-	 * 			-1 if we can't find pisition, <document_offcet>'#{el}', return start position of el
-	 */
-	@SuppressWarnings("restriction")
-	public static int getPositionForOpenOn(Node node, VpePageContext pageContext) {
-		if (node != null && node.getNodeValue() != null
-				&& node.getNodeValue().length() > 0) {
-			List<Integer> elStarts = new ArrayList<Integer>();
-			Matcher beginELExpresion = EL_START_PATTERN.matcher(node.getNodeValue());
-			while (beginELExpresion.find()) {
-				elStarts.add(beginELExpresion.start(2));
-			}
-			
-			final int startOffsetNode = NodesManagingUtil.getStartOffsetNode(node);
-			final int endOffsetNode = startOffsetNode + node.getNodeValue().length();
-			int openOnOffset = startOffsetNode;
-			if (!elStarts.isEmpty()) {
-				// +1 because we should have position of first symbol
-				openOnOffset += elStarts.get(0) + 1;
-			}			
-
-			// Fix for the cases when a part of node value is already selected in the source viewer (JBIDE-11588).
-			// If yes, than check if it is an el-expression and return position of the selection end.
-			Point selection = pageContext.getSourceBuilder().getSelectionRange();
-			int selectionStart = selection.x;
-			int selectionEnd = selectionStart + selection.y;			
-			if (selectionStart >= startOffsetNode && selectionEnd <= endOffsetNode) {
-				for (int elStart : elStarts) {
-					int elEnd = node.getNodeValue().indexOf(EL_END_PATTERN, elStart);
-					if (selectionEnd >= elStart + startOffsetNode && selectionEnd <= elEnd + startOffsetNode) {
-						if (selectionStart != selectionEnd) {
-							openOnOffset = selectionEnd - 1;
-						}
-					}
-				}
-			}
-			
-			return openOnOffset;
-		}
-		return -1;
-	}
 }

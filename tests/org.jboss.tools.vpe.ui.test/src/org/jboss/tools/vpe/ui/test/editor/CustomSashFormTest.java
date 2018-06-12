@@ -17,7 +17,7 @@ import org.jboss.tools.jst.web.ui.internal.editor.editor.IVisualEditor;
 import org.jboss.tools.jst.web.ui.internal.editor.jspeditor.JSPMultiPageEditor;
 import org.jboss.tools.vpe.base.test.TestUtil;
 import org.jboss.tools.vpe.base.test.VpeTest;
-import org.jboss.tools.vpe.editor.VpeEditorPart;
+import org.jboss.tools.vpe.preview.editor.VpvEditorPart;
 import org.jboss.tools.vpe.ui.test.VpeUiTests;
 import org.junit.Test;
 
@@ -40,7 +40,7 @@ public class CustomSashFormTest extends VpeTest {
          */
         IEditorInput input = new FileEditorInput(file1);
         JSPMultiPageEditor part = openEditor(input);
-        VpeEditorPart visualEditor = (VpeEditorPart) part.getVisualEditor();
+        VpvEditorPart visualEditor = (VpvEditorPart) part.getVisualEditor();
         /*
          * Maximize visual part, switch to source part, 
          * close the file, open file again.
@@ -57,7 +57,7 @@ public class CustomSashFormTest extends VpeTest {
         TestUtil.delay();
         input = new FileEditorInput(file1);
         part = openEditor(input);
-        visualEditor = (VpeEditorPart) part.getVisualEditor();
+        visualEditor = (VpvEditorPart) part.getVisualEditor();
         TestUtil.waitForJobs();
         closeEditor(part);
         
@@ -70,7 +70,7 @@ public class CustomSashFormTest extends VpeTest {
          */
         input = new FileEditorInput(file2);
         part = openEditor(input);
-        visualEditor = (VpeEditorPart) part.getVisualEditor();
+        visualEditor = (VpvEditorPart) part.getVisualEditor();
         
         /*
          * Maximize visual part, switch to source part, 

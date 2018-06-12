@@ -18,6 +18,8 @@ import static org.jboss.tools.vpe.preview.core.server.VpvSocketProcessor.UTF_8;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -77,6 +79,16 @@ public final class EditorUtil {
 		} else {
 			return null;
 		}
+	}
+	
+	public static List<Node> getNodesFromSelection(IStructuredSelection selection) {
+		final List<Node> result = new ArrayList<>();
+		selection.iterator().forEachRemaining(item -> {
+			if (item instanceof Node) {
+				result.add((Node) item);
+			}
+		});
+		return result;
 	}
 	
 	public static boolean isImportant(IEditorPart editor) {

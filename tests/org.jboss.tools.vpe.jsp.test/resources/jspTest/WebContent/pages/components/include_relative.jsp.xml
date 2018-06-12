@@ -1,6 +1,5 @@
 <tests>
 <test id="include_relative">
-<DIV VPE:INCLUDE-ELEMENT="yes">
-</DIV>
+<jsp:include page="./include.jsp" id="include_relative"/>
 </test>
 </tests>

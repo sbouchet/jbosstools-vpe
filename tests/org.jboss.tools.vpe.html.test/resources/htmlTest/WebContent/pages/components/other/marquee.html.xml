@@ -1,9 +1,7 @@
 <tests>
 	<test id="marquee">
-		<MARQUEE STYLE="-moz-user-modify: read-only;" >
-			<SPAN>
+		<marquee>
 				Lorem ipsum dolor sit amet...
-			</SPAN>
-		</MARQUEE>
+		</marquee>
 	</test>
 </tests>

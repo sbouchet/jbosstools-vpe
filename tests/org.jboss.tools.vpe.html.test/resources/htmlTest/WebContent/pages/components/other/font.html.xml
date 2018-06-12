@@ -1,10 +1,7 @@
 <tests>
 	<test id="font">
-		<FONT SIZE="5" FACE="Arial" COLOR="red" ID="font"
-			STYLE="-moz-user-modify: read-write;" >
-			<SPAN>
+		<font size="5" face="Arial" color="red" id="font">
 				some text
-			</SPAN>
-		</FONT>
+		</font>
 	</test>
 </tests>

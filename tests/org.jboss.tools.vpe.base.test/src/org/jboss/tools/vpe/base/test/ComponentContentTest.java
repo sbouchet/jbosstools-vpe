@@ -15,6 +15,7 @@ import static org.junit.Assume.assumeThat;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
@@ -26,13 +27,10 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 import org.jboss.tools.jst.web.ui.internal.editor.jspeditor.JSPMultiPageEditor;
 import org.jboss.tools.test.util.WorkbenchUtils;
-import org.jboss.tools.vpe.editor.VpeController;
-import org.jboss.tools.vpe.editor.mapping.VpeNodeMapping;
 import org.jboss.tools.vpe.editor.util.SourceDomUtil;
+import org.jboss.tools.vpe.preview.editor.VpvEditorController;
 import org.junit.Assume;
 import org.jboss.tools.vpe.base.test.VpeTest;
-import org.mozilla.interfaces.nsIDOMElement;
-import org.mozilla.interfaces.nsIDOMNode;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -75,7 +73,6 @@ public abstract class ComponentContentTest extends VpeTest {
 	}
 	
 	protected void performContentTestByFullPath(String elementPagePath) throws Throwable {
-		assumeTrue("Not supported environment",!VpeTest.skipTests);
 		setException(null);
 		IFile elementPageFile = (IFile) TestUtil.getComponentFileByFullPath(
 				elementPagePath, getTestProjectName());
@@ -86,7 +83,7 @@ public abstract class ComponentContentTest extends VpeTest {
 		
 		IEditorPart editor = WorkbenchUtils.openEditor(elementPageFile,getEditorID());
 		assertNotNull("Editor should be opened.", editor); //$NON-NLS-1$
-		VpeController controller = TestUtil.getVpeController((JSPMultiPageEditor) editor);
+		VpvEditorController controller = TestUtil.getVpvController((JSPMultiPageEditor) editor);
 		/*
 		 * https://issues.jboss.org/browse/JBIDE-11360
 		 * Check that VpeController is created.
@@ -101,6 +98,7 @@ public abstract class ComponentContentTest extends VpeTest {
 		 */
 		assertNotNull("Could not find XML component file '"+elementPagePath + XML_FILE_EXTENSION+"'", xmlFile); //$NON-NLS-1$ //$NON-NLS-2$
 		File xmlTestFile = xmlFile.getLocation().toFile();
+		controller.visualRefresh();
 		/*
 		 * Get document
 		 */
@@ -109,8 +107,8 @@ public abstract class ComponentContentTest extends VpeTest {
 			throw getException();
 		}
 	}
-	protected void compareStyles(VpeController controller, File xmlTestFile)
-			throws FileNotFoundException {
+	protected void compareStyles(VpvEditorController controller, File xmlTestFile)
+			throws FileNotFoundException, UnsupportedEncodingException {
 		Document xmlTestDocument = TestDomUtil.getDocument(xmlTestFile);
 		assertNotNull("Can't get test file, possibly file not exists " + xmlTestFile,xmlTestDocument); //$NON-NLS-1$
 		List<String> ids = TestDomUtil.getTestIds(xmlTestDocument);
@@ -126,9 +124,9 @@ public abstract class ComponentContentTest extends VpeTest {
 		}
 	}
 	
-	private void compareStylesJob(VpeController controller, Document xmlTestDocument, 
+	private void compareStylesJob(VpvEditorController controller, Document xmlTestDocument, 
 			String elementId, String xmlTestId) throws DOMComparisonException {
-		nsIDOMElement vpeElement = findElementById(controller, elementId);
+		Element vpeElement = findElementById(controller, elementId, TestUtil.MAX_IDLE);
 		assertNotNull("Cannot find element with id = [" + elementId //$NON-NLS-1$
 				+ "] in VPE page", vpeElement); //$NON-NLS-1$
 		Element xmlModelElement = TestDomUtil.getFirstChildElement(
@@ -138,8 +136,8 @@ public abstract class ComponentContentTest extends VpeTest {
 		TestDomUtil.compareComputedStyle(vpeElement, xmlModelElement);
 	}
 	
-	protected void compareContent(VpeController controller, File xmlTestFile)
-			throws FileNotFoundException {
+	protected void compareContent(VpvEditorController controller, File xmlTestFile)
+			throws FileNotFoundException, UnsupportedEncodingException {
 		Document xmlTestDocument = TestDomUtil.getDocument(xmlTestFile);
 		assertNotNull("Can't get test file, possibly file not exists " + xmlTestFile,xmlTestDocument); //$NON-NLS-1$
 
@@ -166,11 +164,11 @@ public abstract class ComponentContentTest extends VpeTest {
 	 * @return
 	 * @throws DOMComparisonException
 	 */
-	private void compareElements(VpeController controller,
+	private void compareElements(VpvEditorController controller,
 			Document xmlTestDocument, String elementId, String xmlTestId)
 				throws DOMComparisonException {
 		// get element by id
-		nsIDOMElement vpeElement = findElementById(controller, elementId);
+		Element vpeElement = findElementById(controller, elementId, TestUtil.MAX_IDLE);
 		assertNotNull("Cannot find element with id = [" + elementId //$NON-NLS-1$
 				+ "] in VPE page", vpeElement); //$NON-NLS-1$
 
@@ -215,7 +213,6 @@ public abstract class ComponentContentTest extends VpeTest {
 	 */
 	protected void performInvisibleTagTestByFullPath(String elementPagePath,
 			String elementId) throws Throwable {
-		assumeTrue("Not supported environment",!VpeTest.skipTests);
 		IFile elementPageFile = (IFile) TestUtil.getComponentFileByFullPath(
 				elementPagePath, getTestProjectName());
 		/*
@@ -233,44 +230,20 @@ public abstract class ComponentContentTest extends VpeTest {
 		/*
 		 * Get the controller
 		 */
-		VpeController controller = TestUtil.getVpeController((JSPMultiPageEditor) editor);
+		VpvEditorController controller = TestUtil.getVpvController((JSPMultiPageEditor) editor);
 		/*
 		 * Find source element and check if it is not null
 		 */
 		Element sourceElement = findSourceElementById(controller, elementId);
 		assertNotNull("Source node with id '" + elementId + "' was not found.", sourceElement); //$NON-NLS-1$ //$NON-NLS-2$
-		/*
-		 * Find visual element and check if it is null
-		 */
-		nsIDOMElement visualElement = findElementById(controller, elementId);
-		assertNull("Source node with id '" + elementId + "' has visual representation.", visualElement); //$NON-NLS-1$ //$NON-NLS-2$
-		
-		/*
-		 * Set show invisible tag's flag to true
-		 */
-		controller.getVisualBuilder().setShowInvisibleTags(true);
-		controller.visualRefreshImpl();
 		
 		/*
 		 * Find visual element and check if it is not null
 		 */
-		visualElement = findElementById(controller, elementId,TestUtil.MAX_IDLE);
+		Element visualElement = findElementById(controller, elementId,TestUtil.MAX_IDLE);
 		assertNotNull(visualElement);
 		
-		/*
-		 * Generate text for invisible tag
-		 */
-		String modelInvisibleTagText = generateInvisibleTagText(sourceElement
-				.getNodeName());
-		
-		/*
-		 * Generate dom document and get root element
-		 */
-		Element modelElement = TestDomUtil.getDocument(modelInvisibleTagText)
-		.getDocumentElement();
-		assertNotNull(modelElement);
-		
-		TestDomUtil.compareNodes(visualElement, modelElement);
+		TestDomUtil.compareNodes(visualElement, sourceElement);
 		
 		if (getException() != null) {
 			throw getException();
@@ -289,7 +262,6 @@ public abstract class ComponentContentTest extends VpeTest {
 	 */
 	protected void performInvisibleWrapperTagTest(String elementPagePath,
 			String elementId) throws Throwable {
-		assumeTrue("Not supported environment",!VpeTest.skipTests);
 		setException(null);
 
 		IFile elementPageFile = (IFile) TestUtil.getComponentPath(
@@ -303,26 +275,18 @@ public abstract class ComponentContentTest extends VpeTest {
 
 		assertNotNull(editor);
 
-		VpeController controller = TestUtil.getVpeController((JSPMultiPageEditor) editor);
+		VpvEditorController controller = TestUtil.getVpvController((JSPMultiPageEditor) editor);
 
 		// find source element and check if it is not null
 		Element sourceELement = findSourceElementById(controller, elementId);
 		assertNotNull(sourceELement);
 
 		// find visual element and check if it is null
-		nsIDOMElement visualElement = findElementById(controller, elementId);
+		Element visualElement = findElementById(controller, elementId);
 		assertNull(visualElement);
 
-		// check children of non-visual
-		NodeList children = sourceELement.getChildNodes();
-		for (int i = 0; i < children.getLength(); i++) {
-			Node child = children.item(i);
-			assertNotNull(findNode(controller, child));
-		}
-
 		// set show invisible tag's flag to true
-		controller.getVisualBuilder().setShowInvisibleTags(true);
-		controller.visualRefreshImpl();
+		controller.visualRefresh();
 
 		// find visual element and check if it is not null
 		visualElement = findElementById(controller, elementId,TestUtil.MAX_IDLE);
@@ -357,7 +321,6 @@ public abstract class ComponentContentTest extends VpeTest {
 	}
 
 	protected void performStyleTest(String elementPagePath) throws Throwable {
-		Assume.assumeTrue("Not supported environment",!VpeTest.skipTests);
 		String fullelementPagePath = TestUtil.COMPONENTS_PATH + elementPagePath; 
 		IFile elementPageFile = (IFile) TestUtil.getComponentFileByFullPath(
 				fullelementPagePath, getTestProjectName());
@@ -368,7 +331,7 @@ public abstract class ComponentContentTest extends VpeTest {
 		
 		IEditorPart editor = WorkbenchUtils.openEditor(elementPageFile,getEditorID());
 		assertNotNull("Editor should be opened.", editor); //$NON-NLS-1$
-		VpeController controller = TestUtil.getVpeController((JSPMultiPageEditor) editor);
+		VpvEditorController controller = TestUtil.getVpvController((JSPMultiPageEditor) editor);
 		/*
 		 * Get xml test file
 		 */
@@ -396,10 +359,10 @@ public abstract class ComponentContentTest extends VpeTest {
 	 * to wait for refresh job
 	 * @return
 	 */
-	protected nsIDOMElement findElementById(VpeController controller,
+	protected Element findElementById(VpvEditorController controller,
 			String elementId, long idle) {
 		long start = System.currentTimeMillis();
-		nsIDOMElement result = null;
+		Element result = null;
 		while (result==null) {
 			result = findElementById(controller, elementId);
 			if(!Display.getCurrent().readAndDispatch()) {
@@ -411,20 +374,6 @@ public abstract class ComponentContentTest extends VpeTest {
 		return result;
 	}	
 	
-	/**
-	 * find visual element by "id" entered in source part of vpe
-	 * 
-	 * @param controller
-	 * @param elementId
-	 * @return
-	 */
-	protected nsIDOMNode findNode(VpeController controller, Node node) {
-		VpeNodeMapping nodeMapping = controller.getDomMapping().getNodeMapping(node);
-		if (nodeMapping == null) {
-			return null;
-		}
-		return nodeMapping.getVisualNode();
-	}
 
 	abstract protected String getTestProjectName();
 }

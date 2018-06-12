@@ -1,14 +1,10 @@
 <tests>
 	<test id="ruby-id">
-		<RUBY ID="ruby-id">
-			<SPAN CLASS="vpe-text">
+		<ruby id="ruby-id">
 				&#28450;
-			</SPAN>
-			<RT>
-				<SPAN CLASS="vpe-text">
+			<rt>
 					&#12559;&#12578;&#715;
-				</SPAN>
-			</RT>
-		</RUBY>
+			</rt>
+		</ruby>
 	</test>
 </tests>

@@ -1,10 +1,8 @@
 <tests>
 	<test id="tt">
-		<TT ID="tt" CLASS="ttClass" STYLE="color: red; -moz-user-modify: read-write;" DIR="ltr">
-<SPAN>
+		<tt id="tt" class="ttClass" style="color: red;" dir="ltr">
 some
 text
-</SPAN>
-</TT>
+</tt>
 	</test>
 </tests>

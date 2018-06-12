@@ -1,7 +1,5 @@
 <tests>
 	<test id="authentication1">
-		<B ID="authentication1">
-			<SPAN CLASS="vpe-text">principal</SPAN>
-		</B>
+		<b id="authentication1"><security:authentication property="principal" /></b>
 	</test>
 </tests>

@@ -1,11 +1,9 @@
 <tests>
 	<test id="pre">
-		<PRE WIDTH="30" ID="pre" CLASS="preClass"
-			STYLE="color: red; -moz-user-modify: read-write;">
-			<SPAN CLASS="vpe-text">
+		<pre width="30" id="pre" class="preClass"
+			style="color: red;">
 	string 1
 	string 2 
-			</SPAN>
-		</PRE>
+		</pre>
 	</test>
 </tests>

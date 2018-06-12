@@ -10,8 +10,6 @@
  ******************************************************************************/
 package org.jboss.tools.vpe.editor.util;
 
-import static org.jboss.tools.vpe.xulrunner.util.XPCOM.queryInterface;
-
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -43,14 +41,6 @@ import org.jboss.tools.jst.web.WebUtils;
 import org.jboss.tools.jst.web.project.WebProject;
 import org.jboss.tools.vpe.VpePlugin;
 import org.jboss.tools.vpe.editor.VpeIncludeInfo;
-import org.jboss.tools.vpe.editor.VpeVisualDomBuilder;
-import org.jboss.tools.vpe.editor.context.VpePageContext;
-import org.jboss.tools.vpe.editor.mapping.VpeElementMapping;
-import org.mozilla.interfaces.nsIDOMCSSStyleDeclaration;
-import org.mozilla.interfaces.nsIDOMElement;
-import org.mozilla.interfaces.nsIDOMElementCSSInlineStyle;
-import org.mozilla.interfaces.nsIDOMNode;
-import org.mozilla.interfaces.nsIDOMNodeList;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -101,15 +91,6 @@ public class VpeStyleUtil {
 	public static String FILE_PROTOCOL = "file:"; //$NON-NLS-1$
 	public static String HTTP_PROTOCOL = "http:"; //$NON-NLS-1$
 	public static String SLASH = "/"; //$NON-NLS-1$
-
-	/**
-	 * Returns CSS style declaration corresponding to the given {@code element}.
-	 */
-	public static nsIDOMCSSStyleDeclaration getStyle(nsIDOMElement element) {
-    	nsIDOMElementCSSInlineStyle inlineStyle = 
-				queryInterface(element, nsIDOMElementCSSInlineStyle.class);
-		return inlineStyle.getStyle();
-	}
 
 	// sets parameter position in attribute style to absolute value
 	public static void setAbsolute(Element sourceElement) {
@@ -442,33 +423,6 @@ public class VpeStyleUtil {
 	/**
 	 * Adds full path for URL value
 	 * 
-	 * @param url the url
-	 * @param pageContext VPE page context
-	 * @return the full path string
-	 */
-	public static String addFullPathIntoURLValue(String url, VpePageContext pageContext) {
-		String urls[] = url.split(ATTR_URL);
-		if (urls.length == 1) {
-			return url;
-		}
-		IFile file = getSourceFileFromPageContext(pageContext);
-		for (int i = 1; i < urls.length; i++) {
-			urls[i] = removeQuotesUpdate(urls[i]);
-			String[] urlParts = splitURL(urls[i]);
-			if (urlParts == null) {
-				continue;
-			}
-			if (file != null) {
-				urlParts[1] = processUrl(urlParts[1], file, true);
-			}
-			urls[i] = collectArrayInto1Str(urlParts);
-		}
-		return collectArrayInto1Str(urls);
-	}
-
-	/**
-	 * Adds full path for URL value
-	 * 
 	 * @param url css url string
 	 * @param href_val path to css file
 	 * @return the full path string
@@ -579,167 +533,6 @@ public class VpeStyleUtil {
 				+ getAbsoluteResourcePath(resourcePathInPlugin).replace('\\', '/');
 	}
 
-	/**
-	 * Adds the full path to image "src" attribute.
-	 * 
-	 * @param path
-	 *            image "src" attribute value
-	 * @param pageContext
-	 *            the pageContext
-	 * @param showUnresolvedImage
-	 *            flag to display unresolved image
-	 * 
-	 * @return the full path to image "src" attribute
-	 */
-	public static String addFullPathToImgSrc(String path,
-			VpePageContext pageContext, boolean showUnresolvedImage) {
-
-		if (path == null) {
-			if (showUnresolvedImage) {
-				return FILE_PROTOCOL + SLASH + SLASH
-						+ getAbsoluteResourcePath(UNRESOLVED_IMAGE_PATH).replace('\\', '/');
-			} else {
-				return EMPTY_STRING;
-			}
-		}
-
-		IPath tagPath = new Path(path);
-		if (tagPath.isEmpty()) {
-			if (showUnresolvedImage) {
-				return FILE_PROTOCOL + SLASH + SLASH
-						+ getAbsoluteResourcePath(UNRESOLVED_IMAGE_PATH).replace('\\', '/');
-			} else {
-				return path.replace('\\', '/');
-			}
-		}
-
-		String device = (tagPath.getDevice() == null ? tagPath.segment(0) : tagPath.getDevice());
-		if (device != null && (HTTP_PROTOCOL.equalsIgnoreCase(device) || FILE_PROTOCOL.equalsIgnoreCase(device))) {
-			if (showUnresolvedImage) {
-				return FILE_PROTOCOL + SLASH + SLASH
-						+ getAbsoluteResourcePath(UNRESOLVED_IMAGE_PATH).replace('\\', '/');
-			} else {
-				return path.replace('\\', '/');
-			}
-		}
-
-		File locFile = tagPath.toFile();
-		if (locFile.exists()) {
-			return FILE_PROTOCOL + SLASH + SLASH + SLASH + locFile.getAbsolutePath().replace('\\', '/');
-		}
-
-		IPath imgPath = toFullPath(pageContext, tagPath);
-		IEditorInput input = pageContext.getEditPart().getEditorInput();
-		if (imgPath != null && imgPath.toFile().exists()) {
-			return FILE_PROTOCOL + SLASH + SLASH + SLASH + imgPath.toString();
-		} else {
-			IFile file = null;
-			if (input instanceof IFileEditorInput) {
-				file = ((IFileEditorInput) input).getFile();
-			}
-
-			if (null != file) {
-				ResourceReference resourceReference = null;
-				String pathCopy = path;
-				if (SLASH.equals(path.substring(0, 1))) {
-					resourceReference = pageContext.getRuntimeAbsoluteFolder(file);
-					pathCopy = pathCopy.substring(1);
-				} else {
-					resourceReference = pageContext.getRuntimeRelativeFolder(file);
-				}
-
-				String location = null;
-				if (resourceReference != null) {
-					location = resourceReference.getLocation();
-				}
-
-				if (null == location && null != file.getLocation()) {
-					location = file.getLocation().toFile().getParent();
-				}
-
-				if (null != location) {
-					File f = new File(location + File.separator + pathCopy);
-					if (f.exists()) {
-						return FILE_PROTOCOL + SLASH + SLASH + SLASH + f.getPath().replace('\\', '/');
-					}
-				}
-			}
-		}
-		if (showUnresolvedImage) {
-			return FILE_PROTOCOL + SLASH + SLASH + getAbsoluteResourcePath(UNRESOLVED_IMAGE_PATH).replace('\\', '/');
-		} else {
-			return path.replace('\\', '/');
-		}
-	}
-
-	public static IPath toFullPath(VpePageContext pageContext, IPath path) {
-		IEditorInput input = pageContext.getEditPart().getEditorInput();
-		if (path.isAbsolute() && input instanceof IFileEditorInput) {
-			IFileEditorInput fileEditorInput = (IFileEditorInput) input;
-			IFile editorFile = fileEditorInput.getFile();
-			if (editorFile != null) {
-				IProject project = editorFile.getProject();
-				if (project != null) {
-					for (IContainer webRoot : WebUtils.getWebRootFolders(project)) {
-						IFile handle = webRoot.getFile(path);
-						if (handle.exists()) {
-							IPath fullPath = handle.getLocation();
-							if (fullPath != null && fullPath.toFile().exists()) {
-								return fullPath;
-							}
-						}
-					}
-				}
-			}
-		} else {
-			IPath inputPath = getInputParentPath(input);
-			if (inputPath != null) {
-				return inputPath.append(path);
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * refresh style element
-	 * 
-	 * @param visualDomBuilder
-	 * @param sourceElement
-	 * @param oldStyleNode
-	 * @return
-	 */
-	public static void refreshStyleElement(VpeVisualDomBuilder visualDomBuilder, VpeElementMapping elementMapping) {
-		nsIDOMNode value = null;
-		/*
-		 * data property( of "style's" elementMapping ) contains Map<Object,nsIDOMNode>. 
-		 * There is only one "style" visual element in this map. So we get this element from map.
-		 * There is potential danger in this manner of keeping "style" element ( use property "data" of Object type )
-		 */
-		Map<Object, nsIDOMNode> map = (Map<Object, nsIDOMNode>) elementMapping.getData();
-		// get "style" element
-		if (map != null) {
-			if (map.size() > 0) {
-				value = map.values().iterator().next();
-			}
-		}
-		if (value == null) {
-			return;
-		}
-		// get new value of style element
-		Node textNode = elementMapping.getSourceNode().getFirstChild();
-		String text = null;
-		if (textNode != null) {
-			text = textNode.getNodeValue();
-		}
-		nsIDOMNodeList list = value.getChildNodes();
-		// remove all children of style element
-		for (int i = 0; i < list.getLength(); i++) {
-			value.removeChild(list.item(i));
-		}
-		// add new value of style element
-		value.appendChild(visualDomBuilder.getXulRunnerEditor()
-				.getDOMDocument().createTextNode(text));
-	}
 
 	public static String getAbsoluteResourcePath(String resourcePathInPlugin) {
 		String pluginPath = VpePlugin.getPluginResourcePath();
@@ -835,94 +628,6 @@ public class VpeStyleUtil {
 			decodedUrl = url;
 		}
 		return decodedUrl;
-	}
-
-	/**
-	 * Applies CSS attributes {@code left:x;top:y;} to the specified {@code element}.
-	 */
-	public static void moveElementTo(nsIDOMElement element, int x, int y) {
-		nsIDOMCSSStyleDeclaration style = VpeStyleUtil.getStyle(element);
-		style.setProperty(HTML.STYLE_PARAMETER_LEFT, VpeStyleUtil.toPxPosition(x), HTML.STYLE_PRIORITY_IMPORTANT);
-		style.setProperty(HTML.STYLE_PARAMETER_TOP, VpeStyleUtil.toPxPosition(y), HTML.STYLE_PRIORITY_IMPORTANT);
-	}
-
-	/**
-	 * Applies CSS attribute {@code display} to the specified {@code element} according to the {@code visible}
-	 * parameter.
-	 */
-	public static void setElementVisible(nsIDOMElement element, boolean visible) {
-		nsIDOMCSSStyleDeclaration style = VpeStyleUtil.getStyle(element);
-		style.setProperty(HTML.STYLE_PARAMETER_DISPLAY,
-				visible ? HTML.STYLE_VALUE_DEFAULT_DISPLAY
-						: HTML.STYLE_VALUE_NONE, HTML.STYLE_PRIORITY_IMPORTANT);
-
-	}
-	
-	/**
-	 * Finds CSS @import url(".."); construction
-	 * 
-	 * @param cssText the css text
-	 * @param pageContext VPE page context 
-	 * @return the map with the import statement as a key and the css file path as a value
-	 */
-	public static List<String> findCssImportConstruction(String cssText, VpePageContext pageContext) {
-		ArrayList<String> list = new ArrayList<String>();
-		IFile sourceFile = getSourceFileFromPageContext(pageContext);
-		Matcher m = CSS_IMPORT_PATTERN.matcher(cssText);
-		while (m.find()) {
-			/*
-			 * Path should be a well formed URI
-			 */
-			list.add(processUrl(getCorrectURI(m.group(1)), sourceFile, false));
-		}
-		return list;
-	}
-	
-	/**
-	 * Gets the source file from pageContext
-	 * 
-	 * @param pageContext
-	 * @return the opened file
-	 */
-	public static IFile getSourceFileFromPageContext(VpePageContext pageContext) {
-		IFile file = null;
-		final VpeIncludeInfo vii = pageContext.getVisualBuilder().getCurrentIncludeInfo();
-		if ((vii != null) && (vii.getStorage() instanceof IFile)) {
-			file = (IFile) vii.getStorage();
-		}
-		return file;
-	}
-	
-	/**
-	 * Determine correct uri in the input path:
-	 * Remove quotes and brackets
-	 * 
-	 * @param path input path
-	 * @return correct URI string
-	 */
-	private static String getCorrectURI(String path) {
-		String uri = path;
-		/*
-		 * Closing bracket appears due to regex pattern.
-		 * Should be removed.
-		 */
-		if (path.endsWith(CLOSE_BRACKET)) {
-			uri = uri.substring(0, uri.length() - 1);
-		}
-		Matcher m = CSS_URI_PATTERN.matcher(uri);
-		/*
-		 * Find uri in " or ' quotes
-		 */
-		if (m.find()) {
-			if ((m.group(1) != null) 
-					&& !EMPTY_STRING.equalsIgnoreCase(m.group(1))) {
-				uri = m.group(1);
-			} else if ((m.group(2) != null) 
-					&& !EMPTY_STRING.equalsIgnoreCase(m.group(2))) {
-				uri = m.group(2);
-			}
-		}
-		return uri;
 	}
 	
 	/**

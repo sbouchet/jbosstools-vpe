@@ -1,9 +1,7 @@
 <tests>
 	<test id="center">
-		<CENTER STYLE="-moz-user-modify: read-write;" ID="center" >
-<SPAN>
+		<center id="center" >
 text
-</SPAN>
-</CENTER>
+</center>
 	</test>
 </tests>

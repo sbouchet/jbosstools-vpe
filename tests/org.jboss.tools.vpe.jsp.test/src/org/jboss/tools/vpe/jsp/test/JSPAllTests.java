@@ -20,7 +20,6 @@ import junit.framework.TestSuite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
 	JSPComponentTest.class,
-	JSPTemplatePluginTest.class,
 	JSPComponentContentTest.class,
 })
 public class JSPAllTests {

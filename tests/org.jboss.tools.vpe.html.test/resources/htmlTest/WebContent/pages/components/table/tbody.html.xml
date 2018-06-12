@@ -1,19 +1,15 @@
 <tests>
 	<test id="tbody">
-		<TBODY ALIGN="right" ID="tbody" CLASS="tbody"
-			STYLE="color: red; -moz-user-modify: read-write;">
-			<TR STYLE="-moz-user-modify: read-write;">
-				<TD STYLE="-moz-user-modify: read-write;">
-					<SPAN>
+		<tbody align="right" id="tbody" class="tbody"
+			style="color: red;">
+			<tr>
+				<td>
 						body text 1
-					</SPAN>
-				</TD>
-				<TD STYLE="-moz-user-modify: read-write;">
-					<SPAN>
+				</td>
+				<td>
 						body text 2
-					</SPAN>
-				</TD>
-			</TR>
-		</TBODY>
+				</td>
+			</tr>
+		</tbody>
 	</test>
 </tests>

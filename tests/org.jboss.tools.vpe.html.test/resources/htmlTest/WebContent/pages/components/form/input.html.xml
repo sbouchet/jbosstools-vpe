@@ -1,47 +1,46 @@
 <tests>
 	<test id="checkbox">
-		<INPUT TYPE="checkbox" ID="checkbox" CLASS="checkboxClass"
-			CHECKED="checked" STYLE="color: red; -moz-user-modify: read-only;" />
+		<input type="checkbox" id="checkbox" class="checkboxClass"
+			checked="" style="color: red;" />
 	</test>
 	<test id="file">
-		<INPUT TYPE="file" SIZE="30"
-			STYLE="color: red; -moz-user-modify: read-only;" VALUE="value" />
+		<input type="file" size="30"
+			style="color: red;" value="value" />
 	</test>
 	<test id="input">
-		<INPUT ID="input" VALUE="input" CLASS="inputClass"
-			STYLE="color: red; -moz-user-modify: read-only;" />
+		<input id="input" value="input" class="inputClass"
+			style="color: red;" />
 	</test>
 	<test id="button">
-		<INPUT TYPE="button" ID="button" VALUE="input button" DIR="ltr"
-			CLASS="buttonClass" STYLE="color: red; -moz-user-modify: read-write;" />
+		<input type="button" id="button" value="input button" dir="ltr"
+			class="buttonClass" style="color: red;" />
 
 	</test>
 	<test id="image">
-		<INPUT TYPE="image" CLASS="imageClass"
-			SRC="/.*ve/unresolved_image.gif/" STYLE="color: red; -moz-user-modify: read-only;" />
+		<input type="image" class="imageClass"
+			src="/img/image.jpeg" style="color: red;" />
 	</test>
 	<test id="password">
-		<INPUT TYPE="password" ID="password" VALUE="password" CLASS="passwordClass"
-			STYLE="color: red; -moz-user-modify: read-only;" DIR="ltr" SIZE="40" />
+		<input type="password" id="password" value="password" class="passwordClass"
+			style="color: red;" dir="ltr" size="40" />
 	</test>
 	<test id="radio">
-		<INPUT TYPE="radio" ID="radio"
-			STYLE="color: red; -moz-user-modify: read-only;" CHECKED="checked" />
+		<input type="radio" id="radio"
+			style="color: red;" checked="" />
 	</test>
 
 	<test id="reset">
-		<INPUT TYPE="reset" ID="reset"
-			STYLE="color: red; -moz-user-modify: read-write;" CLASS="resetClass"
-			VALUE="Reset" />
+		<input type="reset" id="reset"
+			style="color: red;" class="resetClass"/>
 	</test>
 	<test id="submit">
-		<INPUT TYPE="submit" ID="submit" VALUE="submit" CLASS="submitClass"
-			DIR="ltr" STYLE="color: red; -moz-user-modify: read-write;" />
+		<input type="submit" id="submit" value="submit" class="submitClass"
+			dir="ltr" style="color: red;" />
 
 	</test>
 	<test id="text">
-		<INPUT TYPE="text" VALUE="value" ID="text" CLASS="textClass"
-			STYLE="color: red; -moz-user-modify: read-only;" SIZE="40" DIR="ltr" />
+		<input type="text" value="value" id="text" class="textClass"
+			style="color: red;" size="40" dir="ltr" />
 
 	</test>
 </tests>

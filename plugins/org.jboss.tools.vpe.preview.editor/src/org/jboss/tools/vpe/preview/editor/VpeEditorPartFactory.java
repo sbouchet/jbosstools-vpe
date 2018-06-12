@@ -10,12 +10,6 @@
  ******************************************************************************/ 
 package org.jboss.tools.vpe.preview.editor;
 
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.IPathEditorInput;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.wst.sse.ui.StructuredTextEditor;
 import org.jboss.tools.jst.web.ui.WebUiPlugin;
@@ -23,10 +17,6 @@ import org.jboss.tools.jst.web.ui.internal.editor.bundle.BundleMap;
 import org.jboss.tools.jst.web.ui.internal.editor.editor.IVisualEditor;
 import org.jboss.tools.jst.web.ui.internal.editor.editor.IVisualEditorFactory;
 import org.jboss.tools.jst.web.ui.internal.editor.preferences.IVpePreferencesPage;
-import org.jboss.tools.vpe.editor.VpeEditorPart;
-import org.jboss.tools.vpe.editor.util.VpePlatformUtil;
-import org.jboss.tools.vpe.preview.core.util.PlatformUtil;
-import org.jboss.tools.vpe.preview.core.util.SuitableFileExtensions;
 
 /**
  * @author Konstantin Marmalyukov (kmarmaliykov)
@@ -38,53 +28,9 @@ public class VpeEditorPartFactory implements IVisualEditorFactory {
 	}
 	
 	public IVisualEditor createVisualEditor(final EditorPart multiPageEditor, StructuredTextEditor textEditor, int visualMode, BundleMap bundleMap) {
-	    //return proper visual implementation if it is forced by tests
-	    if (VpePlatformUtil.isXulrunnerForced()) {
-			return getVpeEditor(multiPageEditor, textEditor, visualMode, bundleMap);
-		}
-		if (VpePlatformUtil.isDefaultBrowserForced()) {
-			return getPreviewEditor(multiPageEditor, textEditor, visualMode, bundleMap);
-		}
-		
-	    IEditorInput editorInput = multiPageEditor.getEditorInput();
-		boolean isHtmlFile = false;
-		if (editorInput instanceof IFileEditorInput) { //file opened from workspace
-			String fileExtension = ((IFileEditorInput) editorInput).getFile().getFileExtension();
-			isHtmlFile = SuitableFileExtensions.isHTML(fileExtension);
-		} else  if (editorInput instanceof IPathEditorInput) { //handle external file
-		    IPath externalFile = ((IPathEditorInput) editorInput).getPath();
-		    isHtmlFile = SuitableFileExtensions.isHTML(externalFile.getFileExtension());
-		} else { //not a file, maybe some html text, should use simple preview for it
-			isHtmlFile = true;
-		}
-		
-		if (isHtmlFile) {
-			if (VpePlatformUtil.xulrunnerCanBeLoadedOnLinux()
-				&& !WebUiPlugin.getDefault().getPreferenceStore().getBoolean(IVpePreferencesPage.USE_VISUAL_EDITOR_FOR_HTML5)
-				&& !WebUiPlugin.getDefault().getPreferenceStore().getBoolean(IVpePreferencesPage.REMEMBER_VISUAL_EDITOR_ENGINE)) {
-		    	EngineDialog d = new EngineDialog(Display.getDefault().getActiveShell());
-		    	d.open();
-		    }
-			return getPreviewEditor(multiPageEditor, textEditor, visualMode, bundleMap);
-		} else {
-			if (VpePlatformUtil.xulrunnerCanBeLoadedOnLinux()
-				&& WebUiPlugin.getDefault().getPreferenceStore().getBoolean(IVpePreferencesPage.USE_VISUAL_EDITOR_FOR_HTML5)
-				&& !WebUiPlugin.getDefault().getPreferenceStore().getBoolean(IVpePreferencesPage.REMEMBER_VISUAL_EDITOR_ENGINE)) {
-			    EngineDialog d = new EngineDialog(Display.getDefault().getActiveShell());
-			    d.open();
-			}
-			return getVpeEditor(multiPageEditor, textEditor, visualMode, bundleMap);
-		}
+		return getPreviewEditor(multiPageEditor, textEditor, visualMode, bundleMap);
 	}
 	
-	private IVisualEditor getVpeEditor(final EditorPart multiPageEditor, StructuredTextEditor textEditor, int visualMode, BundleMap bundleMap) {
-		return PlatformUtil.isMacOS() ? null : new VpeEditorPart(multiPageEditor, textEditor, visualMode, bundleMap) {
-			public void doSave(IProgressMonitor monitor) {
-				multiPageEditor.doSave(monitor);
-			}
-		};
-	}
-
 	private IVisualEditor getPreviewEditor(final EditorPart multiPageEditor, StructuredTextEditor textEditor, int visualMode, BundleMap bundleMap) {
 		return new VpvEditorPart(multiPageEditor, textEditor, visualMode, bundleMap);
 	}

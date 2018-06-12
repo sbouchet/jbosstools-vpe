@@ -10,17 +10,9 @@
  ******************************************************************************/
 package org.jboss.tools.vpe.ui.test;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
-import javax.annotation.security.RunAs;
-
-import org.jboss.tools.vpe.base.test.VpeTestSetup;
-import org.jboss.tools.vpe.ui.test.dialog.VpeEditAnyDialogTest;
 import org.jboss.tools.vpe.ui.test.dialog.VpeResourcesDialogTest;
 import org.jboss.tools.vpe.ui.test.editor.CustomSashFormTest;
 import org.jboss.tools.vpe.ui.test.editor.MultipleSelectionTest;
-import org.jboss.tools.vpe.ui.test.editor.ToggleClassCastTest_Jbide9790;
 import org.jboss.tools.vpe.ui.test.handlers.VpeCommandsTests;
 import org.jboss.tools.vpe.ui.test.preferences.VpeEditorPreferencesPageTest;
 import org.junit.runner.RunWith;
@@ -36,9 +28,7 @@ import org.junit.runners.Suite;
 	VpeResourcesDialogTest.class,
 	VpeEditorPreferencesPageTest.class,
 	CustomSashFormTest.class,
-	VpeEditAnyDialogTest.class,
-	MultipleSelectionTest.class,
-	ToggleClassCastTest_Jbide9790.class
+	MultipleSelectionTest.class
 })
 public class VpeUiTests {
 	public static final String IMPORT_PROJECT_NAME = "TestProject"; //$NON-NLS-1$

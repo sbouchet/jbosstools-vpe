@@ -10,8 +10,6 @@
  ******************************************************************************/
 package org.jboss.tools.vpe.editor.util;
 
-import static org.jboss.tools.vpe.xulrunner.util.XPCOM.queryInterface;
-
 import java.util.Properties;
 
 import org.eclipse.jface.text.source.ISourceViewer;
@@ -21,11 +19,6 @@ import org.jboss.tools.common.model.ui.dnd.DnDUtil;
 import org.jboss.tools.common.model.ui.editor.IModelObjectEditorInput;
 import org.jboss.tools.jst.web.ui.internal.editor.jspeditor.dnd.JSPPaletteInsertHelper;
 import org.jboss.tools.vpe.VpePlugin;
-import org.mozilla.interfaces.nsIFile;
-import org.mozilla.interfaces.nsISupports;
-import org.mozilla.interfaces.nsISupportsCString;
-import org.mozilla.interfaces.nsISupportsString;
-import org.mozilla.xpcom.XPCOMException;
 
 public class VpeDndUtil {
     
@@ -50,51 +43,5 @@ public class VpeDndUtil {
 		}
     }
     
-	/**
-	 * Determine is nsIFile instance.
-	 * 
-	 * @param support
-	 * @return
-	 */
-	public static boolean isNsIFileInstance(nsISupports support) {
-        boolean rst = true;
-        
-        try {
-        	queryInterface(support, nsIFile.class);
-        } catch (XPCOMException e) {
-            rst = false;
-        }      
-        return rst;
-    }
-	/**
-	 * Determine is csstring instance
-	 * @param support
-	 * @return
-	 */
-	public static boolean isNsICStringInstance(nsISupports support) {
-        boolean rst = true;
-
-        try {
-        	queryInterface(support, nsISupportsCString.class);
-        } catch (XPCOMException e) {
-            rst = false;
-        }
-        return rst;
-    }
-    /**
-     * Determine is string instance
-     * @param support
-     * @return
-     */
-	public static boolean isNsIStringInstance(nsISupports support) {
-        boolean rst = true;
-
-        try {
-        	queryInterface(support, nsISupportsString.class);
-        } catch (XPCOMException e) {
-            rst = false;
-        }
-        return rst;
-    }
 
 }

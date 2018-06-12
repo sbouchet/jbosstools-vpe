@@ -1,9 +1,7 @@
 <tests>
 	<test id="accesscontrollist1">
-		<DIV ID="accesscontrollist1">
-			<DIV>
-				<SPAN CLASS="vpe-text">This will be shown if the user has either of the permissions represented by the values "1" or "2" on the given object.</SPAN>
-			</DIV>
-		</DIV>
+		<div id="accesscontrollist1">
+            <security:accesscontrollist haspermission="1,2" domainobject="formBean">This will be shown if the user has either of the permissions represented by the values "1" or "2" on the given object.</security:accesscontrollist>
+        </div>
 	</test>
 </tests>

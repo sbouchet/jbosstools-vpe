@@ -1,17 +1,13 @@
 <tests>
 	<test id="optgroup">
-		<OPTGROUP LABEL="color" CLASS="optgroupClass" ID="optgroup"
-			DIR="ltr" STYLE="color: red; -moz-user-modify: read-only;">
-			<OPTION VALUE="c1" STYLE="-moz-user-modify: read-write;">
-				<SPAN>
+		<optgroup label="color" class="optgroupClass" id="optgroup"
+			dir="ltr" style="color: red;">
+			<option value="c1">
 					orange
-				</SPAN>
-			</OPTION>
-			<OPTION VALUE="c2" STYLE="-moz-user-modify: read-write;">
-				<SPAN>
+			</option>
+			<option value="c2">
 					lemon
-			</SPAN>
-			</OPTION>
-		</OPTGROUP>
+			</option>
+		</optgroup>
 	</test>
 </tests>

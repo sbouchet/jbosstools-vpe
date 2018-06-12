@@ -1,9 +1,7 @@
 <tests>
 	<test id="h5">
-		<H5 ALIGN="left" CLASS="h1Class" DIR="ltr" ID="h5" STYLE="color: red; -moz-user-modify: read-write;">
-<SPAN>
+		<h5 align="left" class="h1Class" dir="ltr" id="h5" style="color: red;">
 h5
-</SPAN>
-</H5>
+</h5>
 	</test>
 </tests>

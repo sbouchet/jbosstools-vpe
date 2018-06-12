@@ -1,14 +1,19 @@
 <tests>
 	<test id="select1">
-		<SELECT ID="select1" STYLE="background-color: black;" CLASS="yellow-text">
-			<OPTION>${formBean.availableCategories}</OPTION>
-		</SELECT>
+        <form:select id="select1"
+                path="selectedCategories1" 
+                items="${formBean.availableCategories}" cssclass="yellow-text"
+                cssstyle="background-color:black" multiple="false"/>
 	</test>
 	<test id="select2">
-		<SELECT ID="select2" SIZE="2" MULTIPLE="multiple">
-			<OPTION ID="booksOption2">books selected</OPTION>
-			<OPTION ID="sportOption2">sport selected</OPTION>
-			<OPTION ID="fishingOption2">fishing selected</OPTION>
-		</SELECT>
+        <form:select id="select2" size="2"
+                    path="selectedCategory">
+            <form:option id="booksOption2" value="books"
+                    label="books selected"/>            
+            <form:option id="sportOption2" value="sport"
+                    label="sport selected"/>
+            <form:option id="fishingOption2" value="fishing"
+                    label="fishing selected"/>
+        </form:select>
 	</test>
 </tests>

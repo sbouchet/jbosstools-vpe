@@ -15,7 +15,6 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.jboss.tools.vpe.base.test.VpeTestSetup;
-import org.jboss.tools.vpe.editor.template.VpeTemplateManagerTest;
 import org.jboss.tools.vpe.editor.util.VpeStyleUtilTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -29,11 +28,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-		VpeStyleUtilTest.class,
-		TemplateLoadingTest.class,
-		TemplateSchemeValidateTest.class,
-		TemplatesExpressionParsingTest.class,
-		VpeTemplateManagerTest.class
+		VpeStyleUtilTest.class
 })
 public class VpeAllTests extends TestCase{
 }

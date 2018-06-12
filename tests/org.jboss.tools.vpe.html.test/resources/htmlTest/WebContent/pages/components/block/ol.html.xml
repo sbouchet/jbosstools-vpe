@@ -1,24 +1,17 @@
 <tests>
 	<test id="ol">
 
-		<OL TYPE="I" ID="ol" CLASS="olClass" DIR="ltr"
-			STYLE="color: red; -moz-user-modify: read-only;" START="2">
-			<LI STYLE="-moz-user-modify: read-write;">
-				<SPAN>
+		<ol type="I" id="ol" class="olClass" dir="ltr"
+			style="color: red;" start="2">
+			<li>
 					text 1
-</SPAN>
-			</LI>
-			<LI STYLE="-moz-user-modify: read-write;">
-				<SPAN>
+			</li>
+			<li>
 					text 2
-</SPAN>
-			</LI>
-			<LI STYLE="-moz-user-modify: read-write;">
-				<SPAN>
+			</li>
+			<li>
 					text 3
-</SPAN>
-			</LI>
-		</OL>
-		
+			</li>
+		</ol>
 	</test>
 </tests>

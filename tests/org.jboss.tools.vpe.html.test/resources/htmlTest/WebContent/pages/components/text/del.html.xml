@@ -1,10 +1,8 @@
 <tests>
 	<test id="del">
-		<DEL ID="del" CLASS="delClass" STYLE="color: red; -moz-user-modify: read-write;" DIR="ltr">
-<SPAN>
+		<del id="del" class="delClass" style="color: red" dir="ltr">
 Some
 Text
-</SPAN>
-</DEL>
+</del>
 	</test>
 </tests>

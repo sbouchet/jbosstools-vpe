@@ -1,11 +1,15 @@
 <tests>
 	<test id="options1">
-		<option id="options11">${formBean.availableCategories}</option>
+		<form:options id="options1" items="${formBean.availableCategories}"/>
 	</test>
 	<test id="options2">
-		<option id="options21" class="tall-options" style="width: 30px;" disabled="disabled"></option>
+		<form:options id="options2" disabled="true"
+                    cssstyle="width: 30px;" cssclass="tall-options"
+                    items="${formBean.availableCategories}"/>
 	</test>
 	<test id="options3">
-		<option id="options31">${formBean.favoriteCategories}.id</option>
+		<form:options id="options3"
+                    itemlabel="id" itemvalue="id"
+                    items="${formBean.favoriteCategories}"/>
 	</test>
 </tests>

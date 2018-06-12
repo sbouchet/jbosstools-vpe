@@ -1,9 +1,7 @@
 <tests>
 	<test id="figcaption-id">
-		<FIGCAPTION ID="figcaption-id">
-<SPAN CLASS="vpe-text">
+		<figcaption id="figcaption-id">
 A view of the pulpit rock in Norway
-</SPAN>
-</FIGCAPTION>
+</figcaption>
 	</test>
 </tests>

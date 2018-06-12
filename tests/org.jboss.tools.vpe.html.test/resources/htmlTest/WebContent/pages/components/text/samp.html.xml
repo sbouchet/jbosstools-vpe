@@ -1,9 +1,7 @@
 <tests>
 	<test id="samp">
-		<SAMP ID="samp" CLASS="sampClass" STYLE="color: red; -moz-user-modify: read-write;" DIR="ltr">
-<SPAN>
+		<samp id="samp" class="sampClass" style="color: red;" dir="ltr">
 Some Text
-</SPAN>
-</SAMP>
+</samp>
 	</test>
 </tests>

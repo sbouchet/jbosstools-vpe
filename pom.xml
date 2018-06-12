@@ -8,7 +8,7 @@
 	</parent>
 	<groupId>org.jboss.tools</groupId>
 	<artifactId>vpe</artifactId>
-	<version>3.8.100-SNAPSHOT</version>
+	<version>3.8.200-SNAPSHOT</version>
 	<name>jbosstools-vpe</name>
 	<packaging>pom</packaging>
 	<properties>
@@ -30,11 +30,6 @@
                         <id>jbosstools-jst</id>
                         <layout>p2</layout>
                         <url>${jbosstools-jst-site}</url>
-                </repository>
-                <repository>
-                        <id>jbosstools-xulrunner</id>
-                        <layout>p2</layout>
-                        <url>${jbosstools-xulrunner-site}</url>
                 </repository>
 
 

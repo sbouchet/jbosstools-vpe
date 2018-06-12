@@ -24,23 +24,14 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.menus.IMenuService;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
-import org.eclipse.wst.sse.ui.StructuredTextEditor;
 import org.jboss.tools.jst.web.ui.internal.editor.i18n.ExternalizeStringsContributionItem;
 import org.jboss.tools.jst.web.ui.internal.editor.i18n.ExternalizeStringsUtils;
 import org.jboss.tools.vpe.VpeDebug;
-import org.jboss.tools.vpe.editor.VpeEditorPart;
-import org.jboss.tools.vpe.editor.mapping.VpeDomMapping;
-import org.jboss.tools.vpe.editor.mapping.VpeNodeMapping;
 import org.jboss.tools.vpe.editor.menu.action.ComplexAction;
-import org.jboss.tools.vpe.editor.menu.action.EditAttributesAction;
 import org.jboss.tools.vpe.editor.menu.action.SelectThisTagAction;
 import org.jboss.tools.vpe.editor.menu.action.StripTagAction;
-import org.jboss.tools.vpe.editor.mozilla.MozillaEditor;
 import org.jboss.tools.vpe.editor.preferences.VpeEditorPreferencesPage;
-import org.jboss.tools.vpe.editor.template.IZoomEventManager;
-import org.jboss.tools.vpe.editor.util.SelectionUtil;
 import org.jboss.tools.vpe.messages.VpeUIMessages;
-import org.jboss.tools.vpe.xulrunner.util.DOMTreeDumper;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -84,9 +75,6 @@ public class VpeMenuCreator {
 		addCutCopyPasteActions(topLevelMenu);
 		addSeparator();
 		
-		addIfEnabled(new EditAttributesAction(node));
-		menuManager.add(new SetupTemplateContributionItem());
-
 		if (!topLevelMenu) {
 			menuManager.add(new SelectThisTagAction(node));
 		}
@@ -109,7 +97,6 @@ public class VpeMenuCreator {
 		}
 		addSeparator();
 		if (topLevelMenu) {
-			addZoomActions();
 			addSeparator();
 		}
 		/*
@@ -128,10 +115,6 @@ public class VpeMenuCreator {
 		}));
 		addSeparator();
 		if (topLevelMenu) {
-			addIfEnabled(new DumpSourceAction());
-			addIfEnabled(new DumpSelectedElementAction());
-			addIfEnabled(new DumpStyleAction());
-			addIfEnabled(new DumpMappingAction());
 			addIfEnabled(new TestAction());
 		}
 
@@ -251,115 +234,4 @@ public class VpeMenuCreator {
 		}
 	}
 
-	/**
-	 * Action to dump source of VPE. For debugging purposes only.
-	 */
-	public class DumpSourceAction extends Action {
-		public DumpSourceAction() {
-			setText("Dump Source"); //$NON-NLS-1$
-		}
-
-		@Override
-		public void run() {
-			final MozillaEditor visualEditor = vpeMenuUtil.getMozillaEditor();
-			DOMTreeDumper dumper = new DOMTreeDumper(
-					VpeDebug.VISUAL_DUMP_PRINT_HASH);
-			dumper.setIgnoredAttributes(VpeDebug.VISUAL_DUMP_IGNORED_ATTRIBUTES);
-			dumper.dumpToStream(System.out, visualEditor.getDomDocument());
-		}
-
-		@Override
-		public boolean isEnabled() {
-			return VpeDebug.VISUAL_CONTEXTMENU_DUMP_SOURCE;
-		}
-	}
-
-	/**
-	 * Action to dump source of the selected VPE element. For debugging purposes
-	 * only.
-	 */
-	public class DumpSelectedElementAction extends Action {
-		public DumpSelectedElementAction() {
-			setText("Dump Selected Element"); //$NON-NLS-1$
-		}
-
-		@Override
-		public void run() {
-			final StructuredTextEditor sourceEditor = vpeMenuUtil
-					.getSourceEditor();
-			final VpeDomMapping domMapping = vpeMenuUtil.getDomMapping();
-			final VpeNodeMapping nodeMapping = SelectionUtil
-					.getNodeMappingBySourceSelection(sourceEditor, domMapping);
-			if (nodeMapping != null) {
-				DOMTreeDumper dumper = new DOMTreeDumper(
-						VpeDebug.VISUAL_DUMP_PRINT_HASH);
-				dumper.setIgnoredAttributes(VpeDebug.VISUAL_DUMP_IGNORED_ATTRIBUTES);
-				dumper.dumpNode(nodeMapping.getVisualNode());
-			}
-		}
-
-		@Override
-		public boolean isEnabled() {
-			return VpeDebug.VISUAL_CONTEXTMENU_DUMP_SELECTED_ELEMENT;
-		}
-	}
-	
-	/**
-	 * Action to dump computed css style 
-	 * of the selected VPE element. 
-	 * For debugging purposes only.
-	 */
-	public class DumpStyleAction extends Action {
-		public DumpStyleAction() {
-			setText("Dump CSS Style"); //$NON-NLS-1$
-		}
-		
-		@Override
-		public void run() {
-			final StructuredTextEditor sourceEditor = vpeMenuUtil.getSourceEditor();
-			final VpeDomMapping domMapping = vpeMenuUtil.getDomMapping();
-			final VpeNodeMapping nodeMapping = SelectionUtil
-					.getNodeMappingBySourceSelection(sourceEditor, domMapping);
-			if (nodeMapping != null) {
-				DOMTreeDumper dumper = new DOMTreeDumper(
-						VpeDebug.VISUAL_DUMP_PRINT_HASH);
-				dumper.setIgnoredAttributes(VpeDebug.VISUAL_DUMP_IGNORED_ATTRIBUTES);
-				dumper.dumpStyle(nodeMapping.getVisualNode());
-			}
-		}
-		
-		@Override
-		public boolean isEnabled() {
-			return VpeDebug.VISUAL_CONTEXTMENU_DUMP_CSS_STYLE;
-		}
-	}
-
-	/**
-	 * Action to print the {@link #domMapping}. For debugging purposes only.
-	 */
-	public class DumpMappingAction extends Action {
-		public DumpMappingAction() {
-			setText("Dump Mapping"); //$NON-NLS-1$
-		}
-
-		@Override
-		public void run() {
-			final VpeDomMapping domMapping = vpeMenuUtil.getDomMapping();
-			domMapping.printMapping();
-		}
-
-		@Override
-		public boolean isEnabled() {
-			return VpeDebug.VISUAL_CONTEXTMENU_DUMP_MAPPING;
-		}
-	}
-
-	private void addZoomActions() {
-		IZoomEventManager zoomEventManager = ((VpeEditorPart) vpeMenuUtil
-				.getEditor().getVisualEditor()).getController()
-				.getZoomEventManager();
-		ZoomActionMenuManager manager = new ZoomActionMenuManager(
-				zoomEventManager);
-		menuManager.add(manager);
-	}
 }

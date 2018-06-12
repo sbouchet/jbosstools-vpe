@@ -1,10 +1,8 @@
 <tests>
 	<test id="th">
-		<TH ID="th" STYLE="color: red; -moz-user-modify: read-write;"
-			CLASS="thClass">
-			<SPAN>
+		<th id="th" style="color: red;"
+			class="thClass">
 				head 1
-			</SPAN>
-		</TH>
+		</th>
 	</test>
 </tests>

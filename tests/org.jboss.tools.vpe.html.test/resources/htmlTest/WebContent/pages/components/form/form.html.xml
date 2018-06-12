@@ -1,13 +1,11 @@
 <tests>
 	<test id="form">
 
-		<FORM CLASS="formClass" DIR="ltr" ID="form"
-			STYLE="color: red; -moz-user-modify: read-write;">
-			<BUTTON STYLE="-moz-user-modify: read-only;">
-				<SPAN>
+		<form class="formClass" dir="ltr" id="form"
+			style="color: red;">
+			<button>
 					button
-				</SPAN>
-			</BUTTON>
-		</FORM>
+			</button>
+		</form>
 	</test>
 </tests>

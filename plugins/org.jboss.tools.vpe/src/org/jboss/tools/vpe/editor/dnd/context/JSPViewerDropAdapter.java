@@ -31,8 +31,6 @@ import org.jboss.tools.common.model.ui.dnd.ModelTransfer;
 import org.jboss.tools.common.model.ui.editors.dnd.context.DropContext;
 import org.jboss.tools.jst.web.ui.internal.editor.editor.IJSPTextEditor;
 import org.jboss.tools.jst.web.ui.internal.editor.editor.IVisualContext;
-import org.jboss.tools.vpe.dnd.DndUtil;
-import org.jboss.tools.vpe.editor.context.VpePageContext;
 import org.jboss.tools.vpe.editor.dnd.context.xpl.DragNodeCommand2;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
@@ -188,25 +186,13 @@ class VpeDragAnyCommand extends DragNodeCommand2 {
 	}
 
 	public boolean doMove(Node parentNode, Node refChild, boolean testOnly) {
-		if(testOnly) {
+		if (testOnly) {
 			return editor != null && editor.isEditable() && dropContext.getFlavor() != null;
 		} else {
-			Node dragNode = null;
-			IVisualContext pageContext = editor.getVPEController().getPageContext();
-			if (pageContext instanceof VpePageContext) {
-				dragNode = DndUtil.getNodeFromDragSession(editor.getVPEController());
-			}
-			if(dragNode != null && editor instanceof IJSPTextEditor) {
-				int offset = 0;
-				if(refChild instanceof NodeImpl) {
-					offset = ((NodeImpl)refChild).getIndex();
-				}
-				((IJSPTextEditor)editor).getVPEController().drop(dragNode, parentNode, offset);
-			} else {
-				int pos = getDropPosition(parentNode, refChild);
-				editor.selectAndReveal(pos, 0);
-				dropContext.runDropCommand(editor);
-			}			
+
+			int pos = getDropPosition(parentNode, refChild);
+			editor.selectAndReveal(pos, 0);
+			dropContext.runDropCommand(editor);
 			return true;
 		}
 	}

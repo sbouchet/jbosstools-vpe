@@ -1,7 +1,7 @@
 <tests>
 	<test id="map">
-		<MAP NAME="map" ID="map" DIR="ltr" CLASS="mapClass"
-			STYLE="color: red; -moz-user-modify: read-only;">
-		</MAP>
+		<map name="map" id="map" dir="ltr" class="mapClass"
+			style="color: red;">
+		</map>
 	</test>
 </tests>

@@ -1,14 +1,10 @@
 <tests>
 	<test id="aside-id">
-		<ASIDE ID="aside-id">
-<H4>
-<SPAN CLASS="vpe-text">
+		<aside id="aside-id">
+<h4>
 Epcot Center
-</SPAN>
-</H4>
-<SPAN CLASS="vpe-text">
+</h4>
 The Epcot Center is a theme park in Disney World, Florida.
-</SPAN>
-</ASIDE>
+</aside>
 	</test>
 </tests>

@@ -19,8 +19,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
-
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.ActionContributionItem;
@@ -219,7 +217,7 @@ public class VpvToolBarTest extends RefreshTest {
 	
 	private void waitForAction(ActionContributionItem action, boolean enabled){
 		ActionIsEnabledCondition actionIsEnabled = new ActionIsEnabledCondition(action,enabled);
-		actionIsEnabled.waitForCondition(Display.getCurrent(), TestUtil.MAX_IDLE);
+		assertTrue(actionIsEnabled.waitForCondition(Display.getCurrent(), TestUtil.MAX_IDLE));
 	}
 	
 	class BrowserLocationListener extends LocationAdapter{

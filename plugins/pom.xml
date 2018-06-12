@@ -4,24 +4,18 @@
 	<parent>
 		<groupId>org.jboss.tools</groupId>
 		<artifactId>vpe</artifactId>
-		<version>3.8.100-SNAPSHOT</version>
+		<version>3.8.200-SNAPSHOT</version>
 	</parent>
 	<groupId>org.jboss.tools.vpe</groupId>
 	<artifactId>plugins</artifactId>
-	<version>3.8.100-SNAPSHOT</version>
+	<version>3.8.200-SNAPSHOT</version>
 	<name>vpe.plugins</name>
 	<packaging>pom</packaging>
 	<modules>
 		<module>org.jboss.tools.vpe</module>
 		<module>org.jboss.tools.vpe.docbook</module>
-		<module>org.jboss.tools.vpe.html</module>
-		<module>org.jboss.tools.vpe.jsp</module>
-		<module>org.jboss.tools.vpe.spring</module>		
 		<module>org.jboss.tools.vpe.resref</module>
 		<module>org.jboss.tools.vpe.ui.palette</module>
-		<module>org.jboss.tools.vpe.xulrunner</module>
-		<module>org.jboss.tools.xulrunner</module>
-		<module>org.jboss.tools.xulrunner.initializer</module>
 		<module>org.jboss.tools.vpe.preview</module>
 		<module>org.jboss.tools.vpe.preview.core</module>
 		<module>org.jboss.tools.vpe.preview.editor</module>

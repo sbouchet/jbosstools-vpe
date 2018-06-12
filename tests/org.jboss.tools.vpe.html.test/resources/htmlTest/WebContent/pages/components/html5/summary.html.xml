@@ -1,9 +1,7 @@
 <tests>
 	<test id="summary-id">
-		<SUMMARY ID="summary-id">
-<SPAN CLASS="vpe-text">
+		<summary id="summary-id">
 Copyright 1999-2011.
-</SPAN>
-</SUMMARY>
+</summary>
 	</test>
 </tests>

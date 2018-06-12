@@ -1,11 +1,13 @@
 <tests>
 	<test id="booksOption1">
-		<option id="booksOption1"></option>
+		<form:option id="booksOption1" value="books"/>
 	</test>
 	<test id="booksOption2">
-		<option id="booksOption2" class="tall-option" style="width: 30px;">books selected</option>
+		<form:option id="booksOption2" value="books"
+                    label="books selected"
+                    cssstyle="width: 30px;" cssclass="tall-option"/>
 	</test>
 	<test id="booksOption3">
-		<option id="booksOption3" disabled="disabled"></option>
+		<form:option id="booksOption3" value="books" disabled="true"/>
 	</test>
 </tests>

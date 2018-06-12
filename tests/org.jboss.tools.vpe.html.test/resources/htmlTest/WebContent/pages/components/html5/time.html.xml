@@ -1,9 +1,7 @@
 <tests>
 	<test id="time-id">
-		<TIME ID="time-id">
-<SPAN CLASS="vpe-text">
+		<time id="time-id">
 10:00
-</SPAN>
-</TIME>
+</time>
 	</test>
 </tests>

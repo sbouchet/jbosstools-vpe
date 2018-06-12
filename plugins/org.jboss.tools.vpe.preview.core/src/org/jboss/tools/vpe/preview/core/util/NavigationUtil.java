@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.jboss.tools.vpe.preview.core.util;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.xpath.XPathExpressionException;

@@ -14,9 +14,7 @@ package org.jboss.tools.vpe.editor.util;
 import java.util.HashSet;
 import java.util.List;
 
-import org.jboss.tools.jst.web.kb.PageContextFactory;
 import org.jboss.tools.jst.web.tld.TaglibData;
-import org.jboss.tools.vpe.editor.context.VpePageContext;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
