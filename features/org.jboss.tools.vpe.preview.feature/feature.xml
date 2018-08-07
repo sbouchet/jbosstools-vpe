@@ -2,7 +2,7 @@
 <feature
       id="org.jboss.tools.vpe.preview.feature"
       label="%featureName"
-      version="3.8.200.qualifier"
+      version="3.8.201.qualifier"
       provider-name="%providerName"
       plugin="org.jboss.tools.vpe.preview.editor"
 	  license-feature="org.jboss.tools.foundation.license.feature"
